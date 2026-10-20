@@ -46,6 +46,10 @@ jobs:
         env:
           SOURCE_COMMIT: ${{ github.sha }}
         run: ./scripts/New-NativeReleasePackage.ps1 -SourceCommit $env:SOURCE_COMMIT
+      - name: Verify source archive and project files against committed Git blob bytes
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: python scripts/verify_native_release.py --archive .local/native-release/careops-decisions-native.zip --source-commit "$env:SOURCE_COMMIT"
       - name: Execute every existing native suite against unpacked release assemblies
         shell: pwsh
         env:

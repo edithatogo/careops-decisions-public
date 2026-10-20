@@ -32,7 +32,6 @@ foreach ($library in $libraries) {
     $entries += @{ Name = $name; Dll = $dll; Xml = $xml; Framework = $library.Framework }
 }
 New-Item -ItemType Directory -Path (Join-Path $stage 'lib') -Force | Out-Null
-foreach ($file in @('LICENSE', 'global.json')) { Copy-Item -LiteralPath (Join-Path $root $file) -Destination $stage }
 $manifest = [ordered]@{ sourceCommit = $SourceCommit; assemblies = @(); thirdPartyBinariesIncluded = $false; nativeDeploymentQualified = $false }
 foreach ($entry in $entries) {
     foreach ($path in @($entry.Dll, $entry.Xml)) { Copy-Item -LiteralPath $path -Destination (Join-Path $stage 'lib') }
@@ -53,7 +52,16 @@ requirements, environment bindings, solution composition and operator acceptance
 remain separate. It does not install, activate, connect to or modify a tenant.
 '@ | Set-Content -LiteralPath (Join-Path $stage 'README.md') -Encoding utf8
 $sourceArchive = Join-Path $stage 'source.zip'
-git -C $root archive --format=zip "--output=$sourceArchive" $SourceCommit
+git -C $root -c core.autocrlf=false -c core.eol=lf archive --format=zip "--output=$sourceArchive" $SourceCommit
 if ($LASTEXITCODE -ne 0) { throw 'Exact-source archive failed.' }
+$source = [IO.Compression.ZipFile]::OpenRead($sourceArchive)
+try {
+    foreach ($file in @('LICENSE', 'global.json')) {
+        $entryStream = $source.GetEntry($file).Open()
+        $destinationStream = [IO.File]::Create((Join-Path $stage $file))
+        try { $entryStream.CopyTo($destinationStream) }
+        finally { $destinationStream.Dispose(); $entryStream.Dispose() }
+    }
+} finally { $source.Dispose() }
 [IO.Compression.ZipFile]::CreateFromDirectory($stage, $archive)
 Write-Output $archive
