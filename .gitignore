@@ -36,3 +36,7 @@ __pycache__/
 # Synthetic browser test outputs
 /browser-smoke-receipt.json
 /synthetic-register-preview.png
+
+# Native compiler and restore outputs
+**/bin/
+**/obj/

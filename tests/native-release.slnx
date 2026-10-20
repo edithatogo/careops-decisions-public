@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="native_authority/Authority.Tests.csproj" />
+  <Project Path="native_calendar/Calendars.Tests.csproj" />
+  <Project Path="native_identity/Identity.Tests.csproj" />
+  <Project Path="native_register_schema/RegisterSchema.Tests.csproj" />
+</Solution>
