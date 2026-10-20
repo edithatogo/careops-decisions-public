@@ -1,0 +1,151 @@
+name: Native library release
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-library-release-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+jobs:
+  native-package:
+    name: Actual native library release
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.14.8'
+      - name: Exercise source binding, retry preservation and invalid CLR refusal
+        run: python -m unittest discover -s tests/release -v
+      - name: Restore the exact graph and build the four test/library projects once
+        shell: pwsh
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          dotnet --info
+          dotnet restore tests/native-release.slnx --locked-mode
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git diff --exit-code -- '**/packages.lock.json'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet build tests/native-release.slnx --no-restore -c Release -p:ContinuousIntegrationBuild=true "-p:SourceRevisionId=$env:SOURCE_COMMIT"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Package real first-party CLR assemblies, API XML and exact source
+        shell: pwsh
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: ./scripts/New-NativeReleasePackage.ps1 -SourceCommit $env:SOURCE_COMMIT
+      - name: Execute every existing native suite against unpacked release assemblies
+        shell: pwsh
+        env:
+          CONSUMER_DIRECTORY: ${{ runner.temp }}/decisions-native-consumer
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: ./scripts/Test-NativeReleaseConsumer.ps1 -SourceCommit $env:SOURCE_COMMIT -Archive .local/native-release/careops-decisions-native.zip -ConsumerDirectory $env:CONSUMER_DIRECTORY -ResultsDirectory "$PWD/.local/native-release/consumer-results"
+      - name: Read immutable qualified inventory tooling
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: edithatogo/careops
+          ref: 6319d0c0c76ee672223c156abce9d4181c41aa9a
+          path: .local/ci-release-policy
+          persist-credentials: false
+          submodules: false
+      - name: Inventory the actual qualified archive
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          python .local/ci-release-policy/portfolio-scripts/artifact_sbom.py --artifact .local/native-release/careops-decisions-native.zip --output .local/native-release/careops-decisions-native.spdx.json --name careops-decisions-native --source-commit "$SOURCE_COMMIT" --created-epoch "$(git show -s --format=%ct "$SOURCE_COMMIT")"
+      - name: Retain candidate and consumer evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: decisions-native-candidate
+          path: |
+            .local/native-release/*.zip
+            .local/native-release/*.json
+            .local/native-release/consumer-results/
+          if-no-files-found: error
+          retention-days: 30
+
+  attest-package:
+    name: Attest native library release
+    needs: [native-package]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write # Federated signing for the exact previously built package.
+      attestations: write # Store package provenance and SPDX signatures only.
+    steps:
+      - name: Download the package built once by this run
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          name: decisions-native-candidate
+          path: candidate
+      - name: Select the qualified verification runtime
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.14.8'
+      - name: Independently compare downloaded package with its inventory
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          python - <<'PYCODE'
+          import hashlib, json, os, zipfile
+          from pathlib import Path
+          package = Path('candidate/careops-decisions-native.zip')
+          document = json.loads(Path('candidate/careops-decisions-native.spdx.json').read_text())
+          assert document['packages'][0]['sourceInfo'] == 'Source commit: ' + os.environ['SOURCE_COMMIT']
+          assert document['packages'][0]['checksums'][0]['checksumValue'] == hashlib.sha256(package.read_bytes()).hexdigest()
+          with zipfile.ZipFile(package) as archive:
+              entries = [entry for entry in archive.infolist() if not entry.is_dir()]
+              assert len({entry.filename for entry in entries}) == len(entries)
+              actual = {entry.filename: hashlib.sha256(archive.read(entry)).hexdigest() for entry in entries}
+          declared = {entry['fileName'].removeprefix('./'): next(c['checksumValue'] for c in entry['checksums'] if c['algorithm'] == 'SHA256') for entry in document['files']}
+          assert actual and len(declared) == len(document['files']) and actual == declared
+          print('Exact downloaded archive and all file digests match the inventory.')
+          PYCODE
+      - name: Attest build provenance
+        id: provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
+        with:
+          subject-path: candidate/careops-decisions-native.zip
+          create-storage-record: false
+      - name: Attest exact artifact inventory
+        id: sbom
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
+        with:
+          subject-path: candidate/careops-decisions-native.zip
+          sbom-path: candidate/careops-decisions-native.spdx.json
+          create-storage-record: false
+      - name: Verify exact source and workflow signatures
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_COMMIT: ${{ github.sha }}
+          PROVENANCE_BUNDLE: ${{ steps.provenance.outputs.bundle-path }}
+          SBOM_BUNDLE: ${{ steps.sbom.outputs.bundle-path }}
+        run: |
+          cp "$PROVENANCE_BUNDLE" candidate/build-attestation.jsonl
+          cp "$SBOM_BUNDLE" candidate/sbom-attestation.jsonl
+          gh attestation verify candidate/careops-decisions-native.zip --bundle "$PROVENANCE_BUNDLE" --repo edithatogo/careops-decisions-public --signer-workflow edithatogo/careops-decisions-public/.github/workflows/native-release.yml --source-ref refs/heads/main --source-digest "$SOURCE_COMMIT" --signer-digest "$SOURCE_COMMIT" --deny-self-hosted-runners --format json > candidate/provenance-verification.json
+          gh attestation verify candidate/careops-decisions-native.zip --bundle "$SBOM_BUNDLE" --repo edithatogo/careops-decisions-public --signer-workflow edithatogo/careops-decisions-public/.github/workflows/native-release.yml --source-ref refs/heads/main --source-digest "$SOURCE_COMMIT" --signer-digest "$SOURCE_COMMIT" --deny-self-hosted-runners --predicate-type https://spdx.dev/Document/v2.3 --format json > candidate/sbom-verification.json
+      - name: Preserve exact package and signature evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: careops-decisions-native-attested-${{ github.sha }}
+          path: candidate/
+          if-no-files-found: error
+          retention-days: 30

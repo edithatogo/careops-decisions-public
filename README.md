@@ -103,3 +103,19 @@ inclusion, runtime behaviour, operational acceptance or solution-checker access.
 The four native test/coverage lanes and existing optional checker retain their
 own gates. Hosted Windows execution and signature availability remain unverified
 when account billing refuses jobs before they start.
+
+
+## Native library release candidate
+
+The native release workflow builds the four existing library/test projects as
+one locked graph, packages project-owned CLR assemblies, API XML, the project
+licence and exact source, then executes all four existing suites against the
+unpacked package bytes. Real test totals and source identity are retained.
+Build and SPDX signatures are produced only after successful main qualification.
+
+The archive supports offline library/source consumption on Windows .NET
+Framework4.8. Third-party dependencies remain in the committed NuGet locks;
+they are not bundled or represented as complete binary dependency closure.
+Dataverse registration, solution integration and operator acceptance remain
+separate from this library release. The existing unmanaged scaffold evidence
+is retained and is not used as proof that the native libraries shipped.
