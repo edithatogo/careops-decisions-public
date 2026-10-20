@@ -17,6 +17,12 @@
       "ignoreUnstable": false,
       "respectLatest": false,
       "automerge": false
+    },
+    {
+      "matchPackageNames": [
+        "*"
+      ],
+      "automerge": false
     }
   ]
 }
