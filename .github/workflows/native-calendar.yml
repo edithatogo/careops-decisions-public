@@ -1,0 +1,64 @@
+name: Native calendar safety
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calendar:
+    name: Native .NET deadline tests
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          global-json-file: global.json
+      - name: Locked restore and runtime evidence
+        shell: pwsh
+        run: |
+          dotnet --info
+          dotnet restore tests/native_calendar/Calendars.Tests.csproj --locked-mode
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git diff --exit-code -- powerplatform/native/Calendars/packages.lock.json tests/native_calendar/packages.lock.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile and execute native tests with warnings as errors
+        shell: pwsh
+        run: |
+          dotnet test tests/native_calendar/Calendars.Tests.csproj -c Release --no-restore -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura "-p:CoverletOutput=$($PWD.Path)/artifacts/native-calendar/" "-p:Include=[CareOps.Decisions.Calendars]*" --logger "trx;LogFileName=native-calendar.trx" --results-directory artifacts/native-calendar
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Require nonempty passing tests and full line and branch coverage
+        shell: pwsh
+        run: |
+          [xml]$tests = Get-Content -Raw artifacts/native-calendar/native-calendar.trx
+          $counts = $tests.TestRun.ResultSummary.Counters
+          if ([int]$counts.total -lt 22 -or [int]$counts.executed -ne [int]$counts.total -or [int]$counts.passed -ne [int]$counts.total) { throw 'Native tests must execute and pass without skips.' }
+          $files = @(Get-ChildItem artifacts/native-calendar -Recurse -Filter coverage.cobertura.xml)
+          if ($files.Count -ne 1) { throw 'Exactly one coverage receipt required.' }
+          [xml]$report = Get-Content -Raw $files[0].FullName
+          $coverage = $report.coverage
+          if ([int]$coverage.'lines-valid' -le 0 -or [int]$coverage.'branches-valid' -le 0) { throw 'Empty native coverage is not a pass.' }
+          if ([int]$coverage.'lines-covered' -ne [int]$coverage.'lines-valid' -or [int]$coverage.'branches-covered' -ne [int]$coverage.'branches-valid') { throw 'Native calendar line and branch coverage must both be 100%.' }
+          Write-Output "Native coverage: $($coverage.'lines-covered')/$($coverage.'lines-valid') lines; $($coverage.'branches-covered')/$($coverage.'branches-valid') branches."
+      - name: Preserve native assembly and qualification evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-calendar-qualification
+          path: |
+            artifacts/native-calendar/
+            powerplatform/native/Calendars/bin/Release/net462/
+            powerplatform/native/Calendars/packages.lock.json
+            tests/native_calendar/packages.lock.json
+          if-no-files-found: error
+          retention-days: 14

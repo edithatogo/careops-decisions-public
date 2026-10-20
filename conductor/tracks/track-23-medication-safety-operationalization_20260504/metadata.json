@@ -1,0 +1,46 @@
+{
+  "id": "track-23-medication-safety-operationalization_20260504",
+  "title": "Medication Safety operationalization, user guidance, AI Builder minutes, and live-data gates",
+  "status": "completed",
+  "owner": "worker-medication-safety-operationalization",
+  "parallelizable": true,
+  "created": "2026-05-04",
+  "dependsOn": [
+    "track-12-ai-transcripts-minutes_20260502",
+    "track-13-deployment-hardening-alm-entra-readiness_20260502",
+    "track-18-data-migration-bootstrap_20260502",
+    "track-21-alm-activation-ci_20260502",
+    "track-22-mvp-activation-enhancements_20260503"
+  ],
+  "workstreams": [
+    "guide pack and Teams setup",
+    "Decisions feature coverage and unused-surface audit",
+    "Medication Safety Committee sample records",
+    "AI Builder minutes pattern and human review",
+    "Medication Safety workflow activation",
+    "ALM environment variable definitions and full settings import"
+  ],
+  "liveDataGates": [
+    "NSW Outlook mailbox search access",
+    "Medication Safety Committee agenda and minutes source authorization",
+    "SharePoint or Teams document location",
+    "AI Builder capacity and licensing",
+    "Graph and Teams tab authentication stability"
+  ],
+  "closedOn": "2026-05-11",
+  "completedArtifacts": [
+    "docs/guides/decisions-workspace-quick-start.md",
+    "docs/implementation/decisions-feature-coverage.md",
+    "docs/architecture/ai-builder-minutes-pattern.md",
+    "docs/architecture/ai-human-review-gates.md",
+    "docs/operations/medication-safety-committee-workflows.md",
+    "powerplatform/src/seed/medication-safety-sample-data.json",
+    "scripts/Import-MedicationSafetySampleToDataverse.ps1",
+    "scripts/Test-MedicationSafetyContracts.ps1"
+  ],
+  "closeoutEvidence": [
+    "Medication Safety guide, feature coverage, workflow map, AI Builder prompt contract, and human review gate are source-controlled.",
+    "Synthetic seed data validates offline with scripts/Import-MedicationSafetySampleToDataverse.ps1 -WhatIfOnly.",
+    "scripts/Test-MedicationSafetyContracts.ps1 is wired into scripts/Invoke-RepoValidation.ps1."
+  ]
+}

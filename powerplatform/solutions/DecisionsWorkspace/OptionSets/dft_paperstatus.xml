@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="dft_paperstatus" localizedName="paperStatus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <displaynames>
+    <displayname description="paperStatus" languagecode="1033" />
+  </displaynames>
+  <options>
+    <option value="602170000" IsHidden="0">
+      <labels>
+        <label description="Draft" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170001" IsHidden="0">
+      <labels>
+        <label description="Submitted" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170002" IsHidden="0">
+      <labels>
+        <label description="Circulated" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170003" IsHidden="0">
+      <labels>
+        <label description="Superseded" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170004" IsHidden="0">
+      <labels>
+        <label description="Withdrawn" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170005" IsHidden="0">
+      <labels>
+        <label description="Archived" languagecode="1033" />
+      </labels>
+    </option>
+  </options>
+</optionset>

@@ -1,0 +1,190 @@
+schema: decisions.workspace.flow.v1
+flow:
+  name: outlook-invite-sync
+  displayName: Outlook Invite Sync
+  solution: DecisionsWorkspace
+  track: track-11-invites-attendees_20260502
+  status: scaffold
+  trigger:
+    type: dataverse.when-row-added-or-modified
+    table: dft_Meeting
+    changeScope: create-or-update
+    filters:
+      - field: dft_InviteSyncState
+        operator: not-equals
+        value: Succeeded
+  inputs:
+    dataverseTable: dft_Meeting
+    sourceFields:
+      - dft_MeetingId
+      - dft_Subject
+      - dft_StartDateTime
+      - dft_EndDateTime
+      - dft_Location
+      - dft_TeamsJoinUrl
+      - dft_RequiredAttendees
+      - dft_OptionalAttendees
+      - dft_OutlookEventId
+      - dft_InviteRequested
+      - dft_InviteSyncHash
+      - dft_InviteSyncState
+    environmentVariables:
+      - decisions_IntegrationLogRetentionDays
+    readinessChecks:
+      - Outlook connector is available before create or update calls run
+      - dft_InviteRequested is checked before Outlook connector calls run so disabled meetings can still record a skipped integration log
+      - the source meeting still requests invite sync
+      - the meeting-level invite switchboard is resolved before Outlook connector calls run
+      - attendee lists are resolved from Dataverse rows rather than free-text fields where possible
+  outputs:
+    dataverseWrites:
+      - dft_Meeting.dft_OutlookEventId
+      - dft_Meeting.dft_InviteSyncState
+      - dft_Meeting.dft_InviteSyncedOn
+      - dft_IntegrationLog
+  idempotency:
+    strategy: skip-if-event-id-exists
+    keyFields:
+      - dft_OutlookEventId
+      - dft_InviteSyncHash
+    replayGuard: subject + start + end + location + required attendees + optional attendees + Teams link
+  environmentVariableMapping:
+    - variable: decisions_IntegrationLogRetentionDays
+      type: Number
+      purpose: Retention period for integration log entries
+      usedInStep: all
+      sampleValue: "90"
+  retryPolicy:
+    type: exponential
+    count: 3
+    interval: PT30S
+  connectorCalls:
+    - connector: Dataverse
+      action: Get a row by ID
+      table: dft_Meeting
+    - connector: Dataverse
+      action: List rows
+      table: dft_IntegrationLog
+      filter: "relatedRecordId eq triggerOutputs()?['body/dft_meetingid'] and targetSystem eq 'Outlook' and status eq 'Succeeded'"
+    - connector: Office 365 Outlook
+      action: Create event
+    - connector: Office 365 Outlook
+      action: Update event
+    - connector: Dataverse
+      action: Update a row
+      table: dft_Meeting
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_IntegrationLog
+  steps:
+    - name: load-meeting
+      kind: dataverse.getRow
+      table: dft_Meeting
+      key: trigger row id
+    - name: check-invite-requested
+      kind: condition
+      when:
+        field: dft_InviteRequested
+        operator: equals
+        value: false
+      then:
+        - name: log-not-enabled
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Outlook
+            recordType: Meeting
+            relatedRecordId: dft_MeetingId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: Outlook invite sync is disabled for this meeting until the invite request flag is enabled and the Outlook connector is available.
+    - name: build-invite-hash
+      kind: compose
+      expression: "subject|start|end|location|attendees|teamsLink"
+    - name: guard-repeat-send
+      kind: condition
+      when:
+        any:
+          - field: dft_OutlookEventId
+            operator: not-empty
+          - field: dft_InviteSyncHash
+            operator: equals
+            value: "@{outputs('build-invite-hash')}"
+      then:
+        - name: log-skip
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Outlook
+            recordType: Meeting
+            relatedRecordId: dft_MeetingId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: Existing invite already synchronized for this meeting.
+    - name: create-or-update-event
+      kind: switch
+      on: dft_OutlookEventId
+      cases:
+        empty:
+          - kind: office365outlook.createEvent
+            map:
+              subject: dft_Subject
+              start: dft_StartDateTime
+              end: dft_EndDateTime
+              location: dft_Location
+              requiredAttendees: dft_RequiredAttendees
+              optionalAttendees: dft_OptionalAttendees
+              body: dft_TeamsJoinUrl
+          - kind: dataverse.updateRow
+            table: dft_Meeting
+            values:
+              dft_OutlookEventId: "@{outputs('office365outlook.createEvent').id}"
+              dft_InviteSyncState: Succeeded
+              dft_InviteSyncedOn: "@{utcNow()}"
+        default:
+          - kind: office365outlook.updateEvent
+            map:
+              eventId: dft_OutlookEventId
+              subject: dft_Subject
+              start: dft_StartDateTime
+              end: dft_EndDateTime
+              location: dft_Location
+          - kind: dataverse.updateRow
+            table: dft_Meeting
+            values:
+              dft_InviteSyncState: Succeeded
+              dft_InviteSyncedOn: "@{utcNow()}"
+    - name: write-success-log
+      kind: dataverse.createRow
+      table: dft_IntegrationLog
+      values:
+        sourceSystem: Dataverse
+        targetSystem: Outlook
+        recordType: Meeting
+        relatedRecordId: dft_MeetingId
+        correlationId: "@{workflow().run.name}"
+        status: Succeeded
+        message: Outlook invite synchronized.
+    - name: handle-failure
+      kind: scope
+      onError:
+        - kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Outlook
+            recordType: Meeting
+            relatedRecordId: dft_MeetingId
+            correlationId: "@{workflow().run.name}"
+            status: Failed
+            message: "@{workflow().error.message}"
+            retryCount: 0
+testHooks:
+  - name: outlook-invite-sync-dry-run
+    description: Use a meeting seed row with no event id and confirm the meeting is updated with a stored Outlook event id.
+    expected:
+      - one Outlook calendar event created
+      - meeting row updated with external event id
+      - integration log success row written

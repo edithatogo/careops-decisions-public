@@ -1,0 +1,53 @@
+{
+  "connectionReferences": [
+    {
+      "logicalName": "decisions_sharedcommondataserviceforapps",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+      "purpose": "Dataverse records and AI Builder prompt run metadata.",
+      "requiredForMvp": true,
+      "ownerStrategy": "Use named maker connection only in local/dev; use governed connection owner for shared environments."
+    },
+    {
+      "logicalName": "decisions_sharedteams",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_teams",
+      "purpose": "Teams channel notifications and Teams app context.",
+      "requiredForMvp": true,
+      "ownerStrategy": "Connection owner should also be Teams owner or approved app installer."
+    },
+    {
+      "logicalName": "decisions_sharedplanner",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_planner",
+      "purpose": "Action item task sync.",
+      "requiredForMvp": false,
+      "ownerStrategy": "Connection owner should own or co-own the target Planner plan."
+    },
+    {
+      "logicalName": "decisions_sharedsharepointonline",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+      "purpose": "Agenda, paper, minutes, transcript, and pack storage.",
+      "requiredForMvp": true,
+      "ownerStrategy": "Connection owner should have library owner or elevated contributor rights."
+    },
+    {
+      "logicalName": "decisions_sharedoffice365users",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+      "purpose": "Person profile, manager, and reporting hierarchy cache.",
+      "requiredForMvp": true,
+      "ownerStrategy": "Connection owner must be allowed to resolve users and manager relationships."
+    },
+    {
+      "logicalName": "decisions_sharedoffice365",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+      "purpose": "Outlook meeting invite sync.",
+      "requiredForMvp": true,
+      "ownerStrategy": "Use a mailbox or service identity acceptable for meeting creation."
+    },
+    {
+      "logicalName": "decisions_sharedaibuilder",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+      "purpose": "AI Builder transcript-to-minutes prompt execution when enabled.",
+      "requiredForMvp": false,
+      "ownerStrategy": "Enable only after AI Builder capacity and human review governance are confirmed."
+    }
+  ]
+}

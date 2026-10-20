@@ -1,0 +1,23 @@
+{
+  "id": "track-12-ai-transcripts-minutes_20260502",
+  "status": "completed",
+  "owner": "worker-automation",
+  "parallelizable": true,
+  "dependsOn": ["track-03-power-platform-architecture_20260502", "track-10-meeting-records_20260502"],
+  "closedOn": "2026-05-11",
+  "workstreams": [
+    { "name": "ai-transcript-minutes-flow", "status": "completed", "description": "AI transcript-minutes flow contract enhanced with retryPolicy and environmentVariableMapping." },
+    { "name": "transcript-minutes-pipeline-doc", "status": "completed", "description": "End-to-end pipeline documented in docs/architecture/transcript-minutes-pipeline.md with prompt contracts, validation rules, and human review gate." },
+    { "name": "transcript-ai-review-seed-import-contract", "status": "completed", "description": "Sample seed and importer now cover manual transcripts, approved prompts, completed AI runs, draft output, and pending human review evidence." }
+  ],
+  "closeoutEvidence": [
+    "docs/architecture/transcript-minutes-pipeline.md",
+    "docs/architecture/ai-builder-minutes-pattern.md",
+    "docs/architecture/ai-human-review-gates.md",
+    "powerplatform/src/flows/ai-transcript-minutes.yaml",
+    "powerplatform/src/seed/sample-governance-data.json",
+    "scripts/Import-SeedData.ps1",
+    "scripts/Test-SeedImportPlan.ps1",
+    "scripts/Invoke-SmokeRunbook.ps1 -DryRun"
+  ]
+}

@@ -1,0 +1,853 @@
+{
+    "publisherPrefix":  "dft",
+    "schemaVersion":  "0.1",
+    "sourceFiles":  {
+                        "tables":  "powerplatform/src/schema/dataverse-tables.yaml",
+                        "choices":  "powerplatform/src/schema/choices.yaml",
+                        "relationships":  "powerplatform/src/schema/relationships.yaml"
+                    },
+    "tableCreationOrder":  [
+                               {
+                                   "logicalName":  "dft_OrgPerson",
+                                   "displayName":  "Org Person",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+
+                                                          ],
+                                   "lookupDependencies":  [
+
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_GovernanceBody",
+                                   "displayName":  "Governance Body",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "governanceBodyStatus",
+                                                              "governanceBodyType",
+                                                              "recordClassification"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_GovernanceBody",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_TermsOfReference",
+                                   "displayName":  "Terms Of Reference",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "approvalStatus",
+                                                              "quorumDenominator",
+                                                              "torStatus"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_GovernanceBody"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_CommitteeMembership",
+                                   "displayName":  "Committee Membership",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "membershipRole",
+                                                              "membershipStatus"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_GovernanceBody",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_OrgRelationship",
+                                   "displayName":  "Org Relationship",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "identitySource",
+                                                              "orgRelationshipType"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_FeatureDefinition",
+                                   "displayName":  "Feature Definition",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "featureKey",
+                                                              "featureSwitchState"
+                                                          ],
+                                   "lookupDependencies":  [
+
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_MeetingSeries",
+                                   "displayName":  "Meeting Series",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "recurrencePattern",
+                                                              "seriesStatus"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_GovernanceBody",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_FeatureTemplate",
+                                   "displayName":  "Feature Template",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "featureSwitchState"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_FeatureDefinition",
+                                                              "dft_GovernanceBody",
+                                                              "dft_MeetingSeries"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_Meeting",
+                                   "displayName":  "Meeting",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "integrationStatus",
+                                                              "meetingStatus",
+                                                              "recordClassification"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_MeetingSeries",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_MeetingFeatureOverride",
+                                   "displayName":  "Meeting Feature Override",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "featureSwitchState"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_FeatureDefinition",
+                                                              "dft_Meeting"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_Attendee",
+                                   "displayName":  "Attendee",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "attendanceResponse",
+                                                              "attendanceStatus",
+                                                              "attendeeRole"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_Meeting",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_AgendaItem",
+                                   "displayName":  "Agenda Item",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "agendaItemStatus",
+                                                              "agendaPurpose"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_Meeting",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_Paper",
+                                   "displayName":  "Paper",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "paperSource",
+                                                              "paperStatus",
+                                                              "recordClassification"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_AgendaItem",
+                                                              "dft_Meeting",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_Minutes",
+                                   "displayName":  "Minutes",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "minuteStatus",
+                                                              "recordClassification"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_Meeting",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_Transcript",
+                                   "displayName":  "Transcript",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "recordClassification",
+                                                              "retentionStatus",
+                                                              "transcriptSource",
+                                                              "transcriptStatus"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_Meeting"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_Decision",
+                                   "displayName":  "Decision",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "decisionStatus"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_AgendaItem",
+                                                              "dft_GovernanceBody",
+                                                              "dft_Meeting",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_ActionItem",
+                                   "displayName":  "Action Item",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "actionStatus",
+                                                              "integrationStatus",
+                                                              "priority"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_AgendaItem",
+                                                              "dft_Decision",
+                                                              "dft_GovernanceBody",
+                                                              "dft_Meeting",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_Vote",
+                                   "displayName":  "Vote",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "voteStatus",
+                                                              "voteType"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_AgendaItem",
+                                                              "dft_Decision",
+                                                              "dft_Meeting"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_VoteResponse",
+                                   "displayName":  "Vote Response",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "voteResponse"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_OrgPerson",
+                                                              "dft_Vote"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_ConflictOfInterest",
+                                   "displayName":  "Conflict Of Interest",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "conflictHandling",
+                                                              "conflictType"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_AgendaItem",
+                                                              "dft_Meeting",
+                                                              "dft_OrgPerson"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_AccessRule",
+                                   "displayName":  "Access Rule",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "accessRuleType",
+                                                              "accessScope",
+                                                              "recordClassification"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_GovernanceBody",
+                                                              "dft_Meeting",
+                                                              "dft_Paper"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_AIBuilderPrompt",
+                                   "displayName":  "AI Builder Prompt",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "promptApprovalStatus",
+                                                              "promptInputType",
+                                                              "promptPurpose",
+                                                              "recordClassification"
+                                                          ],
+                                   "lookupDependencies":  [
+
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_AIBuilderRun",
+                                   "displayName":  "AI Builder Run",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "aiRunStatus",
+                                                              "humanReviewStatus"
+                                                          ],
+                                   "lookupDependencies":  [
+                                                              "dft_AIBuilderPrompt",
+                                                              "dft_Meeting",
+                                                              "dft_Minutes",
+                                                              "dft_OrgPerson",
+                                                              "dft_Paper",
+                                                              "dft_Transcript"
+                                                          ]
+                               },
+                               {
+                                   "logicalName":  "dft_IntegrationLog",
+                                   "displayName":  "Integration Log",
+                                   "primaryField":  "dft_name",
+                                   "choiceDependencies":  [
+                                                              "integrationStatus"
+                                                          ],
+                                   "lookupDependencies":  [
+
+                                                          ]
+                               }
+                           ],
+    "relationshipPhases":  {
+                               "mvp":  [
+                                           {
+                                               "name":  "dft_GovernanceBody_Parent_GovernanceBody",
+                                               "fromTable":  "dft_GovernanceBody",
+                                               "fromColumn":  "dft_parentgovernancebodyid",
+                                               "toTable":  "dft_GovernanceBody",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_GovernanceBody_Owner_OrgPerson",
+                                               "fromTable":  "dft_GovernanceBody",
+                                               "fromColumn":  "dft_ownerpersonid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_TermsOfReference_GovernanceBody",
+                                               "fromTable":  "dft_TermsOfReference",
+                                               "fromColumn":  "dft_governancebodyid",
+                                               "toTable":  "dft_GovernanceBody",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_CommitteeMembership_GovernanceBody",
+                                               "fromTable":  "dft_CommitteeMembership",
+                                               "fromColumn":  "dft_governancebodyid",
+                                               "toTable":  "dft_GovernanceBody",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_CommitteeMembership_OrgPerson",
+                                               "fromTable":  "dft_CommitteeMembership",
+                                               "fromColumn":  "dft_orgpersonid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_MeetingSeries_GovernanceBody",
+                                               "fromTable":  "dft_MeetingSeries",
+                                               "fromColumn":  "dft_governancebodyid",
+                                               "toTable":  "dft_GovernanceBody",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_MeetingSeries_SeriesOwner_OrgPerson",
+                                               "fromTable":  "dft_MeetingSeries",
+                                               "fromColumn":  "dft_seriesownerid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_Meeting_MeetingSeries",
+                                               "fromTable":  "dft_Meeting",
+                                               "fromColumn":  "dft_meetingseriesid",
+                                               "toTable":  "dft_MeetingSeries",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_Meeting_Chair_OrgPerson",
+                                               "fromTable":  "dft_Meeting",
+                                               "fromColumn":  "dft_chairpersonid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_Attendee_Meeting",
+                                               "fromTable":  "dft_Attendee",
+                                               "fromColumn":  "dft_meetingid",
+                                               "toTable":  "dft_Meeting",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "cascade"
+                                           },
+                                           {
+                                               "name":  "dft_Attendee_OrgPerson",
+                                               "fromTable":  "dft_Attendee",
+                                               "fromColumn":  "dft_orgpersonid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_AgendaItem_Meeting",
+                                               "fromTable":  "dft_AgendaItem",
+                                               "fromColumn":  "dft_meetingid",
+                                               "toTable":  "dft_Meeting",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "cascade"
+                                           },
+                                           {
+                                               "name":  "dft_AgendaItem_Presenter_OrgPerson",
+                                               "fromTable":  "dft_AgendaItem",
+                                               "fromColumn":  "dft_presenterid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_Paper_Meeting",
+                                               "fromTable":  "dft_Paper",
+                                               "fromColumn":  "dft_meetingid",
+                                               "toTable":  "dft_Meeting",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "cascade"
+                                           },
+                                           {
+                                               "name":  "dft_Paper_AgendaItem",
+                                               "fromTable":  "dft_Paper",
+                                               "fromColumn":  "dft_agendaitemid",
+                                               "toTable":  "dft_AgendaItem",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_Paper_Owner_OrgPerson",
+                                               "fromTable":  "dft_Paper",
+                                               "fromColumn":  "dft_ownerid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_Minutes_Meeting",
+                                               "fromTable":  "dft_Minutes",
+                                               "fromColumn":  "dft_meetingid",
+                                               "toTable":  "dft_Meeting",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "cascade"
+                                           },
+                                           {
+                                               "name":  "dft_Minutes_ApprovedBy_OrgPerson",
+                                               "fromTable":  "dft_Minutes",
+                                               "fromColumn":  "dft_approvedbyid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_Transcript_Meeting",
+                                               "fromTable":  "dft_Transcript",
+                                               "fromColumn":  "dft_meetingid",
+                                               "toTable":  "dft_Meeting",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "cascade"
+                                           },
+                                           {
+                                               "name":  "dft_Decision_Meeting",
+                                               "fromTable":  "dft_Decision",
+                                               "fromColumn":  "dft_meetingid",
+                                               "toTable":  "dft_Meeting",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "cascade"
+                                           },
+                                           {
+                                               "name":  "dft_Decision_AgendaItem",
+                                               "fromTable":  "dft_Decision",
+                                               "fromColumn":  "dft_agendaitemid",
+                                               "toTable":  "dft_AgendaItem",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_Decision_Owner_OrgPerson",
+                                               "fromTable":  "dft_Decision",
+                                               "fromColumn":  "dft_ownerid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_ActionItem_Meeting",
+                                               "fromTable":  "dft_ActionItem",
+                                               "fromColumn":  "dft_meetingid",
+                                               "toTable":  "dft_Meeting",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "cascade"
+                                           },
+                                           {
+                                               "name":  "dft_ActionItem_Decision",
+                                               "fromTable":  "dft_ActionItem",
+                                               "fromColumn":  "dft_decisionid",
+                                               "toTable":  "dft_Decision",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_ActionItem_AgendaItem",
+                                               "fromTable":  "dft_ActionItem",
+                                               "fromColumn":  "dft_agendaitemid",
+                                               "toTable":  "dft_AgendaItem",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_ActionItem_Owner_OrgPerson",
+                                               "fromTable":  "dft_ActionItem",
+                                               "fromColumn":  "dft_ownerid",
+                                               "toTable":  "dft_OrgPerson",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_FeatureTemplate_FeatureDefinition",
+                                               "fromTable":  "dft_FeatureTemplate",
+                                               "fromColumn":  "dft_featuredefinitionid",
+                                               "toTable":  "dft_FeatureDefinition",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_FeatureTemplate_GovernanceBody",
+                                               "fromTable":  "dft_FeatureTemplate",
+                                               "fromColumn":  "dft_governancebodyid",
+                                               "toTable":  "dft_GovernanceBody",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_FeatureTemplate_MeetingSeries",
+                                               "fromTable":  "dft_FeatureTemplate",
+                                               "fromColumn":  "dft_meetingseriesid",
+                                               "toTable":  "dft_MeetingSeries",
+                                               "type":  "many-to-one",
+                                               "required":  false,
+                                               "deleteBehavior":  "restrict"
+                                           },
+                                           {
+                                               "name":  "dft_MeetingFeatureOverride_Meeting",
+                                               "fromTable":  "dft_MeetingFeatureOverride",
+                                               "fromColumn":  "dft_meetingid",
+                                               "toTable":  "dft_Meeting",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "cascade"
+                                           },
+                                           {
+                                               "name":  "dft_MeetingFeatureOverride_FeatureDefinition",
+                                               "fromTable":  "dft_MeetingFeatureOverride",
+                                               "fromColumn":  "dft_featuredefinitionid",
+                                               "toTable":  "dft_FeatureDefinition",
+                                               "type":  "many-to-one",
+                                               "required":  true,
+                                               "deleteBehavior":  "restrict"
+                                           }
+                                       ],
+                               "future":  [
+                                              {
+                                                  "name":  "dft_OrgRelationship_Source_OrgPerson",
+                                                  "fromTable":  "dft_OrgRelationship",
+                                                  "fromColumn":  "dft_sourcepersonid",
+                                                  "toTable":  "dft_OrgPerson",
+                                                  "type":  "many-to-one",
+                                                  "required":  true,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_OrgRelationship_Target_OrgPerson",
+                                                  "fromTable":  "dft_OrgRelationship",
+                                                  "fromColumn":  "dft_targetpersonid",
+                                                  "toTable":  "dft_OrgPerson",
+                                                  "type":  "many-to-one",
+                                                  "required":  true,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_Decision_GovernanceBody",
+                                                  "fromTable":  "dft_Decision",
+                                                  "fromColumn":  "dft_governancebodyid",
+                                                  "toTable":  "dft_GovernanceBody",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_ActionItem_GovernanceBody",
+                                                  "fromTable":  "dft_ActionItem",
+                                                  "fromColumn":  "dft_governancebodyid",
+                                                  "toTable":  "dft_GovernanceBody",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_Vote_Meeting",
+                                                  "fromTable":  "dft_Vote",
+                                                  "fromColumn":  "dft_meetingid",
+                                                  "toTable":  "dft_Meeting",
+                                                  "type":  "many-to-one",
+                                                  "required":  true,
+                                                  "deleteBehavior":  "cascade"
+                                              },
+                                              {
+                                                  "name":  "dft_Vote_Decision",
+                                                  "fromTable":  "dft_Vote",
+                                                  "fromColumn":  "dft_decisionid",
+                                                  "toTable":  "dft_Decision",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_Vote_AgendaItem",
+                                                  "fromTable":  "dft_Vote",
+                                                  "fromColumn":  "dft_agendaitemid",
+                                                  "toTable":  "dft_AgendaItem",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_VoteResponse_Vote",
+                                                  "fromTable":  "dft_VoteResponse",
+                                                  "fromColumn":  "dft_voteid",
+                                                  "toTable":  "dft_Vote",
+                                                  "type":  "many-to-one",
+                                                  "required":  true,
+                                                  "deleteBehavior":  "cascade"
+                                              },
+                                              {
+                                                  "name":  "dft_VoteResponse_OrgPerson",
+                                                  "fromTable":  "dft_VoteResponse",
+                                                  "fromColumn":  "dft_orgpersonid",
+                                                  "toTable":  "dft_OrgPerson",
+                                                  "type":  "many-to-one",
+                                                  "required":  true,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_ConflictOfInterest_Meeting",
+                                                  "fromTable":  "dft_ConflictOfInterest",
+                                                  "fromColumn":  "dft_meetingid",
+                                                  "toTable":  "dft_Meeting",
+                                                  "type":  "many-to-one",
+                                                  "required":  true,
+                                                  "deleteBehavior":  "cascade"
+                                              },
+                                              {
+                                                  "name":  "dft_ConflictOfInterest_AgendaItem",
+                                                  "fromTable":  "dft_ConflictOfInterest",
+                                                  "fromColumn":  "dft_agendaitemid",
+                                                  "toTable":  "dft_AgendaItem",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_ConflictOfInterest_OrgPerson",
+                                                  "fromTable":  "dft_ConflictOfInterest",
+                                                  "fromColumn":  "dft_orgpersonid",
+                                                  "toTable":  "dft_OrgPerson",
+                                                  "type":  "many-to-one",
+                                                  "required":  true,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AccessRule_GovernanceBody",
+                                                  "fromTable":  "dft_AccessRule",
+                                                  "fromColumn":  "dft_governancebodyid",
+                                                  "toTable":  "dft_GovernanceBody",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AccessRule_Meeting",
+                                                  "fromTable":  "dft_AccessRule",
+                                                  "fromColumn":  "dft_meetingid",
+                                                  "toTable":  "dft_Meeting",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AccessRule_Paper",
+                                                  "fromTable":  "dft_AccessRule",
+                                                  "fromColumn":  "dft_paperid",
+                                                  "toTable":  "dft_Paper",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AIBuilderRun_Prompt",
+                                                  "fromTable":  "dft_AIBuilderRun",
+                                                  "fromColumn":  "dft_aibuilderpromptid",
+                                                  "toTable":  "dft_AIBuilderPrompt",
+                                                  "type":  "many-to-one",
+                                                  "required":  true,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AIBuilderRun_Meeting",
+                                                  "fromTable":  "dft_AIBuilderRun",
+                                                  "fromColumn":  "dft_meetingid",
+                                                  "toTable":  "dft_Meeting",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AIBuilderRun_Minutes",
+                                                  "fromTable":  "dft_AIBuilderRun",
+                                                  "fromColumn":  "dft_minutesid",
+                                                  "toTable":  "dft_Minutes",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AIBuilderRun_Transcript",
+                                                  "fromTable":  "dft_AIBuilderRun",
+                                                  "fromColumn":  "dft_transcriptid",
+                                                  "toTable":  "dft_Transcript",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AIBuilderRun_Paper",
+                                                  "fromTable":  "dft_AIBuilderRun",
+                                                  "fromColumn":  "dft_paperid",
+                                                  "toTable":  "dft_Paper",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              },
+                                              {
+                                                  "name":  "dft_AIBuilderRun_Reviewer_OrgPerson",
+                                                  "fromTable":  "dft_AIBuilderRun",
+                                                  "fromColumn":  "dft_reviewerid",
+                                                  "toTable":  "dft_OrgPerson",
+                                                  "type":  "many-to-one",
+                                                  "required":  false,
+                                                  "deleteBehavior":  "restrict"
+                                              }
+                                          ]
+                           },
+    "choiceSets":  [
+                       "accessRuleType",
+                       "accessScope",
+                       "actionStatus",
+                       "agendaItemStatus",
+                       "agendaPurpose",
+                       "aiRunStatus",
+                       "approvalStatus",
+                       "attendanceResponse",
+                       "attendanceStatus",
+                       "attendeeRole",
+                       "conflictHandling",
+                       "conflictType",
+                       "decisionStatus",
+                       "featureKey",
+                       "featureSwitchState",
+                       "governanceBodyStatus",
+                       "governanceBodyType",
+                       "humanReviewStatus",
+                       "identitySource",
+                       "integrationStatus",
+                       "meetingStatus",
+                       "membershipRole",
+                       "membershipStatus",
+                       "minuteStatus",
+                       "orgRelationshipType",
+                       "paperSource",
+                       "paperStatus",
+                       "priority",
+                       "promptApprovalStatus",
+                       "promptInputType",
+                       "promptPurpose",
+                       "quorumDenominator",
+                       "recordClassification",
+                       "recurrencePattern",
+                       "retentionStatus",
+                       "seriesStatus",
+                       "torStatus",
+                       "transcriptSource",
+                       "transcriptStatus",
+                       "voteResponse",
+                       "voteStatus",
+                       "voteType"
+                   ]
+}

@@ -1,0 +1,346 @@
+components:
+  shell_header:
+    purpose: top-level app header with context, search, and global actions
+    usage: all screens
+    inputs:
+      - varAppMode
+      - varSelectedBody
+      - varSelectedMeeting
+      - varEffectiveRole
+    outputs:
+      - navigate_to_screen
+      - open_new_item_menu
+    bindings:
+      title: Decisions Workspace
+      subtitle: selected body or meeting context
+      actions:
+        - New meeting
+        - New agenda item
+        - Record vote
+        - Import transcript
+        - Draft minutes
+        - Refresh people
+        - Review access rules
+        - Inspect AI runs
+    states:
+      - default
+      - busy
+      - read_only
+
+  navigation_group_strip:
+    purpose: show the app's Dataverse-first navigation groups in the shell
+    usage: all screens
+    inputs:
+      - varAppMode
+      - varSelectedBody
+      - varSelectedMeeting
+    outputs:
+      - select_navigation_group
+    bindings:
+      groups:
+        - Workspace
+        - Governance
+        - Records
+        - Automation
+        - Admin
+
+  deferred_binding_banner:
+    purpose: show which external bindings remain deferred from the core app contract
+    usage: HomeScreen, SettingsScreen, PaperRegisterScreen, DecisionsActionsScreen
+    inputs:
+      - teams_tab_status
+      - sharepoint_document_store_status
+      - planner_task_binding_status
+    outputs: []
+    bindings:
+      indicators:
+        - Teams tab deferred
+        - SharePoint document store deferred
+        - Planner binding deferred
+
+  role_chip_strip:
+    purpose: show effective role and switching scope for the current user
+    usage: HomeScreen, SettingsScreen, MeetingWorkspaceScreen
+    inputs:
+      - varEffectiveRole
+      - varSelectedBody
+      - varSelectedCommittee
+    outputs:
+      - set_role_filter
+      - clear_scope
+    bindings:
+      chips:
+        - governance_administrator
+        - secretariat
+        - chair
+        - member
+        - guest_presenter
+        - auditor
+
+  summary_kpi_row:
+    purpose: compact operational summary strip for meetings and backlog
+    usage: HomeScreen, MeetingWorkspaceScreen
+    inputs:
+      - meeting_count
+      - pending_reviews_count
+      - overdue_actions_count
+      - quorum_status
+      - transcript_status
+      - vote_status
+      - ai_run_status
+    outputs: []
+    bindings:
+      cards:
+        - meetings this week
+        - pending reviews
+        - overdue actions
+        - quorum
+        - transcript state
+        - vote state
+        - AI run state
+
+  record_list_panel:
+    purpose: reusable gallery panel for list-led browsing
+    usage: GovernanceBrowseScreen, MeetingListScreen, DecisionsActionsScreen, AccessRulesScreen, AIRunsScreen, IntegrationLogsScreen
+    inputs:
+      - current_dataset
+      - selected_record
+      - search_text
+      - filter_state
+    outputs:
+      - select_record
+      - open_record_workspace
+    bindings:
+      gallery_variants:
+        - governance_gallery
+        - meeting_gallery
+        - agenda_gallery
+        - paper_gallery
+        - attendee_gallery
+        - vote_gallery
+        - vote_response_gallery
+        - conflict_gallery
+        - access_rule_gallery
+        - org_relationship_gallery
+        - decision_gallery
+        - action_gallery
+        - ai_run_gallery
+        - integration_log_gallery
+    states:
+      - empty
+      - filtered
+      - selected
+
+  record_form_panel:
+    purpose: single-record editor with related summary list
+    usage: GovernanceEditScreen, AgendaEditorScreen, PaperRegisterScreen, AttendanceScreen, MinutesReviewScreen, VoteScreen, AccessRulesScreen, AIRunsScreen
+    inputs:
+      - selected_record
+      - can_edit
+      - validation_state
+    outputs:
+      - save_record
+      - discard_changes
+    bindings:
+      forms:
+        - frmGovernanceBody
+        - frmCommittee
+        - frmTermsOfReference
+        - frmMeeting
+        - frmAgendaItem
+        - frmPaper
+        - frmAttendee
+        - frmMinutes
+        - frmDecision
+        - frmAction
+        - frmVote
+        - frmVoteResponse
+        - frmConflict
+        - frmAccessRule
+        - frmOrgRelationship
+        - frmAIRun
+        - frmIntegrationLog
+
+  status_badge:
+    purpose: normalize lifecycle labels across lists, forms, and workspace headers
+    usage: all screens
+    inputs:
+      - status_value
+      - due_date
+      - sync_state
+    outputs: []
+    bindings:
+      label_sets:
+        - draft
+        - reviewed
+        - approved
+        - published
+        - overdue
+        - synced
+        - queued
+        - deferred
+        - error
+
+  quorum_indicator:
+    purpose: show quorum required, quorum present, and result
+    usage: MeetingWorkspaceScreen, AttendanceScreen
+    inputs:
+      - varQuorumRequired
+      - varQuorumPresent
+      - varQuorumMet
+    outputs: []
+    bindings:
+      visual_states:
+        - met
+        - not_met
+        - unknown
+
+  transcript_import_panel:
+    purpose: capture pasted transcript text and launch draft generation
+    usage: TranscriptImportScreen
+    inputs:
+      - varSelectedMeeting
+      - varTranscriptText
+      - varDraftStatus
+    outputs:
+      - parse_transcript
+      - draft_minutes
+    bindings:
+      controls:
+        - txtTranscript
+        - cmbTranscriptSource
+        - galTranscriptPreview
+        - btnParseTranscript
+        - btnDraftMinutes
+
+  review_compare_panel:
+    purpose: compare transcript, agenda, draft minutes, decisions, votes, and actions
+    usage: MinutesReviewScreen
+    inputs:
+      - varSelectedMeeting
+      - varSelectedMinutes
+      - varSelectedAgendaItem
+      - varDraftStatus
+    outputs:
+      - accept_draft
+      - promote_decisions
+      - promote_votes
+      - promote_actions
+    bindings:
+      compare_sources:
+        - transcript
+        - agenda
+        - minutes
+        - decisions
+        - votes
+        - actions
+
+  sync_state_panel:
+    purpose: show Planner sync progress and integration log results
+    usage: DecisionsActionsScreen, SettingsScreen
+    inputs:
+      - varSelectedAction
+      - planner_sync_state
+      - integration_log_state
+    outputs:
+      - sync_to_planner
+      - open_integration_log
+    bindings:
+      indicators:
+        - queued
+        - synced
+        - deferred
+        - failed
+        - retry_pending
+
+  meeting_feature_switchboard_panel:
+    purpose: resolve and edit the per-meeting feature switchboard with inherited defaults
+    usage: MeetingWorkspaceScreen, SettingsScreen
+    inputs:
+      - varSelectedMeeting
+      - varSelectedBody
+      - varEffectiveRole
+      - varMeetingFeatureSwitchboard
+    outputs:
+      - save_feature_switchboard
+      - refresh_feature_switchboard
+    bindings:
+      feature_keys:
+        - voting_enabled
+        - ai_minutes_enabled
+        - transcript_import_enabled
+        - planner_sync_enabled
+        - teams_post_enabled
+        - sharepoint_document_store_enabled
+        - outlook_invites_enabled
+        - org_hierarchy_refresh_enabled
+        - conflict_tracking_enabled
+      states:
+        - inherited
+        - overridden
+        - disabled
+        - unavailable
+
+  governance_hierarchy_panel:
+    purpose: show parent and child governance structure plus org person lineage
+    usage: GovernanceBrowseScreen, OrgHierarchyScreen, GovernanceEditScreen
+    inputs:
+      - varSelectedBody
+      - varSelectedCommittee
+      - varSelectedOrgRelationship
+    outputs:
+      - open_parent_body
+      - open_child_body
+    bindings:
+      views:
+        - hierarchy tree
+        - lineage trail
+        - relationship editor
+
+  vote_panel:
+    purpose: capture vote metadata, responses, and linked outcomes
+    usage: MeetingWorkspaceScreen, VoteScreen, DecisionsActionsScreen
+    inputs:
+      - varSelectedVote
+      - varSelectedVoteResponse
+      - varSelectedDecision
+    outputs:
+      - save_vote
+      - save_vote_response
+    bindings:
+      controls:
+        - galVotes
+        - galVoteResponses
+        - frmVote
+        - frmVoteResponse
+
+  access_policy_panel:
+    purpose: manage and review access rules for bodies, meetings, and papers
+    usage: GovernanceBrowseScreen, AccessRulesScreen, SettingsScreen
+    inputs:
+      - varSelectedAccessRule
+      - varSelectedBody
+      - varSelectedMeeting
+    outputs:
+      - save_access_rule
+    bindings:
+      controls:
+        - galAccessRules
+        - frmAccessRule
+        - audience scope chips
+
+  ai_run_panel:
+    purpose: inspect AI builder runs and their provenance trail
+    usage: AIRunsScreen, MinutesReviewScreen, SettingsScreen
+    inputs:
+      - varSelectedAIRun
+      - varSelectedMinutes
+      - varSelectedTranscript
+    outputs:
+      - open_run_details
+    bindings:
+      controls:
+        - galAIRuns
+        - frmAIRun
+        - review history
+        - source linkage

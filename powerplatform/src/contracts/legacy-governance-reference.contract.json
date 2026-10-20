@@ -1,0 +1,35 @@
+{
+  "name": "CareOps Legacy Governance Reference",
+  "contractVersion": "0.1.0",
+  "status": "blueprint",
+  "enabled": false,
+  "purpose": "Allow reconciled historical source observations to be referenced in a governance case without treating them as current authority or a decision.",
+  "required": [
+    "sourceSystemId",
+    "sourceRecordId",
+    "sourceHash",
+    "recordHash",
+    "observedAt",
+    "reconciliationOutcome",
+    "reviewedBy",
+    "reviewedAt"
+  ],
+  "states": [
+    "ImportedPendingReconciliation",
+    "ConfirmedHistoricalReference",
+    "CorrectedHistoricalReference",
+    "RejectedHistoricalReference",
+    "SupersededHistoricalReference"
+  ],
+  "rules": [
+    "A legacy reference cannot create a committee recommendation or delegated decision.",
+    "A legacy reference cannot establish current registration, qualification, scope, condition, supervision, approval, expiry or authority.",
+    "Current decisions must use current evidence, current authority and the normal human process.",
+    "Source provenance and reconciliation evidence remain linked and immutable.",
+    "A changed or missing source record creates an exception rather than an automatic adverse outcome.",
+    "No raw source payload, patient information, practitioner evidence or sensitive narrative is stored in Git."
+  ],
+  "humanReviewRequired": true,
+  "authoritativeDecision": false,
+  "productionWrites": false
+}

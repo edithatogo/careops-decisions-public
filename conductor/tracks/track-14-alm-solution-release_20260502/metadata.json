@@ -1,0 +1,38 @@
+{
+  "id": "track-14-alm-solution-release_20260502",
+  "status": "completed",
+  "owner": "worker-alm-release",
+  "parallelizable": true,
+  "dependsOn": [
+    "track-04-alm-test-harness_20260502",
+    "track-13-deployment-hardening-alm-entra-readiness_20260502"
+  ],
+  "workstreams": {
+    "releaseNotesTemplate": "added release notes template in docs/deployment/release-artifacts.md and New-ReleaseNotes.ps1 generator script",
+    "solutionExportProcess": "documented in docs/deployment/solution-export-process.md",
+    "rollbackStrategy": "documented in docs/deployment/rollback-strategy.md",
+    "releaseProfiles": "updated docs/deployment/alm-activation.md with release profiles section",
+    "solutionCheckerGates": "solution checker documented in docs/deployment/solution-checker-ci.md and Invoke-SolutionChecker.ps1",
+    "pacCommandDocs": "pac/pacx command syntax documented in docs/deployment/pac-cli-reference.md",
+    "releaseNotesValidation": "Test-AlmActivation.ps1 validates release notes format, version semver, and required sections",
+    "releaseNotesArtifact": "RELEASE_NOTES_1.0.0.0.md published in artifacts/release-notes/ for Dylan v1 baseline",
+    "packUnpackRoundtrip": "New-ReleaseArtifact.ps1 -Unmanaged and Unpack-Solution.ps1 round-trip the unmanaged package locally",
+    "dryRunImport": "Import-Solution.ps1 supports -DryRun to preview pac solution import without live writes"
+  },
+  "closedOn": "2026-05-11",
+  "closeoutEvidence": [
+    "docs/deployment/release-artifacts.md",
+    "docs/deployment/solution-export-process.md",
+    "docs/deployment/rollback-strategy.md",
+    "docs/deployment/solution-checker-ci.md",
+    "docs/deployment/pac-cli-reference.md",
+    "scripts/New-ReleaseArtifact.ps1",
+    "scripts/Unpack-Solution.ps1",
+    "scripts/Import-Solution.ps1",
+    "scripts/Test-AlmActivation.ps1",
+    "scripts/New-ReleaseArtifact.ps1 -Unmanaged",
+    "scripts/Unpack-Solution.ps1 -SolutionZip artifacts/solutions/DecisionsWorkspace/unmanaged/DecisionsWorkspace_unmanaged.zip -SolutionSourcePath artifacts/roundtrip/DecisionsWorkspace",
+    "scripts/Import-Solution.ps1 -SolutionZip artifacts/solutions/DecisionsWorkspace/unmanaged/DecisionsWorkspace_unmanaged.zip -DryRun",
+    "scripts/Invoke-RepoValidation.ps1 -RequireImplementationScaffolds"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "track-17-operations-monitoring-support_20260502",
+  "status": "completed",
+  "closedOn": "2026-05-11",
+  "owner": "worker-operations",
+  "parallelizable": true,
+  "dependsOn": [
+    "track-06-automation-integrations_20260502",
+    "track-13-deployment-hardening-alm-entra-readiness_20260502"
+  ],
+  "workstreams": [
+    "support-runbooks",
+    "monitoring-requirements",
+    "business-continuity-export",
+    "support-roles-escalation"
+  ],
+  "completedArtifacts": [
+    "docs/operations/support-runbooks.md",
+    "docs/operations/monitoring-requirements.md",
+    "docs/operations/business-continuity-export.md",
+    "docs/operations/support-roles-and-escalation.md",
+    "scripts/Test-OperationsContracts.ps1"
+  ],
+  "closeoutEvidence": [
+    "Operations contract validator covers 10 support runbooks, alert fields, continuity exports, support roles, and release rollback ownership.",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\Test-OperationsContracts.ps1",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\Invoke-RepoValidation.ps1 -RequireImplementationScaffolds"
+  ]
+}

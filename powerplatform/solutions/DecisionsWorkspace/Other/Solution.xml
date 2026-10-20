@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.2.26041.176" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26041.176" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26041.00179">
+  <SolutionManifest>
+    <UniqueName>decisionsworkspace</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="CareOps Decisions" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions />
+    <Version>1.0.0.0</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>CareOpsDecisions</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="CareOps Decisions" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions />
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>dft</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>60217</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="dft_accessrule" behavior="0" />
+      <RootComponent type="1" schemaName="dft_actionitem" behavior="0" />
+      <RootComponent type="1" schemaName="dft_agendaitem" behavior="0" />
+      <RootComponent type="1" schemaName="dft_aibuilderprompt" behavior="0" />
+      <RootComponent type="1" schemaName="dft_aibuilderrun" behavior="0" />
+      <RootComponent type="1" schemaName="dft_attendee" behavior="0" />
+      <RootComponent type="1" schemaName="dft_committeemembership" behavior="0" />
+      <RootComponent type="1" schemaName="dft_conflictofinterest" behavior="0" />
+      <RootComponent type="1" schemaName="dft_decision" behavior="0" />
+      <RootComponent type="1" schemaName="dft_featuredefinition" behavior="0" />
+      <RootComponent type="1" schemaName="dft_featuretemplate" behavior="0" />
+      <RootComponent type="1" schemaName="dft_governancebody" behavior="0" />
+      <RootComponent type="1" schemaName="dft_integrationlog" behavior="0" />
+      <RootComponent type="1" schemaName="dft_meeting" behavior="0" />
+      <RootComponent type="1" schemaName="dft_meetingfeatureoverride" behavior="0" />
+      <RootComponent type="1" schemaName="dft_meetingseries" behavior="0" />
+      <RootComponent type="1" schemaName="dft_minutes" behavior="0" />
+      <RootComponent type="1" schemaName="dft_orgperson" behavior="0" />
+      <RootComponent type="1" schemaName="dft_orgrelationship" behavior="0" />
+      <RootComponent type="1" schemaName="dft_paper" behavior="0" />
+      <RootComponent type="1" schemaName="dft_termsofreference" behavior="0" />
+      <RootComponent type="1" schemaName="dft_transcript" behavior="0" />
+      <RootComponent type="1" schemaName="dft_vote" behavior="0" />
+      <RootComponent type="1" schemaName="dft_voteresponse" behavior="0" />
+      <RootComponent type="62" schemaName="decisions_workspace_64f7b61a" behavior="0" />
+      <RootComponent type="80" schemaName="decisions_workspace_64f7b61a" behavior="0" />
+      <RootComponent type="9" schemaName="dft_accessruletype" behavior="0" />
+      <RootComponent type="9" schemaName="dft_accessscope" behavior="0" />
+      <RootComponent type="9" schemaName="dft_actionstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_agendaitemstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_agendapurpose" behavior="0" />
+      <RootComponent type="9" schemaName="dft_airunstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_approvalstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_attendanceresponse" behavior="0" />
+      <RootComponent type="9" schemaName="dft_attendancestatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_attendeerole" behavior="0" />
+      <RootComponent type="9" schemaName="dft_conflicthandling" behavior="0" />
+      <RootComponent type="9" schemaName="dft_conflicttype" behavior="0" />
+      <RootComponent type="9" schemaName="dft_decisionstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_featurekey" behavior="0" />
+      <RootComponent type="9" schemaName="dft_featureswitchstate" behavior="0" />
+      <RootComponent type="9" schemaName="dft_governancebodystatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_governancebodytype" behavior="0" />
+      <RootComponent type="9" schemaName="dft_humanreviewstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_identitysource" behavior="0" />
+      <RootComponent type="9" schemaName="dft_integrationstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_meetingstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_membershiprole" behavior="0" />
+      <RootComponent type="9" schemaName="dft_membershipstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_minutestatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_orgrelationshiptype" behavior="0" />
+      <RootComponent type="9" schemaName="dft_papersource" behavior="0" />
+      <RootComponent type="9" schemaName="dft_paperstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_priority" behavior="0" />
+      <RootComponent type="9" schemaName="dft_promptapprovalstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_promptinputtype" behavior="0" />
+      <RootComponent type="9" schemaName="dft_promptpurpose" behavior="0" />
+      <RootComponent type="9" schemaName="dft_quorumdenominator" behavior="0" />
+      <RootComponent type="9" schemaName="dft_recordclassification" behavior="0" />
+      <RootComponent type="9" schemaName="dft_recurrencepattern" behavior="0" />
+      <RootComponent type="9" schemaName="dft_retentionstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_seriesstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_torstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_transcriptsource" behavior="0" />
+      <RootComponent type="9" schemaName="dft_transcriptstatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_voteresponse" behavior="0" />
+      <RootComponent type="9" schemaName="dft_votestatus" behavior="0" />
+      <RootComponent type="9" schemaName="dft_votetype" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Images/AppModule_Default_Icon.png" displayName="msdyn_/Images/AppModule_Default_Icon.png" solution="AppModuleWebResources (2.5)">
+          <package appName="AppModule Web Resources Package" version="2.5">AppModuleWebResources (2.5)</package>
+        </Required>
+        <Dependent type="80" schemaName="decisions_workspace_64f7b61a" displayName="Decisions Workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="AppChannel" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.16)" id.uniquename="AppChannel">
+          <package appName="PowerAppsAppFramework Package" version="1.0.0.25">PowerAppsAppFramework_Anchor (1.0.0.25)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=decisions_workspace_64f7b61a,settingdefinitionid.uniquename=AppChannel" id.parentappmoduleid.uniquename="decisions_workspace_64f7b61a" id.settingdefinitionid.uniquename="AppChannel" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="uxagentproject" solution="Active" id="{db9d638c-7435-4e3c-8039-fff537edf5e9}" />
+        <Dependent type="62" schemaName="decisions_workspace_64f7b61a" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

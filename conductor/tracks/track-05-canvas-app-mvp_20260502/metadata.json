@@ -1,0 +1,21 @@
+{
+  "id": "track-05-canvas-app-mvp_20260502",
+  "status": "completed",
+  "owner": "worker-canvas-app",
+  "parallelizable": true,
+  "dependsOn": ["track-03-power-platform-architecture_20260502", "track-04-alm-test-harness_20260502"],
+  "workstreams": [
+    { "name": "app-navigation-and-screens", "status": "completed", "description": "Screen map, navigation groups, and all 11 screens defined in app-map.yaml with Power Fx patterns." },
+    { "name": "state-transitions", "status": "completed", "description": "State transition machine defined for all 8 entities in state-transitions.yaml with roles, preconditions, flow triggers." },
+    { "name": "flow-contract-cross-reference", "status": "completed", "description": "App-command-to-flow-contract cross-reference in flow-contract-matrix.yaml." },
+    { "name": "build-mode-classification", "status": "completed", "description": "All screens classified as local-build or requires-live-Dylan in app-map.yaml." },
+    { "name": "track-closeout-review", "status": "completed", "description": "Verified app-map, state transition, and command-to-flow contracts; SharePoint registration reference now resolves to the Track 06 flow contract." }
+  ],
+  "closedOn": "2026-05-11",
+  "completionEvidence": [
+    "powerplatform/src/app/app-map.yaml",
+    "powerplatform/src/app/state-transitions.yaml",
+    "powerplatform/src/app/flow-contract-matrix.yaml",
+    "scripts/Test-AppSourceContracts.ps1"
+  ]
+}

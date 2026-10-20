@@ -1,0 +1,11 @@
+/* Neutral labels intentionally do not signal green clearance. No external fonts or resources. */
+:root { font-family: system-ui, sans-serif; font-size: 100%; line-height: 1.5; color-scheme: light dark; }
+body { margin: 0; }
+main { margin: auto; padding: 1rem; max-width: 56rem; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+h1 { font-size: 1.5rem; } h2 { font-size: 1.25rem; } h3 { font-size: 1.05rem; margin: 1.25rem 0 .25rem; }
+p { white-space: pre-wrap; overflow-wrap: anywhere; margin: .35rem 0; }
+section { margin-top: 1rem; border: 1px solid; border-radius: .25rem; padding: 1rem; }
+button { font: inherit; padding: .5rem .8rem; min-height: 2.75rem; }
+button:focus-visible { outline: 3px solid; outline-offset: 3px; }
+.synthetic { border: 2px solid; padding: .75rem; font-weight: 600; }

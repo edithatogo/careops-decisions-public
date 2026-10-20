@@ -1,0 +1,181 @@
+schema: decisions.workspace.flow.v1
+flow:
+  name: sharepoint-file-registration
+  displayName: SharePoint File Registration
+  solution: DecisionsWorkspace
+  track: track-06-automation-integrations_20260502
+  status: scaffold
+  trigger:
+    type: dataverse.when-row-added-or-modified
+    table: dft_Paper
+    changeScope: create-or-update
+    filters:
+      - field: dft_SharePointUrl
+        operator: not-empty
+      - field: dft_SharePointItemId
+        operator: is-empty
+  inputs:
+    dataverseTable: dft_Paper
+    sourceFields:
+      - dft_PaperId
+      - dft_SharePointUrl
+      - dft_SharePointSiteId
+      - dft_SharePointDriveId
+      - dft_SharePointItemId
+      - dft_DocumentId
+      - dft_MeetingLookup
+      - dft_AgendaItemLookup
+      - dft_Classification
+      - dft_PaperStatus
+      - dft_RegistrationRequested
+    environmentVariables:
+      - decisions_SharePointSiteUrl
+      - decisions_IntegrationLogRetentionDays
+    bindingCandidates:
+      sharePointSiteUrl:
+        - source: DMS Executive Team SharePoint site
+          value: https://example.invalid/sites/decisions
+          scope: optional local dev-space binding for SharePoint connector resolution
+    readinessChecks:
+      - decisions_SharePointSiteUrl is configured before SharePoint connector calls run
+      - dft_RegistrationRequested is checked before SharePoint connector calls run so disabled papers can still record a skipped integration log
+      - dft_SharePointUrl must be present before registration can proceed
+      - a paper is skipped if it already has dft_SharePointItemId populated
+      - the registered file classification is checked against the paper classification before the connector call
+  outputs:
+    dataverseWrites:
+      - dft_Paper.dft_SharePointSiteId
+      - dft_Paper.dft_SharePointDriveId
+      - dft_Paper.dft_SharePointItemId
+      - dft_Paper.dft_DocumentId
+      - dft_IntegrationLog
+  idempotency:
+    strategy: skip-if-registered
+    keyFields:
+      - dft_SharePointItemId
+      - dft_DocumentId
+    replayGuard: paper id + sharepoint url + document source
+  environmentVariableMapping:
+    - variable: decisions_SharePointSiteUrl
+      type: Text
+      purpose: Target SharePoint site for document registration
+      usedInStep: resolve-sharepoint-context
+      sampleValue: https://contoso.sharepoint.com/sites/decisions-workspace
+    - variable: decisions_IntegrationLogRetentionDays
+      type: Number
+      purpose: Retention period for integration log entries
+      usedInStep: all
+      sampleValue: "90"
+  retryPolicy:
+    type: exponential
+    count: 3
+    interval: PT30S
+  connectorCalls:
+    - connector: Dataverse
+      action: Get a row by ID
+      table: dft_Paper
+    - connector: Dataverse
+      action: List rows
+      table: dft_IntegrationLog
+      filter: "relatedRecordId eq triggerOutputs()?['body/dft_paperid'] and targetSystem eq 'SharePoint' and status eq 'Succeeded'"
+    - connector: SharePoint
+      action: Get file metadata
+    - connector: Dataverse
+      action: Update a row
+      table: dft_Paper
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_IntegrationLog
+  steps:
+    - name: load-paper
+      kind: dataverse.getRow
+      table: dft_Paper
+      key: trigger row id
+    - name: check-registration-enabled
+      kind: condition
+      when:
+        any:
+          - field: dft_RegistrationRequested
+            operator: equals
+            value: false
+          - field: dft_SharePointUrl
+            operator: is-empty
+      then:
+        - name: log-not-enabled
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: SharePoint
+            recordType: Paper
+            relatedRecordId: dft_PaperId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: SharePoint file registration is disabled for this paper until RegistrationRequested is enabled and a SharePoint URL is provided.
+    - name: check-already-registered
+      kind: condition
+      when:
+        any:
+          - field: dft_SharePointItemId
+            operator: not-empty
+          - field: dft_DocumentId
+            operator: not-empty
+      then:
+        - name: log-skip
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: SharePoint
+            recordType: Paper
+            relatedRecordId: dft_PaperId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: Paper already registered with SharePoint item or external document ID.
+    - name: resolve-sharepoint-context
+      kind: compose
+      expression: "@{decisions_SharePointSiteUrl}"
+    - name: register-file
+      kind: sharepoint.getFileMetadata
+      map:
+        siteUrl: decisions_SharePointSiteUrl
+        fileUrl: dft_SharePointUrl
+    - name: update-paper
+      kind: dataverse.updateRow
+      table: dft_Paper
+      values:
+        dft_SharePointSiteId: "@{outputs('register-file').siteId}"
+        dft_SharePointDriveId: "@{outputs('register-file').driveId}"
+        dft_SharePointItemId: "@{outputs('register-file').itemId}"
+    - name: write-success-log
+      kind: dataverse.createRow
+      table: dft_IntegrationLog
+      values:
+        sourceSystem: Dataverse
+        targetSystem: SharePoint
+        recordType: Paper
+        relatedRecordId: dft_PaperId
+        correlationId: "@{workflow().run.name}"
+        status: Succeeded
+        message: SharePoint file registered and metadata stored on paper record.
+    - name: handle-failure
+      kind: scope
+      onError:
+        - kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: SharePoint
+            recordType: Paper
+            relatedRecordId: dft_PaperId
+            correlationId: "@{workflow().run.name}"
+            status: Failed
+            message: "@{workflow().error.message}"
+            retryCount: 0
+testHooks:
+  - name: sharepoint-file-registration-dry-run
+    description: Register a paper with a synthetic SharePoint URL and confirm the paper row is updated with external IDs and an integration log entry is written.
+    expected:
+      - paper row updated with SharePoint site, drive, and item IDs
+      - integration log success row written
+      - duplicate run logs skip instead of re-registering

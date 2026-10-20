@@ -1,0 +1,198 @@
+schema: decisions.workspace.flow.v1
+flow:
+  name: planner-sync
+  displayName: Planner Task Sync
+  solution: DecisionsWorkspace
+  track: track-06-automation-integrations_20260502
+  status: scaffold
+  trigger:
+    type: dataverse.when-row-added-or-modified
+    table: dft_ActionItem
+    changeScope: create-or-update
+  inputs:
+    dataverseTable: dft_ActionItem
+    sourceFields:
+      - dft_ActionItemId
+      - dft_Title
+      - dft_Description
+      - dft_DueDate
+      - dft_OwnerLookup
+      - dft_CommitteeLookup
+      - dft_MeetingLookup
+      - dft_Priority
+      - dft_PlannerTaskId
+      - dft_LastSyncHash
+      - dft_SyncToPlanner
+      - dft_RequiresPlannerSync
+    environmentVariables:
+      - decisions_PlannerPlanId
+      - decisions_IntegrationLogRetentionDays
+    bindingCandidates:
+      plannerPlanId:
+        - source: DMS Workplan
+          value: fictional-planner-plan
+          scope: optional local dev-space binding
+    readinessChecks:
+      - decisions_PlannerPlanId is configured before Planner connector calls run
+      - dft_SyncToPlanner and dft_RequiresPlannerSync are checked before Planner connector calls run so disabled rows can still record a skipped integration log
+      - the DMS Workplan plan id is only used when the environment variable is intentionally left blank in a dev space
+      - the resolved meeting switchboard still requests Planner sync before Planner connector calls run
+      - the source action is still open and still requires Planner sync
+  outputs:
+    dataverseWrites:
+      - dft_ActionItem.dft_PlannerTaskId
+      - dft_ActionItem.dft_PlannerSyncStatus
+      - dft_ActionItem.dft_PlannerSyncedOn
+      - dft_IntegrationLog
+  idempotency:
+    strategy: skip-if-task-id-exists
+    keyFields:
+      - dft_PlannerTaskId
+      - dft_LastSyncHash
+    replayGuard: planner binding + task title + due date + owner + committee + meeting
+  environmentVariableMapping:
+    - variable: decisions_PlannerPlanId
+      type: Text
+      purpose: Target Planner plan for action item task sync
+      usedInStep: create-or-update-task
+      sampleValue: planner-plan-id
+      localBindingCandidates:
+        - source: DMS Workplan
+          value: fictional-planner-plan
+          scope: optional local dev-space binding
+    - variable: decisions_IntegrationLogRetentionDays
+      type: Number
+      purpose: Retention period for integration log entries
+      usedInStep: all
+      sampleValue: "90"
+  retryPolicy:
+    type: exponential
+    count: 3
+    interval: PT30S
+  connectorCalls:
+    - connector: Dataverse
+      action: Get a row by ID
+      table: dft_ActionItem
+    - connector: Dataverse
+      action: List rows
+      table: dft_IntegrationLog
+      filter: "relatedRecordId eq triggerOutputs()?['body/dft_actionitemid'] and targetSystem eq 'Planner' and status eq 'Succeeded'"
+    - connector: Planner
+      action: Create a task
+      planId: decisions_PlannerPlanId
+    - connector: Planner
+      action: Update a task
+      planId: decisions_PlannerPlanId
+    - connector: Dataverse
+      action: Update a row
+      table: dft_ActionItem
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_IntegrationLog
+  steps:
+    - name: load-action
+      kind: dataverse.getRow
+      table: dft_ActionItem
+      key: trigger row id
+    - name: check-planner-binding
+      kind: condition
+      when:
+        any:
+          - decisions_PlannerPlanId is empty
+          - dft_SyncToPlanner equals false
+          - dft_RequiresPlannerSync equals false
+      then:
+        - name: log-not-ready
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Planner
+            recordType: Action
+            relatedRecordId: dft_ActionItemId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: Planner sync is not ready until the plan binding is configured, the meeting switchboard still requests Planner sync, and the source row still requests sync.
+    - name: check-idempotency
+      kind: condition
+      when:
+        any:
+          - field: dft_PlannerTaskId
+            operator: not-empty
+          - field: dft_LastSyncHash
+            operator: equals
+            value: "@{outputs('build-sync-hash')}"
+      then:
+        - name: log-skip
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Planner
+            recordType: Action
+            relatedRecordId: dft_ActionItemId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: Existing Planner task or duplicate sync hash detected.
+    - name: build-sync-hash
+      kind: compose
+      expression: "title|dueDate|owner|committee|meeting|priority"
+    - name: create-or-update-task
+      kind: switch
+      on: dft_PlannerTaskId
+      cases:
+        empty:
+          - kind: planner.createTask
+            map:
+              title: dft_Title
+              dueDate: dft_DueDate
+              planId: decisions_PlannerPlanId
+          - kind: dataverse.updateRow
+            table: dft_ActionItem
+            values:
+              dft_PlannerTaskId: "@{outputs('planner.createTask').id}"
+              dft_PlannerSyncStatus: Succeeded
+              dft_PlannerSyncedOn: "@{utcNow()}"
+        default:
+          - kind: planner.updateTask
+            map:
+              taskId: dft_PlannerTaskId
+              title: dft_Title
+              dueDate: dft_DueDate
+          - kind: dataverse.updateRow
+            table: dft_ActionItem
+            values:
+              dft_PlannerSyncStatus: Succeeded
+              dft_PlannerSyncedOn: "@{utcNow()}"
+    - name: write-success-log
+      kind: dataverse.createRow
+      table: dft_IntegrationLog
+      values:
+        sourceSystem: Dataverse
+        targetSystem: Planner
+        recordType: Action
+        relatedRecordId: dft_ActionItemId
+        correlationId: "@{workflow().run.name}"
+        status: Succeeded
+        message: Planner task synchronized.
+    - name: handle-failure
+      kind: scope
+      onError:
+        - kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Planner
+            recordType: Action
+            relatedRecordId: dft_ActionItemId
+            correlationId: "@{workflow().run.name}"
+            status: Failed
+            message: "@{workflow().error.message}"
+            retryCount: 0
+testHooks:
+  - name: planner-sync-manual-replay
+    description: Re-run the same action row twice and confirm the second run logs a skip instead of a duplicate task.
+    expected:
+      - one Planner task created
+      - one integration log success row
+      - duplicate replay writes skip log only

@@ -1,0 +1,247 @@
+{
+  "schema": "decisions.workspace.flow-implementation-checklist.v1",
+  "generatedOn": "2026-05-10",
+  "source": "powerplatform/src/flows/flow-catalog.yaml",
+  "flows": [
+    {
+      "name": "planner-sync",
+      "file": "powerplatform/src/flows/planner-sync.yaml",
+      "displayName": "Planner Task Sync",
+      "track": "track-06-automation-integrations_20260502",
+      "purpose": "Create and update Planner tasks for decision and action follow-through.",
+      "connectors": [
+        "Dataverse",
+        "Planner"
+      ],
+      "envVars": [
+        "decisions_PlannerPlanId",
+        "decisions_IntegrationLogRetentionDays"
+      ],
+      "idempotencyKey": "dft_PlannerTaskId",
+      "testHook": "planner-sync-manual-replay",
+      "bindingCandidates": [
+        {
+          "target": "decisions_PlannerPlanId",
+          "source": "DMS Workplan plan",
+          "value": "fictional-planner-plan",
+          "scope": "optional local dev-space binding"
+        }
+      ],
+      "makerTasks": [
+        "Create or update the flow in Power Automate from powerplatform/src/flows/planner-sync.yaml without adding live write steps outside the intended business process.",
+        "Configure the listed connectors and confirm the connection references match the environment.",
+        "Bind the environment variables before test runs and keep values in deployment settings, not in the flow definition.",
+        "Treat the DMS Workplan plan id as an optional local binding candidate only for dev-space setup; keep production locked to decisions_PlannerPlanId.",
+        "Enforce idempotency with dft_PlannerTaskId so reruns do not duplicate side effects.",
+        "Require the readiness check to pass before Planner create/update calls are allowed to run.",
+        "Add a test path for planner-sync-manual-replay and verify it can be exercised without a live production change."
+      ],
+      "testHookChecklist": [
+        "Run planner-sync-manual-replay against sample or replay data.",
+        "Confirm the run is repeatable and does not create duplicate records.",
+        "Confirm connector calls and environment variable resolution match the catalog entry.",
+        "Capture any maker notes needed for packaging or deployment review."
+      ]
+    },
+    {
+      "name": "outlook-invite-sync",
+      "file": "powerplatform/src/flows/outlook-invite-sync.yaml",
+      "displayName": "Outlook Invite Sync",
+      "track": "track-11-invites-attendees_20260502",
+      "purpose": "Create or update Outlook calendar invites for meeting records.",
+      "connectors": [
+        "Dataverse",
+        "Office 365 Outlook"
+      ],
+      "envVars": [
+        "decisions_IntegrationLogRetentionDays"
+      ],
+      "idempotencyKey": "dft_OutlookEventId",
+      "testHook": "outlook-invite-sync-dry-run",
+      "makerTasks": [
+        "Create or update the flow in Power Automate from powerplatform/src/flows/outlook-invite-sync.yaml without adding live write steps outside the intended business process.",
+        "Configure the listed connectors and confirm the connection references match the environment.",
+        "Bind the environment variables before test runs and keep values in deployment settings, not in the flow definition.",
+        "Keep Teams and SharePoint bindings out of this flow until they are explicitly required by the business process.",
+        "Enforce idempotency with dft_OutlookEventId so reruns do not duplicate side effects.",
+        "Add a test path for outlook-invite-sync-dry-run and verify it can be exercised without a live production change."
+      ],
+      "testHookChecklist": [
+        "Run outlook-invite-sync-dry-run against sample or replay data.",
+        "Confirm the run is repeatable and does not create duplicate records.",
+        "Confirm connector calls and environment variable resolution match the catalog entry.",
+        "Capture any maker notes needed for packaging or deployment review."
+      ]
+    },
+    {
+      "name": "teams-summary-post",
+      "file": "powerplatform/src/flows/teams-summary-post.yaml",
+      "displayName": "Teams Summary Post",
+      "track": "track-06-automation-integrations_20260502",
+      "purpose": "Post meeting and action summaries into the configured Teams channel.",
+      "connectors": [
+        "Dataverse",
+        "Microsoft Teams"
+      ],
+      "envVars": [
+        "decisions_TeamsTeamId",
+        "decisions_TeamsChannelId",
+        "decisions_IntegrationLogRetentionDays"
+      ],
+      "idempotencyKey": "dft_LastSummaryPostKey",
+      "testHook": "teams-summary-post-preview",
+      "bindingCandidates": [
+        {
+          "target": "decisions_TeamsTeamId",
+          "source": "DMS Executive Team group",
+          "value": "11111111-1111-4111-8111-111111111111",
+          "scope": "optional local dev-space binding"
+        },
+        {
+          "target": "decisions_SharePointSiteUrl",
+          "source": "DMS Executive Team SharePoint site",
+          "value": "https://example.invalid/sites/decisions",
+          "scope": "optional local dev-space binding for future file links"
+        }
+      ],
+      "makerTasks": [
+        "Create or update the flow in Power Automate from powerplatform/src/flows/teams-summary-post.yaml without adding live write steps outside the intended business process.",
+        "Configure the listed connectors and confirm the connection references match the environment.",
+        "Bind the environment variables before test runs and keep values in deployment settings, not in the flow definition.",
+        "Gate the Teams post on the readiness check so nothing posts until the team and channel bindings are present and the source row is actually eligible.",
+        "Enforce idempotency with dft_LastSummaryPostKey so reruns do not duplicate side effects.",
+        "Add a test path for teams-summary-post-preview and verify it can be exercised without a live production change."
+      ],
+      "testHookChecklist": [
+        "Run teams-summary-post-preview against sample or replay data.",
+        "Confirm the run is repeatable and does not create duplicate records.",
+        "Confirm connector calls and environment variable resolution match the catalog entry.",
+        "Capture any maker notes needed for packaging or deployment review."
+      ]
+    },
+    {
+      "name": "org-hierarchy-sync",
+      "file": "powerplatform/src/flows/org-hierarchy-sync.yaml",
+      "displayName": "Org Hierarchy Sync",
+      "track": "track-08-microsoft-platform-integration_20260502",
+      "purpose": "Cache Office 365 Users profile and reporting hierarchy data in Dataverse.",
+      "connectors": [
+        "Dataverse",
+        "Office 365 Users"
+      ],
+      "envVars": [
+        "decisions_IntegrationLogRetentionDays"
+      ],
+      "idempotencyKey": "dft_OrgPersonObjectId",
+      "testHook": "org-hierarchy-sync-manual-refresh",
+      "makerTasks": [
+        "Create or update the flow in Power Automate from powerplatform/src/flows/org-hierarchy-sync.yaml without adding live write steps outside the intended business process.",
+        "Configure the listed connectors and confirm the connection references match the environment.",
+        "Bind the environment variables before test runs and keep values in deployment settings, not in the flow definition.",
+        "Treat missing manager lookups as handled warnings and keep the hierarchy sync moving for the rest of the row.",
+        "Enforce idempotency with dft_OrgPersonObjectId so reruns do not duplicate side effects.",
+        "Add a test path for org-hierarchy-sync-manual-refresh and verify it can be exercised without a live production change."
+      ],
+      "testHookChecklist": [
+        "Run org-hierarchy-sync-manual-refresh against sample or replay data.",
+        "Confirm the run is repeatable and does not create duplicate records.",
+        "Confirm connector calls and environment variable resolution match the catalog entry.",
+        "Capture any maker notes needed for packaging or deployment review."
+      ]
+    },
+    {
+      "name": "ai-transcript-minutes",
+      "file": "powerplatform/src/flows/ai-transcript-minutes.yaml",
+      "displayName": "AI Transcript Minutes",
+      "track": "track-12-ai-transcripts-minutes_20260502",
+      "purpose": "Turn transcript text into reviewed draft minutes, decisions, actions, and risks.",
+      "connectors": [
+        "Dataverse",
+        "AI Builder"
+      ],
+      "envVars": [
+        "decisions_EnableAiBuilderMinutes",
+        "decisions_AiBuilderPromptName",
+        "decisions_IntegrationLogRetentionDays"
+      ],
+      "idempotencyKey": "dft_AiBuilderRunId",
+      "testHook": "ai-transcript-minutes-sample-run",
+      "reviewGate": "human-review-required",
+      "makerTasks": [
+        "Create or update the flow in Power Automate from powerplatform/src/flows/ai-transcript-minutes.yaml without adding live write steps outside the intended business process.",
+        "Configure the listed connectors and confirm the connection references match the environment.",
+        "Bind the environment variables before test runs and keep values in deployment settings, not in the flow definition.",
+        "Keep the flow draft-only until a human review state is recorded; never let AI output publish minutes directly.",
+        "Write the review gate and review outcome to Dataverse integration logging before the flow can be treated as complete.",
+        "Enforce idempotency with dft_AiBuilderRunId so reruns do not duplicate side effects.",
+        "Add a test path for ai-transcript-minutes-sample-run and verify it can be exercised without a live production change."
+      ],
+      "testHookChecklist": [
+        "Run ai-transcript-minutes-sample-run against sample or replay data.",
+        "Confirm the run is repeatable and does not create duplicate records.",
+        "Confirm connector calls and environment variable resolution match the catalog entry.",
+        "Capture any maker notes needed for packaging or deployment review."
+      ]
+    },
+    {
+      "name": "reminders",
+      "file": "powerplatform/src/flows/reminders.yaml",
+      "displayName": "Reminders",
+      "track": "track-06-automation-integrations_20260502",
+      "purpose": "Send scheduled reminder notifications for upcoming meetings.",
+      "connectors": [
+        "Dataverse"
+      ],
+      "envVars": [
+        "decisions_ReminderWindowHours",
+        "decisions_IntegrationLogRetentionDays"
+      ],
+      "idempotencyKey": "dft_MeetingId",
+      "testHook": "reminders-daily-run",
+      "makerTasks": [
+        "Create or update the flow in Power Automate from powerplatform/src/flows/reminders.yaml without adding live write steps outside the intended business process.",
+        "Configure the listed connectors and confirm the connection references match the environment.",
+        "Bind the environment variables before test runs and keep values in deployment settings, not in the flow definition.",
+        "Enforce idempotency with dft_MeetingId so reruns do not duplicate side effects.",
+        "Add a test path for reminders-daily-run and verify it can be exercised without a live production change."
+      ],
+      "testHookChecklist": [
+        "Run reminders-daily-run against sample or replay data.",
+        "Confirm the run is repeatable and does not create duplicate records.",
+        "Confirm connector calls and environment variable resolution match the catalog entry.",
+        "Capture any maker notes needed for packaging or deployment review."
+      ]
+    },
+    {
+      "name": "sharepoint-file-registration",
+      "file": "powerplatform/src/flows/sharepoint-file-registration.yaml",
+      "displayName": "SharePoint File Registration",
+      "track": "track-06-automation-integrations_20260502",
+      "purpose": "Register SharePoint file metadata against paper records in Dataverse.",
+      "connectors": [
+        "Dataverse",
+        "SharePoint"
+      ],
+      "envVars": [
+        "decisions_SharePointSiteUrl",
+        "decisions_IntegrationLogRetentionDays"
+      ],
+      "idempotencyKey": "dft_DocumentId",
+      "testHook": "sharepoint-file-registration-dry-run",
+      "makerTasks": [
+        "Create or update the flow in Power Automate from powerplatform/src/flows/sharepoint-file-registration.yaml without adding live write steps outside the intended business process.",
+        "Configure the listed connectors and confirm the connection references match the environment.",
+        "Bind the environment variables before test runs and keep values in deployment settings, not in the flow definition.",
+        "Gate the SharePoint connector on the readiness check so nothing registers until the site URL is present and the source row is eligible.",
+        "Enforce idempotency with dft_DocumentId so reruns do not duplicate side effects.",
+        "Add a test path for sharepoint-file-registration-dry-run and verify it can be exercised without a live production change."
+      ],
+      "testHookChecklist": [
+        "Run sharepoint-file-registration-dry-run against sample or replay data.",
+        "Confirm the run is repeatable and does not create duplicate records.",
+        "Confirm connector calls and environment variable resolution match the catalog entry.",
+        "Capture any maker notes needed for packaging or deployment review."
+      ]
+    }
+  ]
+}

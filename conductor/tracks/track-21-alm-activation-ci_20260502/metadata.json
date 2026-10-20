@@ -1,0 +1,17 @@
+{
+  "id": "track-21-alm-activation-ci_20260502",
+  "status": "implemented-repo-side",
+  "owner": "worker-alm-activation",
+  "parallelizable": true,
+  "dependsOn": [
+    "track-14-alm-solution-release_20260502",
+    "track-19-test-automation-ci_20260502",
+    "track-20-decisions-readiness-gates_20260502"
+  ],
+  "blockedLiveSteps": [
+    "target Power Platform environment URL",
+    "publisher confirmation",
+    "connection references",
+    "solution checker execution against live solution"
+  ]
+}

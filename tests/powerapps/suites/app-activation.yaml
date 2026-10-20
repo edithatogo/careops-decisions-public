@@ -1,0 +1,87 @@
+name: app-activation
+displayName: App activation smoke
+status: scaffold
+intent: >
+  Verify the app can load, render key screens, and support baseline navigation
+  for the Decisions workspace MVP. All tests in this suite validate the
+  Dataverse-first local build and do not require live connectors.
+appReadiness: app-not-yet-created
+readiness: local
+selectors:
+  screen: scrAppShell
+  navigation:
+    appLoadCommand: cmdAppLoad
+    appHomeScreen: scrHome
+  screens:
+    governanceBody: scrGovernanceBody
+    meetingAgenda: scrMeetingAgenda
+    minutesDecisionsActions: scrMinutesDecisionsActions
+    integrations: scrIntegrations
+    featureSwitchboard: scrFeatureSwitchboard
+    configuration: scrConfigurationWizard
+tests:
+  - id: ACT-01
+    title: app loads without error
+    intent: Confirm the canvas app starts without a blank screen or loading failure.
+    readiness: local
+    preconditions:
+      - app is deployed to target environment
+      - test user has baseline Dataverse permissions
+    actions:
+      - open: scrAppShell
+      - wait: 5000
+    assertions:
+      - app shell screen is rendered
+      - no unhandled error banner is visible
+      - home screen navigation is reachable
+    notes:
+      - first gate before any other test suite runs
+      - local pass requires only Dataverse deployment
+
+  - id: ACT-02
+    title: navigate to all core screens
+    intent: Verify the app navigation menu exposes every core screen from the workspace shell.
+    readiness: local
+    preconditions:
+      - app shell is loaded (ACT-01 passed)
+    actions:
+      - open: scrGovernanceBody
+      - open: scrMeetingAgenda
+      - open: scrMinutesDecisionsActions
+      - open: scrIntegrations
+      - open: scrFeatureSwitchboard
+    assertions:
+      - each screen transition completes within timeout
+      - no screen returns blank or error state
+      - navigation menu remains available after each transition
+    notes:
+      - configuration wizard screen is optional until wizard is added
+
+  - id: ACT-03
+    title: configuration wizard screen reachable
+    intent: Verify the configuration setup screen is accessible from the shell when implemented.
+    readiness: local
+    preconditions:
+      - configuration wizard screen exists in app
+    actions:
+      - open: scrConfigurationWizard
+    assertions:
+      - configuration screen loads without error
+      - environment variable placeholders are visible
+    notes:
+      - wizard may be a startup dialog rather than a nav screen
+
+  - id: ACT-04
+    title: app responds to refresh command
+    intent: Confirm the app refresh or reload surface works without data loss.
+    readiness: local
+    preconditions:
+      - app shell is loaded
+    actions:
+      - invoke: cmdAppRefresh
+      - wait: 3000
+    assertions:
+      - app remains on current screen after refresh
+      - no error state is introduced
+    notes:
+      - tests basic command binding surface

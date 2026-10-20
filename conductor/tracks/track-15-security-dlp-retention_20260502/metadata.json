@@ -1,0 +1,34 @@
+{
+  "id": "track-15-security-dlp-retention_20260502",
+  "status": "completed",
+  "owner": "worker-security-governance",
+  "parallelizable": true,
+  "dependsOn": [
+    "track-03-power-platform-architecture_20260502",
+    "track-13-deployment-hardening-alm-entra-readiness_20260502"
+  ],
+  "workstreams": [
+    "security-role-matrix-yaml",
+    "dlp-policy-assumptions",
+    "retention-privacy-rules",
+    "external-participant-policy",
+    "threat-model"
+  ],
+  "completedArtifacts": [
+    "docs/security/security-role-matrix.yaml",
+    "docs/security/dlp-policy-assumptions.md",
+    "docs/security/retention-privacy-rules.md",
+    "docs/security/external-participant-policy.md",
+    "docs/security/threat-model.md"
+  ],
+  "closedOn": "2026-05-11",
+  "closeoutEvidence": [
+    "docs/security/security-role-matrix.yaml",
+    "docs/security/dlp-policy-assumptions.md",
+    "docs/security/retention-privacy-rules.md",
+    "docs/security/external-participant-policy.md",
+    "docs/security/threat-model.md",
+    "scripts/Test-SecurityContracts.ps1",
+    "scripts/Invoke-RepoValidation.ps1 -RequireImplementationScaffolds"
+  ]
+}

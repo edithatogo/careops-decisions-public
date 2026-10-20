@@ -1,0 +1,83 @@
+name: configuration-wizard
+displayName: Configuration wizard validation
+status: scaffold
+intent: >
+  Validate that the environment configuration wizard (or equivalent setup path)
+  captures environment-specific inputs without requiring manual source edits.
+  Local tests verify the wizard shell and field presence. Live-Dylan tests
+  verify that values persist after save.
+appReadiness: app-not-yet-created
+readiness: local
+selectors:
+  screen: scrConfigurationWizard
+  navigation:
+    openCommand: btnOpenConfigurationWizard
+    saveCommand: btnSaveConfigurationWizard
+    testConnectionCommand: btnTestWizardConnection
+  fields:
+    teamsTeamId: txtWizardTeamsTeamId
+    teamsChannelId: txtWizardTeamsChannelId
+    sharePointSiteUrl: txtWizardSharePointSiteUrl
+    enableAiBuilder: togWizardEnableAiBuilder
+    enableGraphTranscriptSync: togWizardEnableGraphTranscriptSync
+    enablePlannerSync: togWizardEnablePlannerSync
+    connectionStatus: lblWizardConnectionStatus
+tests:
+  - id: CFG-01
+    title: wizard screen is present and renders fields
+    intent: Confirm the configuration wizard opens and displays expected input fields.
+    readiness: local
+    preconditions:
+      - configuration wizard screen exists in app
+    actions:
+      - open: scrConfigurationWizard
+    assertions:
+      - wizard screen is rendered without error
+      - environment variable fields are visible
+      - connector enablement toggles are visible
+      - save command is present
+    notes:
+      - wizard may be a startup screen or a nav item
+
+  - id: CFG-02
+    title: wizard captures environment-specific values
+    intent: Verify the wizard fields map to the expected environment variable manifest entries.
+    readiness: local
+    preconditions:
+      - environment-variable-manifest.json exists
+    actions:
+      - open: scrConfigurationWizard
+    assertions:
+      - Teams team ID field corresponds to decisions_TeamsTeamId
+      - Teams channel ID field corresponds to decisions_TeamsChannelId
+      - SharePoint site URL field corresponds to decisions_SharePointSiteUrl
+      - AI Builder toggle corresponds to decisions_EnableAiBuilderMinutes
+      - Graph transcript sync toggle corresponds to decisions_EnableGraphTranscriptSync
+    notes:
+      - field-to-variable mapping validated from source
+
+  - id: CFG-03
+    title: wizard values persist after save (requires live Dylan)
+    intent: Confirm that values entered in the wizard survive a save-and-reload cycle in the live environment.
+    readiness: requires-live-dylan
+    preconditions:
+      - app is deployed to Dylan environment
+      - wizard fields are populated
+    actions:
+      - open: scrConfigurationWizard
+      - fill:
+          teamsTeamId: placeholder-dylan-team-id
+          teamsChannelId: placeholder-dylan-channel-id
+          sharePointSiteUrl: https://placeholder.sharepoint.com
+      - set:
+          enableAiBuilder: false
+          enableGraphTranscriptSync: false
+          enablePlannerSync: false
+      - save: btnSaveConfigurationWizard
+      - open: scrConfigurationWizard
+    assertions:
+      - previously saved values are restored on reload
+      - environment variable manifest reflects persisted values
+    notes:
+      - requires live Dylan; skip locally
+      - use placeholder values, not real tenant secrets

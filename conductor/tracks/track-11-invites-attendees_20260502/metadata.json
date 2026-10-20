@@ -1,0 +1,23 @@
+{
+  "id": "track-11-invites-attendees_20260502",
+  "status": "completed",
+  "owner": "worker-automation",
+  "parallelizable": true,
+  "dependsOn": ["track-03-power-platform-architecture_20260502", "track-08-microsoft-platform-integration_20260502"],
+  "closedOn": "2026-05-11",
+  "workstreams": [
+    { "name": "outlook-invite-sync-flow", "status": "completed", "description": "Outlook invite sync flow contract enhanced with retryPolicy and environmentVariableMapping." },
+    { "name": "quorum-calculation-doc", "status": "completed", "description": "Quorum calculation resolution order documented in docs/architecture/quorum-calculation.md." },
+    { "name": "attendee-lifecycle-doc", "status": "completed", "description": "Attendee lifecycle state machine documented in docs/architecture/attendee-lifecycle.md." },
+    { "name": "attendee-seed-import-contract", "status": "completed", "description": "Sample seed and importer now cover invitees, apologies, proxies, guests, attendee responses, attendance states, and quorum evidence." }
+  ],
+  "closeoutEvidence": [
+    "docs/architecture/attendee-lifecycle.md",
+    "docs/architecture/quorum-calculation.md",
+    "powerplatform/src/flows/outlook-invite-sync.yaml",
+    "powerplatform/src/seed/sample-governance-data.json",
+    "scripts/Import-SeedData.ps1",
+    "scripts/Test-SeedImportPlan.ps1",
+    "scripts/Invoke-SmokeRunbook.ps1 -DryRun"
+  ]
+}

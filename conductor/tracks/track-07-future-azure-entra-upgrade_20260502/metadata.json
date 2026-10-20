@@ -1,0 +1,22 @@
+{
+  "id": "track-07-future-azure-entra-upgrade_20260502",
+  "status": "completed",
+  "owner": "main",
+  "parallelizable": true,
+  "dependsOn": ["track-03-power-platform-architecture_20260502", "track-08-microsoft-platform-integration_20260502"],
+  "workstreams": [
+    { "name": "app-registrations-and-permissions", "status": "completed", "description": "Future delegated and app-only registration shape documented with Graph permission gate." },
+    { "name": "graph-transcript-calendar-teams-files", "status": "completed", "description": "Calendar, Teams meeting, transcript, attendance, group, user, and file workloads documented as future Graph paths." },
+    { "name": "enterprise-access-control", "status": "completed", "description": "Entra group, Dataverse team, SharePoint permission, Teams/Planner membership, and manual access-rule boundaries documented." },
+    { "name": "reporting-and-analytics-upgrade", "status": "completed", "description": "Power BI/Fabric reporting boundary documented as deferred until stable Dataverse data and security roles exist." },
+    { "name": "mvp-boundary-review", "status": "completed", "description": "MVP remains free of live Azure, Entra, Graph, Teams extension, Copilot, and Power BI/Fabric runtime dependencies." }
+  ],
+  "closedOn": "2026-05-11",
+  "completionEvidence": [
+    "docs/architecture/enterprise-upgrade-path.md",
+    "docs/architecture/integration-map.md",
+    "docs/readiness/implementation-readiness-gates.md",
+    "docs/implementation-roadmap.md",
+    "docs/source-map.md"
+  ]
+}

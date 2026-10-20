@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "status": "source-only-native-registration-unverified",
+  "registered": false,
+  "apiName": "dft_ReadCurrentRecordedScopeV1",
+  "pluginType": "CareOps.Decisions.DataverseIdentity.ReadCurrentRecordedScope",
+  "bindingType": "Entity",
+  "boundEntity": "dft_credentialingrecord",
+  "isFunction": false,
+  "allowedCustomProcessingSteps": "None",
+  "evaluationTime": "server-utc-now",
+  "requestProperties": [],
+  "implicitTarget": "exact EntityReference with GUID; no alternate key",
+  "responses": {
+    "ReadSucceeded": "Boolean",
+    "RootVersion": "String",
+    "AsOfUtc": "DateTime",
+    "CurrentnessVerified": "Boolean",
+    "RecordedStatus": "String",
+    "LatestSequence": "Integer",
+    "SelectedSequence": "Integer",
+    "HasEffectiveDecision": "Boolean",
+    "SelectedDecision": "Entity:dft_credentialingdecision; nullable",
+    "ReadDisposition": "String"
+  },
+  "readDisposition": "recorded-data-only-not-practice-clearance",
+  "productionGates": [
+    "approved dependent-assembly packaging and release provenance with the Decisions-owned RegisterSchema dependency",
+    "approved API execute privilege and caller row/column/read/export permissions",
+    "verified canonical person identity key and mappings",
+    "native round-trip of nullable Entity response and output types",
+    "native immutable-history and atomic-root-write enforcement",
+    "actual storage fidelity, concurrent read and negative access tests"
+  ]
+}

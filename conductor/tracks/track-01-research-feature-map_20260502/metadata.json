@@ -1,0 +1,7 @@
+{
+  "id": "track-01-research-feature-map_20260502",
+  "status": "completed",
+  "owner": "worker-research",
+  "parallelizable": true,
+  "dependsOn": ["track-00-conductor-tooling-inventory_20260502"]
+}

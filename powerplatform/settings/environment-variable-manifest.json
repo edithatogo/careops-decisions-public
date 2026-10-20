@@ -1,0 +1,84 @@
+{
+  "environmentVariables": [
+    {
+      "schemaName": "decisions_TeamsTeamId",
+      "type": "Text",
+      "requiredForMvp": true,
+      "defaultValue": "",
+      "sampleValue": "11111111-1111-4111-8111-111111111111",
+      "purpose": "Teams team used for app and channel context (ISLHD Executive Team)."
+    },
+    {
+      "schemaName": "decisions_TeamsChannelId",
+      "type": "Text",
+      "requiredForMvp": true,
+      "defaultValue": "",
+      "sampleValue": "19:fictional-channel@thread.tacv2",
+      "purpose": "Teams channel for governance notifications (ISLHD Executive Team General)."
+    },
+    {
+      "schemaName": "decisions_PlannerPlanId",
+      "type": "Text",
+      "requiredForMvp": false,
+      "defaultValue": "",
+      "sampleValue": "fictional-planner-plan",
+      "purpose": "Planner plan for action sync (ISLHD Executive Team DMS Workplan)."
+    },
+    {
+      "schemaName": "decisions_SharePointSiteUrl",
+      "type": "Text",
+      "requiredForMvp": true,
+      "defaultValue": "",
+      "sampleValue": "https://example.invalid/sites/decisions",
+      "purpose": "SharePoint site for agendas, papers, minutes, transcripts, and packs."
+    },
+    {
+      "schemaName": "decisions_MinutesLibraryName",
+      "type": "Text",
+      "requiredForMvp": true,
+      "defaultValue": "Shared Documents",
+      "sampleValue": "Shared Documents",
+      "purpose": "Document library used for meeting records."
+    },
+    {
+      "schemaName": "decisions_EnableAiBuilderMinutes",
+      "type": "Boolean",
+      "requiredForMvp": false,
+      "defaultValue": "false",
+      "sampleValue": "false",
+      "purpose": "Feature flag for AI Builder transcript-to-minutes."
+    },
+    {
+      "schemaName": "decisions_EnableGraphTranscriptSync",
+      "type": "Boolean",
+      "requiredForMvp": false,
+      "defaultValue": "false",
+      "sampleValue": "false",
+      "purpose": "Future Graph transcript automation gate."
+    },
+    {
+      "schemaName": "decisions_AiBuilderPromptName",
+      "type": "Text",
+      "requiredForMvp": false,
+      "defaultValue": "",
+      "sampleValue": "Decisions Workspace - Transcript to Minutes",
+      "purpose": "AI Builder prompt name used for transcript-to-minutes drafting when enabled."
+    },
+    {
+      "schemaName": "decisions_IntegrationLogRetentionDays",
+      "type": "Number",
+      "requiredForMvp": true,
+      "defaultValue": "90",
+      "sampleValue": "90",
+      "purpose": "Default retention for integration logs."
+    },
+    {
+      "schemaName": "decisions_ReminderWindowHours",
+      "type": "Number",
+      "requiredForMvp": false,
+      "defaultValue": "24",
+      "sampleValue": "24",
+      "purpose": "Hours before meeting start to consider a reminder due."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>edithatogo/renovate-config"
+  ],
+  "pinDigests": true,
+  "automerge": false,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": false
+  },
+  "packageRules": [
+    {
+      "matchManagers": [
+        "pip_requirements"
+      ],
+      "ignoreUnstable": false,
+      "respectLatest": false,
+      "automerge": false
+    }
+  ]
+}

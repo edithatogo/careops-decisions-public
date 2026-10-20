@@ -1,0 +1,242 @@
+schema: decisions.workspace.flow.v1
+flow:
+  name: ai-transcript-minutes
+  displayName: AI Transcript Minutes
+  solution: DecisionsWorkspace
+  track: track-12-ai-transcripts-minutes_20260502
+  status: scaffold
+  reviewGate:
+    required: true
+    sourceOfTruth: Dataverse draft records
+    reviewerStateFields:
+      - dft_ReviewedState
+      - dft_ReviewOutcome
+  trigger:
+    type: dataverse.when-row-added-or-modified
+    table: dft_Transcript
+    changeScope: create-or-update
+    filters:
+      - field: dft_AiBuilderRunId
+        operator: is-empty
+  inputs:
+    dataverseTable: dft_Transcript
+    sourceFields:
+      - dft_TranscriptId
+      - dft_MeetingLookup
+      - dft_TranscriptText
+      - dft_Classification
+      - dft_ProcessingRequested
+      - dft_AiBuilderRunId
+      - dft_ProcessingState
+    environmentVariables:
+      - decisions_EnableAiBuilderMinutes
+      - decisions_AiBuilderPromptName
+      - decisions_IntegrationLogRetentionDays
+    readinessChecks:
+      - decisions_EnableAiBuilderMinutes is true before AI Builder connector calls run
+      - dft_ProcessingRequested is checked before AI Builder connector calls run so disabled transcripts can still record a skipped integration log
+      - decisions_AiBuilderPromptName is configured
+      - the resolved meeting review gate and prompt binding are checked before AI Builder connector calls run
+      - the transcript is linked to a meeting and has not already been processed
+      - generated output is treated as draft only until human review is recorded
+  outputs:
+    dataverseWrites:
+      - dft_AiBuilderRun
+      - dft_Minutes
+      - dft_Decision
+      - dft_ActionItem
+      - dft_IntegrationLog
+  idempotency:
+    strategy: skip-if-run-id-exists
+    keyFields:
+      - dft_AiBuilderRunId
+      - dft_ProcessingState
+    replayGuard: transcript id + prompt name + meeting id + review state
+  environmentVariableMapping:
+    - variable: decisions_EnableAiBuilderMinutes
+      type: Boolean
+      purpose: Feature flag to enable or disable AI Builder transcript-to-minutes processing
+      usedInStep: check-feature-flag
+      sampleValue: "false"
+    - variable: decisions_AiBuilderPromptName
+      type: Text
+      purpose: Name of the approved AI Builder prompt for transcript-to-minutes
+      usedInStep: invoke-prompt
+      sampleValue: "Decisions Workspace - Transcript to Minutes"
+    - variable: decisions_IntegrationLogRetentionDays
+      type: Number
+      purpose: Retention period for integration log entries
+      usedInStep: all
+      sampleValue: "90"
+  retryPolicy:
+    type: exponential
+    count: 3
+    interval: PT30S
+  connectorCalls:
+    - connector: Dataverse
+      action: Get a row by ID
+      table: dft_Transcript
+    - connector: Dataverse
+      action: Get a row by ID
+      table: dft_Meeting
+    - connector: AI Builder
+      action: Run prompt
+      promptName: decisions_AiBuilderPromptName
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_AiBuilderRun
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_Minutes
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_Decision
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_ActionItem
+    - connector: Dataverse
+      action: Update a row
+      table: dft_Transcript
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_IntegrationLog
+  steps:
+    - name: check-feature-flag
+      kind: condition
+      when:
+        field: decisions_EnableAiBuilderMinutes
+        operator: equals
+        value: false
+      then:
+        - name: log-disabled
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: AI Builder
+            recordType: Transcript
+            relatedRecordId: dft_TranscriptId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: AI Builder minutes generation is disabled. The feature flag is off or the AI Builder connector binding is unavailable.
+    - name: check-processing-requested
+      kind: condition
+      when:
+        field: dft_ProcessingRequested
+        operator: equals
+        value: false
+      then:
+        - name: log-not-enabled
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: AI Builder
+            recordType: Transcript
+            relatedRecordId: dft_TranscriptId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: AI Builder transcript minutes processing is disabled for this transcript until processing is requested and the meeting review gate remains draft-only.
+    - name: load-transcript
+      kind: dataverse.getRow
+      table: dft_Transcript
+      key: trigger row id
+    - name: load-meeting-context
+      kind: dataverse.getRow
+      table: dft_Meeting
+      key: dft_MeetingLookup
+    - name: invoke-prompt
+      kind: aiBuilder.runPrompt
+      map:
+        promptName: decisions_AiBuilderPromptName
+        transcriptText: dft_TranscriptText
+        meetingContext: dft_MeetingLookup
+        classification: dft_Classification
+    - name: create-ai-run
+      kind: dataverse.createRow
+      table: dft_AiBuilderRun
+      values:
+        dft_TranscriptLookup: dft_TranscriptId
+        dft_MeetingLookup: dft_MeetingLookup
+        dft_PromptName: decisions_AiBuilderPromptName
+        dft_RunState: Completed
+        dft_OutputJson: "@{outputs('invoke-prompt').body}"
+        dft_ReviewedState: Pending
+    - name: create-draft-minutes
+      kind: dataverse.createRow
+      table: dft_Minutes
+      values:
+        dft_MeetingLookup: dft_MeetingLookup
+        dft_MinutesState: Draft
+        dft_DraftText: "@{outputs('invoke-prompt').body.minutesSummary}"
+        dft_SourceTranscriptLookup: dft_TranscriptId
+    - name: write-review-gate-log
+      kind: dataverse.createRow
+      table: dft_IntegrationLog
+      values:
+        sourceSystem: Dataverse
+        targetSystem: AI Builder
+        recordType: Transcript
+        relatedRecordId: dft_TranscriptId
+        correlationId: "@{workflow().run.name}"
+        status: NeedsReview
+        message: Draft minutes created; human review is required before SharePoint, Teams, Planner, or publish steps can run.
+    - name: create-decisions-and-actions
+      kind: foreach
+      items:
+        - decisions
+        - actions
+        - risks
+        - unresolvedItems
+      do:
+        - kind: dataverse.createRow
+          table: dft_Decision
+          values:
+            dft_MeetingLookup: dft_MeetingLookup
+            dft_SourceType: Transcript
+            dft_DraftState: Draft
+        - kind: dataverse.createRow
+          table: dft_ActionItem
+          values:
+            dft_MeetingLookup: dft_MeetingLookup
+            dft_ActionState: Open
+            dft_SourceType: Transcript
+    - name: update-transcript
+      kind: dataverse.updateRow
+      table: dft_Transcript
+      values:
+        dft_AiBuilderRunId: "@{outputs('create-ai-run').id}"
+        dft_ProcessingState: NeedsReview
+    - name: write-success-log
+      kind: dataverse.createRow
+      table: dft_IntegrationLog
+      values:
+        sourceSystem: Dataverse
+        targetSystem: AI Builder
+        recordType: Transcript
+        relatedRecordId: dft_TranscriptId
+        correlationId: "@{workflow().run.name}"
+        status: Succeeded
+        message: Draft minutes generated from transcript and routed to human review.
+    - name: handle-failure
+      kind: scope
+      onError:
+        - kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: AI Builder
+            recordType: Transcript
+            relatedRecordId: dft_TranscriptId
+            correlationId: "@{workflow().run.name}"
+            status: Failed
+            message: "@{workflow().error.message}"
+            retryCount: 0
+testHooks:
+  - name: ai-transcript-minutes-sample-run
+    description: Run against a seeded transcript and confirm the prompt output becomes draft minutes only, not published minutes.
+    expected:
+      - ai builder run row written
+      - draft minutes row written
+      - transcript marked processed
+      - integration log success row written

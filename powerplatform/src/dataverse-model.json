@@ -1,0 +1,34 @@
+{
+  "publisherPrefix": "dft",
+  "tables": [
+    "dft_GovernanceBody",
+    "dft_TermsOfReference",
+    "dft_CommitteeMembership",
+    "dft_OrgPerson",
+    "dft_OrgRelationship",
+    "dft_MeetingSeries",
+    "dft_Meeting",
+    "dft_Attendee",
+    "dft_AgendaItem",
+    "dft_Paper",
+    "dft_Minutes",
+    "dft_Transcript",
+    "dft_Decision",
+    "dft_ActionItem",
+    "dft_Vote",
+    "dft_VoteResponse",
+    "dft_ConflictOfInterest",
+    "dft_AccessRule",
+    "dft_IntegrationLog"
+  ],
+  "mvpStorage": {
+    "structuredData": "Dataverse or Dataverse for Teams",
+    "files": "SharePoint or Teams document libraries where available, otherwise Dataverse file/link fallback",
+    "orgHierarchy": "Office 365 Users connector cached into dft_OrgPerson and dft_OrgRelationship"
+  },
+  "futureStorage": {
+    "transcripts": "Microsoft Graph Teams meeting transcripts",
+    "security": "Full Dataverse roles, Entra groups, SharePoint permissions, sensitivity labels",
+    "reporting": "Power BI/Fabric over Dataverse"
+  }
+}

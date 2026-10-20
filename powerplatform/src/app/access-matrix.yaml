@@ -1,0 +1,170 @@
+access_matrix:
+  governance_administrator:
+    intent: full configuration and operational access
+    screens:
+      - HomeScreen
+      - GovernanceBrowseScreen
+      - GovernanceEditScreen
+      - MeetingListScreen
+      - MeetingWorkspaceScreen
+      - AgendaEditorScreen
+      - PaperRegisterScreen
+      - AttendanceScreen
+      - TranscriptImportScreen
+      - MinutesReviewScreen
+      - DecisionsActionsScreen
+      - SettingsScreen
+    records:
+      - dft_GovernanceBody: full
+      - dft_TermsOfReference: full
+      - dft_CommitteeMembership: full
+      - dft_OrgPerson: full
+      - dft_MeetingSeries: full
+      - dft_Meeting: full
+      - dft_Attendee: full
+      - dft_AgendaItem: full
+      - dft_Paper: full
+      - dft_Minutes: full
+      - dft_Transcript: full
+      - dft_Decision: full
+      - dft_ActionItem: full
+      - dft_IntegrationLog: read
+
+  secretariat:
+    intent: operational owner for meeting preparation and publication
+    screens:
+      - HomeScreen
+      - GovernanceBrowseScreen
+      - GovernanceEditScreen
+      - MeetingListScreen
+      - MeetingWorkspaceScreen
+      - AgendaEditorScreen
+      - PaperRegisterScreen
+      - AttendanceScreen
+      - TranscriptImportScreen
+      - MinutesReviewScreen
+      - DecisionsActionsScreen
+      - SettingsScreen
+    records:
+      - dft_GovernanceBody: read-write
+      - dft_TermsOfReference: read-write
+      - dft_CommitteeMembership: read-write
+      - dft_OrgPerson: read
+      - dft_MeetingSeries: read-write
+      - dft_Meeting: read-write
+      - dft_Attendee: read-write
+      - dft_AgendaItem: read-write
+      - dft_Paper: read-write
+      - dft_Minutes: read-write
+      - dft_Transcript: read-write
+      - dft_Decision: read-write
+      - dft_ActionItem: read-write
+      - dft_IntegrationLog: read
+
+  chair:
+    intent: review and approval of agenda, minutes, decisions, and actions
+    screens:
+      - HomeScreen
+      - GovernanceBrowseScreen
+      - MeetingListScreen
+      - MeetingWorkspaceScreen
+      - AgendaEditorScreen
+      - AttendanceScreen
+      - TranscriptImportScreen
+      - MinutesReviewScreen
+      - DecisionsActionsScreen
+    records:
+      - dft_GovernanceBody: read
+      - dft_TermsOfReference: read
+      - dft_CommitteeMembership: read
+      - dft_OrgPerson: read
+      - dft_MeetingSeries: read
+      - dft_Meeting: read-write for chaired meetings
+      - dft_Attendee: read-write for chaired meetings
+      - dft_AgendaItem: read-write for chaired meetings
+      - dft_Paper: read
+      - dft_Minutes: read-write for review
+      - dft_Transcript: read
+      - dft_Decision: read-write for approval
+      - dft_ActionItem: read-write for approval
+      - dft_IntegrationLog: read
+
+  member:
+    intent: read access to assigned bodies, meetings, and outcomes
+    screens:
+      - HomeScreen
+      - GovernanceBrowseScreen
+      - MeetingListScreen
+      - MeetingWorkspaceScreen
+      - PaperRegisterScreen
+      - MinutesReviewScreen
+      - DecisionsActionsScreen
+    records:
+      - dft_GovernanceBody: read
+      - dft_TermsOfReference: read
+      - dft_CommitteeMembership: read self or assigned scope
+      - dft_OrgPerson: read self
+      - dft_MeetingSeries: read assigned
+      - dft_Meeting: read assigned
+      - dft_Attendee: read self
+      - dft_AgendaItem: read assigned
+      - dft_Paper: read assigned
+      - dft_Minutes: read approved or published
+      - dft_Transcript: no direct access unless shared
+      - dft_Decision: read assigned
+      - dft_ActionItem: read assigned
+      - dft_IntegrationLog: no access
+
+  guest_presenter:
+    intent: limited meeting or paper specific access
+    screens:
+      - MeetingWorkspaceScreen
+      - PaperRegisterScreen
+    records:
+      - dft_Meeting: read scoped to invitation
+      - dft_AgendaItem: read scoped to invitation
+      - dft_Paper: read scoped to invitation
+      - dft_Attendee: read self
+      - dft_Minutes: read published only if shared
+      - dft_ActionItem: no access
+      - dft_IntegrationLog: no access
+
+  auditor:
+    intent: read-only inspection of approved records and logs
+    screens:
+      - HomeScreen
+      - GovernanceBrowseScreen
+      - MeetingListScreen
+      - MeetingWorkspaceScreen
+      - DecisionsActionsScreen
+      - SettingsScreen
+    records:
+      - dft_GovernanceBody: read
+      - dft_TermsOfReference: read
+      - dft_CommitteeMembership: read
+      - dft_OrgPerson: read
+      - dft_MeetingSeries: read
+      - dft_Meeting: read approved
+      - dft_Attendee: read approved
+      - dft_AgendaItem: read approved
+      - dft_Paper: read approved
+      - dft_Minutes: read approved
+      - dft_Transcript: read approved or redacted
+      - dft_Decision: read approved
+      - dft_ActionItem: read approved
+      - dft_IntegrationLog: read
+
+sharing_rules:
+  - selected record context always narrows data, never widens it
+  - guest and member visibility must be enforced by row-level filtering, not only screen hiding
+  - audit log write access is restricted to the app and integration service accounts
+  - publication state controls whether minutes, decisions, and actions are visible outside the working group
+
+ui_policy:
+  hidden_controls:
+    - command buttons that the role cannot execute
+    - edit forms for records outside the scoped body or meeting
+  disabled_controls:
+    - commands that require a selected parent record
+    - publish actions when status is already published
+    - sync actions when Planner sync is disabled

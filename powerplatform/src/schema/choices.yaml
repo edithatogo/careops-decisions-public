@@ -1,0 +1,622 @@
+publisherPrefix: dft
+schemaVersion: 0.1
+choices:
+  governanceBodyType:
+    description: Type of governance forum represented by a single body table row.
+    values:
+      - code: board
+        label: Board
+      - code: council
+        label: Council
+      - code: committee
+        label: Committee
+      - code: subcommittee
+        label: Subcommittee
+      - code: working_group
+        label: Working Group
+      - code: project_board
+        label: Project Board
+      - code: executive_forum
+        label: Executive Forum
+      - code: advisory_panel
+        label: Advisory Panel
+      - code: task_force
+        label: Task Force
+      - code: other
+        label: Other
+
+  governanceBodyStatus:
+    description: Operational state of a governance body.
+    values:
+      - code: draft
+        label: Draft
+      - code: active
+        label: Active
+      - code: suspended
+        label: Suspended
+      - code: retired
+        label: Retired
+
+  torStatus:
+    description: Lifecycle status for a terms of reference version.
+    values:
+      - code: draft
+        label: Draft
+      - code: current
+        label: Current
+      - code: superseded
+        label: Superseded
+      - code: archived
+        label: Archived
+
+  approvalStatus:
+    description: Generic approval state for governed records.
+    values:
+      - code: pending
+        label: Pending
+      - code: approved
+        label: Approved
+      - code: rejected
+        label: Rejected
+      - code: withdrawn
+        label: Withdrawn
+
+  quorumDenominator:
+    description: Denominator basis used when calculating terms of reference quorum.
+    values:
+      - code: total_members
+        label: Total Members
+      - code: voting_members
+        label: Voting Members
+      - code: appointed_members
+        label: Appointed Members
+      - code: eligible_attendees
+        label: Eligible Attendees
+
+  membershipRole:
+    description: Governance body membership role.
+    values:
+      - code: chair
+        label: Chair
+      - code: deputy_chair
+        label: Deputy Chair
+      - code: secretary
+        label: Secretary
+      - code: member
+        label: Member
+      - code: alternate
+        label: Alternate
+      - code: observer
+        label: Observer
+      - code: guest
+        label: Guest
+      - code: presenter
+        label: Presenter
+
+  membershipStatus:
+    description: Active state of a membership record.
+    values:
+      - code: pending
+        label: Pending
+      - code: active
+        label: Active
+      - code: suspended
+        label: Suspended
+      - code: ended
+        label: Ended
+
+  recurrencePattern:
+    description: Supported meeting cadence values.
+    values:
+      - code: one_off
+        label: One Off
+      - code: weekly
+        label: Weekly
+      - code: fortnightly
+        label: Fortnightly
+      - code: monthly
+        label: Monthly
+      - code: quarterly
+        label: Quarterly
+      - code: custom
+        label: Custom
+
+  seriesStatus:
+    description: Operational state of a meeting series.
+    values:
+      - code: draft
+        label: Draft
+      - code: active
+        label: Active
+      - code: paused
+        label: Paused
+      - code: retired
+        label: Retired
+
+  meetingStatus:
+    description: Lifecycle state of a meeting instance.
+    values:
+      - code: draft
+        label: Draft
+      - code: planned
+        label: Planned
+      - code: invited
+        label: Invited
+      - code: in_progress
+        label: In Progress
+      - code: minutes_drafting
+        label: Minutes Drafting
+      - code: ready_for_review
+        label: Ready For Review
+      - code: approved
+        label: Approved
+      - code: published
+        label: Published
+      - code: cancelled
+        label: Cancelled
+      - code: deferred
+        label: Deferred
+
+  attendanceResponse:
+    description: Outlook-style response values for an attendee.
+    values:
+      - code: accepted
+        label: Accepted
+      - code: tentative
+        label: Tentative
+      - code: declined
+        label: Declined
+      - code: none
+        label: Not Responded
+
+  attendanceStatus:
+    description: Actual or expected attendance state.
+    values:
+      - code: invited
+        label: Invited
+      - code: accepted
+        label: Accepted
+      - code: tentative
+        label: Tentative
+      - code: declined
+        label: Declined
+      - code: not_responded
+        label: Not Responded
+      - code: attended
+        label: Attended
+      - code: absent
+        label: Absent
+      - code: apology
+        label: Apology
+      - code: proxy_attended
+        label: Proxy Attended
+
+  attendeeRole:
+    description: Role a person plays in relation to a meeting.
+    values:
+      - code: member
+        label: Member
+      - code: chair
+        label: Chair
+      - code: secretary
+        label: Secretary
+      - code: presenter
+        label: Presenter
+      - code: guest
+        label: Guest
+      - code: observer
+        label: Observer
+      - code: proxy
+        label: Proxy
+
+  agendaPurpose:
+    description: Why an agenda item exists.
+    values:
+      - code: information
+        label: Information
+      - code: discussion
+        label: Discussion
+      - code: decision
+        label: Decision
+      - code: action
+        label: Action
+      - code: ratification
+        label: Ratification
+      - code: noting
+        label: Noting
+      - code: other
+        label: Other
+
+  agendaItemStatus:
+    description: Lifecycle of an agenda item during a meeting cycle.
+    values:
+      - code: planned
+        label: Planned
+      - code: ready
+        label: Ready
+      - code: held
+        label: Held
+      - code: deferred
+        label: Deferred
+      - code: withdrawn
+        label: Withdrawn
+
+  paperSource:
+    description: Origin of a paper or supporting document.
+    values:
+      - code: sharepoint
+        label: SharePoint
+      - code: teams
+        label: Teams
+      - code: email
+        label: Email
+      - code: uploaded
+        label: Uploaded
+      - code: dataverse_file
+        label: Dataverse File
+      - code: external_link
+        label: External Link
+
+  paperStatus:
+    description: Lifecycle state of a paper.
+    values:
+      - code: draft
+        label: Draft
+      - code: submitted
+        label: Submitted
+      - code: circulated
+        label: Circulated
+      - code: superseded
+        label: Superseded
+      - code: withdrawn
+        label: Withdrawn
+      - code: archived
+        label: Archived
+
+  minuteStatus:
+    description: Lifecycle state of minutes.
+    values:
+      - code: draft
+        label: Draft
+      - code: chair_review
+        label: Chair Review
+      - code: approved
+        label: Approved
+      - code: published
+        label: Published
+      - code: archived
+        label: Archived
+
+  transcriptSource:
+    description: Source of a transcript.
+    values:
+      - code: manual
+        label: Manual
+      - code: teams_upload
+        label: Teams Upload
+      - code: graph
+        label: Graph
+      - code: imported_text
+        label: Imported Text
+
+  transcriptStatus:
+    description: Lifecycle state of a transcript.
+    values:
+      - code: not_expected
+        label: Not Expected
+      - code: requested
+        label: Requested
+      - code: available
+        label: Available
+      - code: processed
+        label: Processed
+      - code: redacted
+        label: Redacted
+      - code: retained
+        label: Retained
+      - code: deleted
+        label: Deleted
+
+  decisionStatus:
+    description: Lifecycle state of a decision.
+    values:
+      - code: proposed
+        label: Proposed
+      - code: resolved
+        label: Resolved
+      - code: deferred
+        label: Deferred
+      - code: rescinded
+        label: Rescinded
+      - code: superseded
+        label: Superseded
+
+  actionStatus:
+    description: Lifecycle state of an action item.
+    values:
+      - code: open
+        label: Open
+      - code: in_progress
+        label: In Progress
+      - code: blocked
+        label: Blocked
+      - code: completed
+        label: Completed
+      - code: overdue
+        label: Overdue
+      - code: closed
+        label: Closed
+      - code: cancelled
+        label: Cancelled
+
+  priority:
+    description: Generic priority values.
+    values:
+      - code: low
+        label: Low
+      - code: normal
+        label: Normal
+      - code: high
+        label: High
+      - code: urgent
+        label: Urgent
+
+  voteType:
+    description: Type of vote or voting mechanism.
+    values:
+      - code: yes_no
+        label: Yes / No
+      - code: majority
+        label: Majority
+      - code: weighted
+        label: Weighted
+      - code: anonymous
+        label: Anonymous
+      - code: show_of_hands
+        label: Show Of Hands
+      - code: poll
+        label: Poll
+
+  voteStatus:
+    description: Lifecycle state of a vote record.
+    values:
+      - code: planned
+        label: Planned
+      - code: open
+        label: Open
+      - code: closed
+        label: Closed
+      - code: recorded
+        label: Recorded
+
+  voteResponse:
+    description: Individual response values.
+    values:
+      - code: yes
+        label: Yes
+      - code: no
+        label: No
+      - code: abstain
+        label: Abstain
+      - code: conflicted
+        label: Conflicted
+      - code: absent
+        label: Absent
+      - code: proxy
+        label: Proxy
+
+  conflictType:
+    description: Conflict declaration category.
+    values:
+      - code: declared
+        label: Declared
+      - code: actual
+        label: Actual
+      - code: perceived
+        label: Perceived
+
+  conflictHandling:
+    description: Handling applied to a declared conflict.
+    values:
+      - code: noted
+        label: Noted
+      - code: recused
+        label: Recused
+      - code: approved_to_participate
+        label: Approved To Participate
+      - code: escalated
+        label: Escalated
+
+  accessScope:
+    description: Scope targeted by a rule or access intent.
+    values:
+      - code: body_wide
+        label: Body Wide
+      - code: meeting_only
+        label: Meeting Only
+      - code: agenda_item_only
+        label: Agenda Item Only
+      - code: document_only
+        label: Document Only
+      - code: role_based
+        label: Role Based
+      - code: external_shared
+        label: External Shared
+
+  accessRuleType:
+    description: Type of access rule being recorded.
+    values:
+      - code: allow
+        label: Allow
+      - code: deny
+        label: Deny
+      - code: review
+        label: Review
+      - code: exception
+        label: Exception
+
+  recordClassification:
+    description: Generic classification labels for records and outputs.
+    values:
+      - code: public
+        label: Public
+      - code: internal
+        label: Internal
+      - code: confidential
+        label: Confidential
+      - code: restricted
+        label: Restricted
+      - code: legal
+        label: Legal
+
+  promptPurpose:
+    description: What a prompt template is intended to produce.
+    values:
+      - code: minute_draft
+        label: Minute Draft
+      - code: decision_extraction
+        label: Decision Extraction
+      - code: action_extraction
+        label: Action Extraction
+      - code: classification
+        label: Classification
+      - code: summary
+        label: Summary
+
+  promptInputType:
+    description: Input shape expected by a prompt.
+    values:
+      - code: transcript
+        label: Transcript
+      - code: minutes
+        label: Minutes
+      - code: paper
+        label: Paper
+      - code: meeting
+        label: Meeting
+      - code: mixed
+        label: Mixed
+
+  promptApprovalStatus:
+    description: Approval state for a prompt template.
+    values:
+      - code: draft
+        label: Draft
+      - code: approved
+        label: Approved
+      - code: restricted
+        label: Restricted
+      - code: retired
+        label: Retired
+
+  aiRunStatus:
+    description: Lifecycle state of an AI Builder run.
+    values:
+      - code: queued
+        label: Queued
+      - code: running
+        label: Running
+      - code: completed
+        label: Completed
+      - code: human_reviewed
+        label: Human Reviewed
+      - code: rejected
+        label: Rejected
+      - code: error
+        label: Error
+
+  humanReviewStatus:
+    description: Human review state for AI output.
+    values:
+      - code: pending
+        label: Pending
+      - code: approved
+        label: Approved
+      - code: edited
+        label: Edited
+      - code: rejected
+        label: Rejected
+
+  integrationStatus:
+    description: Result state for an integration log entry.
+    values:
+      - code: queued
+        label: Queued
+      - code: succeeded
+        label: Succeeded
+      - code: failed
+        label: Failed
+      - code: retried
+        label: Retried
+      - code: skipped
+        label: Skipped
+
+  orgRelationshipType:
+    description: Relationship types cached from identity or HR sources.
+    values:
+      - code: manager
+        label: Manager
+      - code: direct_report
+        label: Direct Report
+      - code: delegate
+        label: Delegate
+      - code: substitute
+        label: Substitute
+      - code: dotted_line
+        label: Dotted Line
+      - code: other
+        label: Other
+
+  featureKey:
+    description: Canonical meeting capability switch keys used by the feature definition table.
+    values:
+      - code: voting
+        label: Voting
+      - code: aiMinutes
+        label: AI Minutes
+      - code: transcriptImport
+        label: Transcript Import
+      - code: plannerSync
+        label: Planner Sync
+      - code: teamsPosts
+        label: Teams Posts
+      - code: sharepointPapersMinutes
+        label: SharePoint Papers and Minutes
+      - code: outlookInvites
+        label: Outlook Invites
+      - code: orgHierarchy
+        label: Org Hierarchy
+
+  featureSwitchState:
+    description: Default or resolved state for a feature definition, template, or meeting override.
+    values:
+      - code: enabled
+        label: Enabled
+      - code: disabled
+        label: Disabled
+
+  identitySource:
+    description: Origin of cached identity data.
+    values:
+      - code: office365_users
+        label: Office 365 Users
+      - code: graph
+        label: Graph
+      - code: manual
+        label: Manual
+      - code: hr_feed
+        label: HR Feed
+      - code: other
+        label: Other
+
+  retentionStatus:
+    description: Retention or disposal state for transcripts and files.
+    values:
+      - code: active
+        label: Active
+      - code: retained
+        label: Retained
+      - code: redacted
+        label: Redacted
+      - code: deleted
+        label: Deleted

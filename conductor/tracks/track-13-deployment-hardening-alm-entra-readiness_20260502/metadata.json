@@ -1,0 +1,34 @@
+{
+  "id": "track-13-deployment-hardening-alm-entra-readiness_20260502",
+  "status": "in_progress",
+  "owner": "implementation-hardening",
+  "parallelizable": true,
+  "dependsOn": [
+    "track-03-power-platform-architecture_20260502",
+    "track-04-alm-test-harness_20260502",
+    "track-05-canvas-app-mvp_20260502",
+    "track-06-automation-integrations_20260502",
+    "track-07-future-azure-entra-upgrade_20260502",
+    "track-12-ai-transcripts-minutes_20260502"
+  ],
+  "gates": {
+    "powerPlatformDevEnvironment": "required-for-live-build",
+    "azureAccess": "design-now-implement-later",
+    "entraAccess": "design-now-implement-later",
+    "liveConnectorCredentials": "required-for-flow-activation"
+  },
+  "workstreams": {
+    "cliBindings": "pac/pacx command reference documented in docs/deployment/pac-cli-reference.md",
+    "deploymentProfiles": "deployment profiles doc in docs/deployment/deployment-profiles.md",
+    "aiBuilderGovernance": "AI Builder governance documented in docs/deployment/ai-builder-governance.md",
+    "documentStorage": "document storage conventions in docs/deployment/document-storage-conventions.md",
+    "solutionComponentManifest": "solution component manifest maps tables, choices, relationships, apps, flows, env vars, connection refs, security, seed data, and tests in powerplatform/src/solution-component-manifest.yaml",
+    "toolingMapUpdate": "tooling inventory updated with ALM-specific command table",
+    "validationExpansion": "Test-SchemaIntegrity.ps1 wired into Invoke-RepoValidation.ps1; covers choiceSet resolution, relatedTable resolution, relationship targets, and duplicate names",
+    "reseedRunbook": "bootstrap-runbook.md expanded with data-only reseed using reverse-dependency delete order",
+    "solutionAlm": "solution ALM hardening — deferred to live re-export",
+    "securityRoles": "security roles — deferred to live build",
+    "mvpAppBuild": "MVP app build — deferred to app creation track",
+    "firstIntegrationFlow": "first integration flow — deferred to connector access"
+  }
+}

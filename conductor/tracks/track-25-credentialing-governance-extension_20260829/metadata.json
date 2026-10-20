@@ -1,0 +1,19 @@
+{
+  "track_id": "track-25-credentialing-governance-extension_20260829",
+  "title": "Credentialing governance extension",
+  "status": "in_progress",
+  "created": "2026-08-29",
+  "owner": "CareOps Decisions maintainer",
+  "capabilityPack": "credentialing-governance",
+  "featureFlag": "decisions_EnableCredentialingGovernance",
+  "dependencies": [
+    "careops-approve-credentialing-governance-packet-0.1.0",
+    "careops-process-credentialing-events-0.1.0"
+  ],
+  "nonGoals": [
+    "autonomous-clinical-recommendation",
+    "autonomous-delegated-decision",
+    "authoritative-register-replacement-in-mvp",
+    "raw-sensitive-document-repository"
+  ]
+}

@@ -1,0 +1,87 @@
+name: minutes-decisions-actions
+displayName: Minutes, decisions, and actions
+status: scaffold
+readiness: local
+intent: >
+  Verify the app surface for capturing minutes, recording decisions, and
+  creating follow-up actions from agenda items.
+appReadiness: app-not-yet-created
+selectors:
+  screen: scrMinutesDecisionsActions
+  navigation:
+    openCommand: btnOpenMinutes
+    saveCommand: btnSaveMinutes
+    addDecisionCommand: btnAddDecision
+    addActionCommand: btnAddAction
+    approveCommand: btnApproveMinutes
+  fields:
+    attendance: chkMeetingAttendance
+    apologies: txtMeetingApologies
+    conflictOfInterest: txtMeetingConflictOfInterest
+    discussionNotes: txtMeetingDiscussionNotes
+    decisionText: txtDecisionText
+    decisionStatus: cmbDecisionStatus
+    actionTitle: txtActionTitle
+    actionOwner: cmbActionOwner
+    actionDueDate: dtpActionDueDate
+    approvalStatus: cmbMinutesApprovalStatus
+tests:
+  - id: MDA-01
+    title: capture minutes draft
+    intent: Record attendance, apologies, conflicts, and discussion notes for a meeting.
+    preconditions:
+      - meeting draft exists
+    actions:
+      - open: scrMinutesDecisionsActions
+      - set:
+          attendance: true
+          apologies: absent member noted
+          conflictOfInterest: none recorded
+          discussionNotes: draft minutes placeholder
+      - save: btnSaveMinutes
+    assertions:
+      - minutes draft is saved
+      - notes remain linked to the meeting
+      - attendance fields remain editable
+    notes:
+      - future integration with transcript workflows is out of scope here
+  - id: MDA-03
+    title: approve minutes
+    intent: Confirm the chair approval state is recorded before publication.
+    preconditions:
+      - minutes draft exists
+    actions:
+      - open: scrMinutesDecisionsActions
+      - set:
+          approvalStatus: approved
+      - invoke: btnApproveMinutes
+      - save: btnSaveMinutes
+    assertions:
+      - approval state is stored
+      - minutes remain linked to the meeting
+      - minutes can proceed to publication
+    notes:
+      - approval is required before the publish path is treated as complete
+  - id: MDA-02
+    title: record decision and action
+    intent: Create one decision and one action from the same meeting context.
+    preconditions:
+      - minutes draft exists
+    actions:
+      - open: scrMinutesDecisionsActions
+      - invoke: btnAddDecision
+      - fill:
+          decisionText: approve pilot scope
+          decisionStatus: draft
+      - invoke: btnAddAction
+      - fill:
+          actionTitle: prepare implementation follow-up
+          actionOwner: action owner
+          actionDueDate: 2026-05-09
+      - save: btnSaveMinutes
+    assertions:
+      - decision record is created
+      - action record is created
+      - both records are traceable to the meeting and agenda item
+    notes:
+      - placeholders only until Dataverse tables and bindings are in place

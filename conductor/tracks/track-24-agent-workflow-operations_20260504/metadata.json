@@ -1,0 +1,42 @@
+{
+  "id": "track-24-agent-workflow-operations_20260504",
+  "title": "Agent workflow operations, reviewer pairing, and Dylan deployment verification",
+  "status": "completed",
+  "owner": "worker-agent-workflow-operations",
+  "parallelizable": true,
+  "created": "2026-05-04",
+  "dependsOn": [
+    "track-17-operations-monitoring-support_20260502",
+    "track-19-test-automation-ci_20260502",
+    "track-21-alm-activation-ci_20260502",
+    "track-22-mvp-activation-enhancements_20260503",
+    "track-23-medication-safety-operationalization_20260504"
+  ],
+  "workstreams": [
+    "agent lane ownership and file boundaries",
+    "writer and reviewer pairing model",
+    "Dylan deployment verification script",
+    "live deployment serialization rules",
+    "agent handoff evidence and status reporting"
+  ],
+  "liveDataGates": [
+    "Power Platform Dylan authentication",
+    "Dataverse live read availability",
+    "Graph, Teams, Planner, and SharePoint connector permissions",
+    "NSW Outlook or SharePoint source access for real committee records"
+  ],
+  "closedOn": "2026-05-11",
+  "completedArtifacts": [
+    "docs/operations/agent-runbook.md",
+    "scripts/Verify-DylanDeployment.ps1",
+    "scripts/Test-AgentWorkflowContracts.ps1",
+    "docs/operations/README.md",
+    "docs/source-map.md",
+    "docs/implementation-roadmap.md"
+  ],
+  "closeoutEvidence": [
+    "Agent lane ownership, file boundaries, writer/reviewer pairs, and handoff evidence are documented in docs/operations/agent-runbook.md.",
+    "Live Dylan writes are serialized through one deployment operator and read-only verification is separated from deployment writes.",
+    "scripts/Test-AgentWorkflowContracts.ps1 is wired into scripts/Invoke-RepoValidation.ps1."
+  ]
+}

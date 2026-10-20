@@ -1,0 +1,63 @@
+{
+  "fixtureVersion": "0.1.0",
+  "classification": "synthetic-non-production",
+  "cases": [
+    {
+      "id": "adverse-without-fairness",
+      "pathwayCode": "routine-renewal",
+      "proposedOutcome": "not-approved",
+      "newAdverseMaterialConsidered": true,
+      "proceduralFairnessStatus": "not-started",
+      "humanRecommendationConfirmed": true,
+      "humanDecisionConfirmed": false,
+      "expected": "blocked-procedural-fairness"
+    },
+    {
+      "id": "recommendation-treated-as-decision",
+      "pathwayCode": "routine-renewal",
+      "proposedOutcome": "approved",
+      "newAdverseMaterialConsidered": false,
+      "proceduralFairnessStatus": "not-required",
+      "humanRecommendationConfirmed": true,
+      "recommendationAutomaticallyCreatesDecision": true,
+      "humanDecisionConfirmed": false,
+      "expected": "blocked-separate-decision-required"
+    },
+    {
+      "id": "ai-attempts-decision",
+      "pathwayCode": "routine-renewal",
+      "proposedOutcome": "approved",
+      "newAdverseMaterialConsidered": false,
+      "proceduralFairnessStatus": "not-required",
+      "humanRecommendationConfirmed": true,
+      "aiDecisionAttempted": true,
+      "humanDecisionConfirmed": false,
+      "expected": "blocked-human-decision-required"
+    },
+    {
+      "id": "temporary-without-expiry",
+      "pathwayCode": "interim",
+      "temporaryApprovalExpiry": null,
+      "humanRecommendationConfirmed": true,
+      "humanDecisionConfirmed": false,
+      "expected": "blocked-hard-expiry-required"
+    },
+    {
+      "id": "conflict-without-recusal",
+      "pathwayCode": "routine-renewal",
+      "unmanagedConflictPresent": true,
+      "recusalEvidencePresent": false,
+      "humanRecommendationConfirmed": false,
+      "humanDecisionConfirmed": false,
+      "expected": "blocked-conflict-control"
+    },
+    {
+      "id": "missing-current-delegation",
+      "pathwayCode": "routine-renewal",
+      "currentDelegationConfirmed": false,
+      "humanRecommendationConfirmed": true,
+      "humanDecisionConfirmed": true,
+      "expected": "blocked-current-delegation-required"
+    }
+  ]
+}

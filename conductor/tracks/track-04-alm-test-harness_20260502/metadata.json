@@ -1,0 +1,7 @@
+{
+  "id": "track-04-alm-test-harness_20260502",
+  "status": "completed",
+  "owner": "worker-testing",
+  "parallelizable": true,
+  "dependsOn": ["track-00-conductor-tooling-inventory_20260502"]
+}

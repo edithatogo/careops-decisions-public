@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="dft_promptpurpose" localizedName="promptPurpose" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <displaynames>
+    <displayname description="promptPurpose" languagecode="1033" />
+  </displaynames>
+  <options>
+    <option value="602170000" IsHidden="0">
+      <labels>
+        <label description="Minute Draft" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170001" IsHidden="0">
+      <labels>
+        <label description="Decision Extraction" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170002" IsHidden="0">
+      <labels>
+        <label description="Action Extraction" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170003" IsHidden="0">
+      <labels>
+        <label description="Classification" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170004" IsHidden="0">
+      <labels>
+        <label description="Summary" languagecode="1033" />
+      </labels>
+    </option>
+  </options>
+</optionset>

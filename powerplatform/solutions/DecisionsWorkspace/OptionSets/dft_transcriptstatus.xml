@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="dft_transcriptstatus" localizedName="transcriptStatus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <displaynames>
+    <displayname description="transcriptStatus" languagecode="1033" />
+  </displaynames>
+  <options>
+    <option value="602170000" IsHidden="0">
+      <labels>
+        <label description="Not Expected" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170001" IsHidden="0">
+      <labels>
+        <label description="Requested" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170002" IsHidden="0">
+      <labels>
+        <label description="Available" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170003" IsHidden="0">
+      <labels>
+        <label description="Processed" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170004" IsHidden="0">
+      <labels>
+        <label description="Redacted" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170005" IsHidden="0">
+      <labels>
+        <label description="Retained" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170006" IsHidden="0">
+      <labels>
+        <label description="Deleted" languagecode="1033" />
+      </labels>
+    </option>
+  </options>
+</optionset>

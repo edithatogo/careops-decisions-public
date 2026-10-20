@@ -1,0 +1,48 @@
+{
+  "profiles": [
+    {
+      "name": "local",
+      "purpose": "Repo validation without live Power Platform writes.",
+      "environmentUrl": "",
+      "solutionName": "DecisionsWorkspace",
+      "solutionDisplayName": "CareOps Decisions",
+      "publisherUniqueName": "DecisionsWorkspacePublisher",
+      "publisherPrefix": "dft",
+      "managed": false,
+      "allowLiveWrites": false
+    },
+    {
+      "name": "development",
+      "purpose": "Unmanaged development solution in the Dylan Power Platform environment.",
+      "environmentUrl": "https://environment.example.invalid/",
+      "solutionName": "DecisionsWorkspace",
+      "solutionDisplayName": "CareOps Decisions",
+      "publisherUniqueName": "DecisionsWorkspacePublisher",
+      "publisherPrefix": "dft",
+      "managed": false,
+      "allowLiveWrites": false
+    },
+    {
+      "name": "test",
+      "purpose": "Shared test import after development validation.",
+      "environmentUrl": "replace-with-test-environment-url",
+      "solutionName": "DecisionsWorkspace",
+      "solutionDisplayName": "CareOps Decisions",
+      "publisherUniqueName": "DecisionsWorkspacePublisher",
+      "publisherPrefix": "dft",
+      "managed": false,
+      "allowLiveWrites": false
+    },
+    {
+      "name": "enterprise",
+      "purpose": "Future managed deployment with Azure, Entra, Graph, and Power BI/Fabric readiness.",
+      "environmentUrl": "replace-after-enterprise-access-is-approved",
+      "solutionName": "DecisionsWorkspace",
+      "solutionDisplayName": "CareOps Decisions",
+      "publisherUniqueName": "DecisionsWorkspacePublisher",
+      "publisherPrefix": "dft",
+      "managed": true,
+      "allowLiveWrites": false
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "track-18-data-migration-bootstrap_20260502",
+  "status": "completed",
+  "closedOn": "2026-05-11",
+  "owner": "worker-data-bootstrap",
+  "parallelizable": true,
+  "dependsOn": [
+    "track-03-power-platform-architecture_20260502",
+    "track-09-governance-model_20260502",
+    "track-13-deployment-hardening-alm-entra-readiness_20260502"
+  ],
+  "workstreams": [
+    {"name": "Fixture packs", "status": "completed"},
+    {"name": "Import mapping templates", "status": "completed"},
+    {"name": "Bootstrap runbook", "status": "completed"},
+    {"name": "Schema migration policy", "status": "completed"},
+    {"name": "Data bootstrap contract validator", "status": "completed"}
+  ],
+  "completedArtifacts": [
+    "docs/operations/fixture-packs.md",
+    "powerplatform/src/seed/fixture-small.json",
+    "powerplatform/src/seed/fixture-medium.json",
+    "powerplatform/src/seed/fixture-edge.json",
+    "docs/operations/import-mapping-templates.md",
+    "docs/operations/bootstrap-runbook.md",
+    "docs/operations/schema-migration-policy.md",
+    "scripts/Test-DataBootstrapContracts.ps1"
+  ],
+  "closeoutEvidence": [
+    "Data bootstrap validator checks fixture pack shape, documented counts, import mappings against schema logical names, bootstrap sequence, and destructive-change policy controls.",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\Test-DataBootstrapContracts.ps1",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\Invoke-RepoValidation.ps1 -RequireImplementationScaffolds"
+  ]
+}

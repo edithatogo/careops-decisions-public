@@ -1,0 +1,999 @@
+{
+  "governanceBodies": [
+    {
+      "key": "gb-dms-executive",
+      "name": "DMS Executive Governance Forum",
+      "type": "Executive Forum",
+      "classification": "internal",
+      "status": "active",
+      "purpose": "Provide oversight of DMS decisions, risks, actions, and escalation points for the executive team.",
+      "defaultClassification": "internal",
+      "ownerPersonKey": "member-chair"
+    },
+    {
+      "key": "gb-clinical-governance-council",
+      "name": "Clinical Governance Council",
+      "type": "Council",
+      "classification": "confidential",
+      "status": "active",
+      "purpose": "Provide system-level clinical governance oversight across safety, quality, digital health, and medication risk.",
+      "defaultClassification": "confidential",
+      "ownerPersonKey": "member-cgc-chair"
+    },
+    {
+      "key": "gb-executive-risk-forum",
+      "name": "Executive Risk Forum",
+      "type": "Executive Forum",
+      "classification": "restricted",
+      "status": "active",
+      "purpose": "Review cross-cutting operational and clinical risk escalations before executive decision or board reporting.",
+      "defaultClassification": "restricted",
+      "ownerPersonKey": "member-risk-chair"
+    }
+  ],
+  "committees": [
+    {
+      "key": "committee-executive-team",
+      "governanceBodyKey": "gb-dms-executive",
+      "name": "Executive Team",
+      "type": "Executive Committee",
+      "classification": "internal",
+      "quorumNumber": 4,
+      "meetingCadence": "monthly",
+      "status": "active",
+      "ownerPersonKey": "member-chair"
+    },
+    {
+      "key": "committee-medication-safety",
+      "governanceBodyKey": "gb-clinical-governance-council",
+      "name": "Medication Safety Committee",
+      "type": "Committee",
+      "classification": "confidential",
+      "quorumNumber": 5,
+      "meetingCadence": "monthly",
+      "status": "active",
+      "ownerPersonKey": "member-msc-chair"
+    },
+    {
+      "key": "committee-clinical-quality",
+      "governanceBodyKey": "gb-clinical-governance-council",
+      "name": "Clinical Quality Committee",
+      "type": "Committee",
+      "classification": "confidential",
+      "quorumNumber": 4,
+      "meetingCadence": "monthly",
+      "status": "active",
+      "ownerPersonKey": "member-quality-chair"
+    },
+    {
+      "key": "committee-high-risk-medicines",
+      "governanceBodyKey": "committee-medication-safety",
+      "name": "High-Risk Medicines Working Group",
+      "type": "Working Group",
+      "classification": "confidential",
+      "quorumNumber": 3,
+      "meetingCadence": "fortnightly",
+      "status": "active",
+      "ownerPersonKey": "member-hrm-lead"
+    }
+  ],
+  "termsOfReference": [
+    {
+      "key": "tor-executive-team-v1",
+      "committeeKey": "committee-executive-team",
+      "title": "Executive Team Terms of Reference",
+      "version": "1.0",
+      "status": "current",
+      "effectiveFrom": "2026-04-01",
+      "reviewDate": "2026-12-31",
+      "authority": "Review DMS priorities, approve operational changes, and escalate strategic issues to the governance forum.",
+      "quorumNumber": 4,
+      "quorumDenominator": "members",
+      "approvalStatus": "approved",
+      "approvedOn": "2026-04-01T09:00:00+10:00"
+    },
+    {
+      "key": "tor-medication-safety-v1",
+      "committeeKey": "committee-medication-safety",
+      "title": "Medication Safety Committee Terms of Reference v1",
+      "version": "1.0",
+      "status": "superseded",
+      "effectiveFrom": "2025-01-01",
+      "reviewDate": "2025-12-31",
+      "authority": "Oversight of medication incidents, formulary risk, high-risk medicine controls, and escalation to the Clinical Governance Council.",
+      "quorumNumber": 4,
+      "quorumDenominator": "voting_members",
+      "approvalStatus": "approved",
+      "approvedOn": "2025-01-01T09:00:00+11:00"
+    },
+    {
+      "key": "tor-medication-safety-v2",
+      "committeeKey": "committee-medication-safety",
+      "title": "Medication Safety Committee Terms of Reference v2",
+      "version": "2.0",
+      "status": "current",
+      "effectiveFrom": "2026-01-01",
+      "reviewDate": "2026-12-31",
+      "authority": "Approve medication safety controls, monitor high-risk medicine actions, and escalate unresolved risk to the Clinical Governance Council.",
+      "quorumNumber": 5,
+      "quorumDenominator": "voting_members",
+      "approvalStatus": "approved",
+      "approvedOn": "2026-01-01T09:00:00+11:00"
+    },
+    {
+      "key": "tor-clinical-quality-v1",
+      "committeeKey": "committee-clinical-quality",
+      "title": "Clinical Quality Committee Terms of Reference",
+      "version": "1.0",
+      "status": "current",
+      "effectiveFrom": "2026-01-15",
+      "reviewDate": "2027-01-15",
+      "authority": "Review clinical quality indicators, improvement actions, and audit findings for escalation or closure.",
+      "quorumNumber": 4,
+      "quorumDenominator": "appointed_members",
+      "approvalStatus": "approved",
+      "approvedOn": "2026-01-15T09:00:00+11:00"
+    },
+    {
+      "key": "tor-high-risk-medicines-v1",
+      "committeeKey": "committee-high-risk-medicines",
+      "title": "High-Risk Medicines Working Group Terms of Reference",
+      "version": "1.0",
+      "status": "current",
+      "effectiveFrom": "2026-02-01",
+      "reviewDate": "2026-08-01",
+      "authority": "Prepare focused recommendations on anticoagulants, insulin, opioids, and other high-risk medicine controls.",
+      "quorumNumber": 3,
+      "quorumDenominator": "eligible_attendees",
+      "approvalStatus": "approved",
+      "approvedOn": "2026-02-01T09:00:00+11:00"
+    },
+    {
+      "key": "tor-retired-digital-forum-v1",
+      "committeeKey": "committee-clinical-quality",
+      "title": "Retired Digital Clinical Quality Forum Terms of Reference",
+      "version": "0.9",
+      "status": "archived",
+      "effectiveFrom": "2024-01-01",
+      "reviewDate": "2024-12-31",
+      "authority": "Historical digital quality forum retained for audit after consolidation into the Clinical Quality Committee.",
+      "quorumNumber": 3,
+      "quorumDenominator": "members",
+      "approvalStatus": "approved",
+      "approvedOn": "2024-01-01T09:00:00+11:00"
+    }
+  ],
+  "members": [
+    {
+      "key": "member-chair",
+      "committeeKey": "committee-executive-team",
+      "role": "chair",
+      "votingRights": true,
+      "displayName": "Dr Alex Morgan",
+      "mail": "alex.morgan@example.invalid",
+      "jobTitle": "Executive Director",
+      "department": "Digital Medical Services",
+      "managerMail": "sophie.watt@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-04-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-secretariat",
+      "committeeKey": "committee-executive-team",
+      "role": "secretary",
+      "votingRights": false,
+      "displayName": "Priya Shah",
+      "mail": "priya.shah@example.invalid",
+      "jobTitle": "Governance Coordinator",
+      "department": "Digital Medical Services",
+      "managerMail": "alex.morgan@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-04-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-operations",
+      "committeeKey": "committee-executive-team",
+      "role": "member",
+      "votingRights": true,
+      "displayName": "Jordan Lee",
+      "mail": "jordan.lee@example.invalid",
+      "jobTitle": "Operations Manager",
+      "department": "Digital Medical Services",
+      "managerMail": "priya.shah@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-04-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-quality",
+      "committeeKey": "committee-executive-team",
+      "role": "member",
+      "votingRights": true,
+      "displayName": "Mia Chen",
+      "mail": "mia.chen@example.invalid",
+      "jobTitle": "Quality Lead",
+      "department": "Digital Medical Services",
+      "managerMail": "alex.morgan@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-04-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-cgc-chair",
+      "committeeKey": "committee-medication-safety",
+      "role": "chair",
+      "votingRights": true,
+      "displayName": "Dr Sophie Watt",
+      "mail": "sophie.watt@example.invalid",
+      "jobTitle": "Director Clinical Governance",
+      "department": "Clinical Governance",
+      "managerMail": "alex.morgan@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-01-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-msc-chair",
+      "committeeKey": "committee-medication-safety",
+      "role": "chair",
+      "votingRights": true,
+      "displayName": "Dr Nathan Pike",
+      "mail": "nathan.pike@example.invalid",
+      "jobTitle": "Medication Safety Lead",
+      "department": "Pharmacy",
+      "managerMail": "sophie.watt@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-01-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-msc-secretary",
+      "committeeKey": "committee-medication-safety",
+      "role": "secretary",
+      "votingRights": false,
+      "displayName": "Amelia Grant",
+      "mail": "amelia.grant@example.invalid",
+      "jobTitle": "Medication Safety Secretariat",
+      "department": "Pharmacy",
+      "managerMail": "nathan.pike@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-01-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-msc-clinical",
+      "committeeKey": "committee-medication-safety",
+      "role": "member",
+      "votingRights": true,
+      "displayName": "Dr Hana Ibrahim",
+      "mail": "hana.ibrahim@example.invalid",
+      "jobTitle": "Clinical Director",
+      "department": "Medicine",
+      "managerMail": "sophie.watt@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-01-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-msc-alternate",
+      "committeeKey": "committee-medication-safety",
+      "role": "alternate",
+      "votingRights": true,
+      "displayName": "Oliver Stone",
+      "mail": "oliver.stone@example.invalid",
+      "jobTitle": "Deputy Pharmacy Lead",
+      "department": "Pharmacy",
+      "managerMail": "nathan.pike@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-02-01",
+      "isAlternate": true,
+      "alternateForKey": "member-msc-chair",
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-msc-observer",
+      "committeeKey": "committee-medication-safety",
+      "role": "observer",
+      "votingRights": false,
+      "displayName": "Liam Patel",
+      "mail": "liam.patel@example.invalid",
+      "jobTitle": "Clinical Risk Observer",
+      "department": "Risk",
+      "managerMail": "sophie.watt@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-02-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-quality-chair",
+      "committeeKey": "committee-clinical-quality",
+      "role": "chair",
+      "votingRights": true,
+      "displayName": "Dr Emily Walsh",
+      "mail": "emily.walsh@example.invalid",
+      "jobTitle": "Clinical Quality Director",
+      "department": "Quality",
+      "managerMail": "sophie.watt@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-01-15",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-hrm-lead",
+      "committeeKey": "committee-high-risk-medicines",
+      "role": "chair",
+      "votingRights": true,
+      "displayName": "Grace Novak",
+      "mail": "grace.novak@example.invalid",
+      "jobTitle": "High-Risk Medicines Lead",
+      "department": "Pharmacy",
+      "managerMail": "nathan.pike@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-02-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    },
+    {
+      "key": "member-risk-chair",
+      "committeeKey": "committee-executive-team",
+      "role": "deputy_chair",
+      "votingRights": true,
+      "displayName": "Ava Brooks",
+      "mail": "ava.brooks@example.invalid",
+      "jobTitle": "Executive Risk Lead",
+      "department": "Risk",
+      "managerMail": "alex.morgan@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-04-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-03T08:00:00+10:00"
+    }
+  ],
+  "orgRelationships": [
+    {
+      "key": "rel-secretariat-reports-to-chair",
+      "sourcePersonKey": "member-secretariat",
+      "targetPersonKey": "member-chair",
+      "relationshipType": "manager",
+      "effectiveFrom": "2026-04-01",
+      "source": "office365_users"
+    },
+    {
+      "key": "rel-ops-reports-to-secretariat",
+      "sourcePersonKey": "member-operations",
+      "targetPersonKey": "member-secretariat",
+      "relationshipType": "direct_report",
+      "effectiveFrom": "2026-04-01",
+      "source": "office365_users"
+    }
+  ],
+  "featureDefinitions": [
+    {
+      "key": "feature-voting",
+      "featureCode": "voting_enabled",
+      "name": "Voting",
+      "description": "Capture motions, ballots, abstentions, and voting outcomes for the meeting record.",
+      "category": "governance",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 10
+    },
+    {
+      "key": "feature-ai-minutes",
+      "featureCode": "ai_minutes_enabled",
+      "name": "AI Minutes",
+      "description": "Use AI Builder to draft minutes from transcript content with a human review gate.",
+      "category": "ai",
+      "scope": "switchboard",
+      "defaultEnabled": false,
+      "status": "active",
+      "sortOrder": 20
+    },
+    {
+      "key": "feature-transcript-import",
+      "featureCode": "transcript_import_enabled",
+      "name": "Transcript Import",
+      "description": "Import transcript evidence into the meeting record for drafting and review.",
+      "category": "capture",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 30
+    },
+    {
+      "key": "feature-planner-sync",
+      "featureCode": "planner_sync_enabled",
+      "name": "Planner Sync",
+      "description": "Send approved action items to Planner after the meeting is resolved.",
+      "category": "integration",
+      "scope": "switchboard",
+      "defaultEnabled": false,
+      "status": "active",
+      "sortOrder": 40
+    },
+    {
+      "key": "feature-teams-posts",
+      "featureCode": "teams_posts_enabled",
+      "name": "Teams Posts",
+      "description": "Publish meeting summaries or notifications into the Teams workspace.",
+      "category": "integration",
+      "scope": "switchboard",
+      "defaultEnabled": false,
+      "status": "active",
+      "sortOrder": 50
+    },
+    {
+      "key": "feature-sharepoint-papers-minutes",
+      "featureCode": "sharepoint_papers_minutes_enabled",
+      "name": "SharePoint Papers and Minutes",
+      "description": "Store papers and approved minutes in SharePoint document libraries.",
+      "category": "documents",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 60
+    },
+    {
+      "key": "feature-outlook-invites",
+      "featureCode": "outlook_invites_enabled",
+      "name": "Outlook Invites",
+      "description": "Send and sync meeting invitations through Outlook.",
+      "category": "calendar",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 70
+    },
+    {
+      "key": "feature-org-hierarchy",
+      "featureCode": "org_hierarchy_enabled",
+      "name": "Org Hierarchy",
+      "description": "Resolve membership, manager, and approval paths from the organizational hierarchy.",
+      "category": "identity",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 80
+    }
+  ],
+  "meetingSeriesFeatureDefaults": [
+    {
+      "key": "msfd-executive-team-voting",
+      "seriesKey": "series-executive-team-monthly",
+      "featureDefinitionKey": "feature-voting",
+      "name": "Executive Team Monthly Meeting - Voting",
+      "enabled": true,
+      "reason": "Committee decisions require a vote record for governance traceability.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T08:30:00+10:00"
+    },
+    {
+      "key": "msfd-executive-team-ai-minutes",
+      "seriesKey": "series-executive-team-monthly",
+      "featureDefinitionKey": "feature-ai-minutes",
+      "name": "Executive Team Monthly Meeting - AI Minutes",
+      "enabled": false,
+      "reason": "AI minutes remain off until a reviewed transcript source is available.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T08:30:00+10:00"
+    },
+    {
+      "key": "msfd-executive-team-transcript-import",
+      "seriesKey": "series-executive-team-monthly",
+      "featureDefinitionKey": "feature-transcript-import",
+      "name": "Executive Team Monthly Meeting - Transcript Import",
+      "enabled": true,
+      "reason": "Transcript import is available for draft support and review.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T08:30:00+10:00"
+    },
+    {
+      "key": "msfd-executive-team-planner-sync",
+      "seriesKey": "series-executive-team-monthly",
+      "featureDefinitionKey": "feature-planner-sync",
+      "name": "Executive Team Monthly Meeting - Planner Sync",
+      "enabled": false,
+      "reason": "Planner sync stays off until the target plan and owner are confirmed.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T08:30:00+10:00"
+    },
+    {
+      "key": "msfd-executive-team-teams-posts",
+      "seriesKey": "series-executive-team-monthly",
+      "featureDefinitionKey": "feature-teams-posts",
+      "name": "Executive Team Monthly Meeting - Teams Posts",
+      "enabled": false,
+      "reason": "Teams posting stays off until the target channel is confirmed.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T08:30:00+10:00"
+    },
+    {
+      "key": "msfd-executive-team-sharepoint-papers-minutes",
+      "seriesKey": "series-executive-team-monthly",
+      "featureDefinitionKey": "feature-sharepoint-papers-minutes",
+      "name": "Executive Team Monthly Meeting - SharePoint Papers and Minutes",
+      "enabled": true,
+      "reason": "Papers and approved minutes are stored in SharePoint by default.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T08:30:00+10:00"
+    },
+    {
+      "key": "msfd-executive-team-outlook-invites",
+      "seriesKey": "series-executive-team-monthly",
+      "featureDefinitionKey": "feature-outlook-invites",
+      "name": "Executive Team Monthly Meeting - Outlook Invites",
+      "enabled": true,
+      "reason": "The recurring series uses Outlook invitations for attendance management.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T08:30:00+10:00"
+    },
+    {
+      "key": "msfd-executive-team-org-hierarchy",
+      "seriesKey": "series-executive-team-monthly",
+      "featureDefinitionKey": "feature-org-hierarchy",
+      "name": "Executive Team Monthly Meeting - Org Hierarchy",
+      "enabled": true,
+      "reason": "Member resolution and approvals depend on the organization hierarchy cache.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T08:30:00+10:00"
+    }
+  ],
+  "meetingSeries": [
+    {
+      "key": "series-executive-team-monthly",
+      "committeeKey": "committee-executive-team",
+      "name": "Executive Team Monthly Meeting",
+      "cadence": "monthly",
+      "recurrenceRule": "FREQ=MONTHLY;BYDAY=TU;BYSETPOS=2",
+      "defaultDurationMinutes": 90,
+      "defaultLocation": "Boardroom 3B",
+      "defaultChannelId": "teams-channel-executive-team-placeholder",
+      "seriesStatus": "active",
+      "seriesOwnerPersonKey": "member-chair"
+    }
+  ],
+  "meetings": [
+    {
+      "key": "meeting-executive-team-2026-05-13",
+      "seriesKey": "series-executive-team-monthly",
+      "meetingNumber": 5,
+      "title": "Executive Team - 13 May 2026",
+      "status": "planned",
+      "classification": "internal",
+      "scheduledStartUtc": "2026-05-13T00:00:00Z",
+      "scheduledEndUtc": "2026-05-13T01:30:00Z",
+      "location": "Teams / Boardroom 3B",
+      "externalCalendarId": "calendar-dms-executive-team-2026-05-13",
+      "externalTeamsId": "teams-meeting-dms-executive-team-2026-05-13",
+      "chairPersonKey": "member-chair"
+    }
+  ],
+  "meetingFeatureOverrides": [
+    {
+      "key": "mfo-executive-team-2026-05-13-ai-minutes",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "featureDefinitionKey": "feature-ai-minutes",
+      "name": "Executive Team - 13 May 2026 - AI Minutes",
+      "enabled": true,
+      "reason": "Transcript review is available for this meeting, so AI draft minutes are enabled.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T09:00:00+10:00"
+    },
+    {
+      "key": "mfo-executive-team-2026-05-13-planner-sync",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "featureDefinitionKey": "feature-planner-sync",
+      "name": "Executive Team - 13 May 2026 - Planner Sync",
+      "enabled": true,
+      "reason": "Open actions for this meeting should sync to Planner after approval.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T09:00:00+10:00"
+    },
+    {
+      "key": "mfo-executive-team-2026-05-13-teams-posts",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "featureDefinitionKey": "feature-teams-posts",
+      "name": "Executive Team - 13 May 2026 - Teams Posts",
+      "enabled": true,
+      "reason": "Approved meeting outcomes should be posted to Teams for the committee channel.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-03T09:00:00+10:00"
+    }
+  ],
+  "agendaItems": [
+    {
+      "key": "agenda-01",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "sequence": 1,
+      "title": "Welcome, attendance, apologies, and conflicts",
+      "purpose": "information",
+      "presenterPersonKey": "member-secretariat",
+      "durationMinutes": 10,
+      "decisionSought": false,
+      "status": "planned"
+    },
+    {
+      "key": "agenda-02",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "sequence": 2,
+      "title": "DMS service performance and incidents",
+      "purpose": "discussion",
+      "presenterPersonKey": "member-operations",
+      "durationMinutes": 35,
+      "decisionSought": true,
+      "status": "ready"
+    },
+    {
+      "key": "agenda-03",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "sequence": 3,
+      "title": "Operating cadence and Planner follow-ups",
+      "purpose": "decision",
+      "presenterPersonKey": "member-chair",
+      "durationMinutes": 25,
+      "decisionSought": true,
+      "status": "planned"
+    }
+  ],
+  "papers": [
+    {
+      "key": "paper-performance-pack",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "agendaItemKey": "agenda-02",
+      "title": "DMS Service Performance Pack",
+      "documentId": "paper-dms-service-performance-pack-2026-05",
+      "documentSource": "sharepoint",
+      "classification": "internal",
+      "paperStatus": "circulated",
+      "ownerPersonKey": "member-operations",
+      "sharepointUrl": "https://contoso.sharepoint.com/sites/decisions-workspace/Shared Documents/Executive Team/DMS Service Performance Pack.pdf"
+    },
+    {
+      "key": "paper-cadence-options",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "agendaItemKey": "agenda-03",
+      "title": "Operating Cadence and Planner Follow-up Options",
+      "documentId": "paper-dms-cadence-options-2026-05",
+      "documentSource": "sharepoint",
+      "classification": "internal",
+      "paperStatus": "draft",
+      "ownerPersonKey": "member-chair",
+      "sharepointUrl": "https://contoso.sharepoint.com/sites/decisions-workspace/Shared Documents/Executive Team/Operating Cadence and Planner Follow-up Options.docx"
+    }
+  ],
+  "minutes": [
+    {
+      "key": "minutes-executive-team-2026-05-13-v1",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "version": 1,
+      "title": "Executive Team Minutes - Draft",
+      "status": "draft",
+      "draftText": "Draft minutes capture attendance, performance discussion, and the proposed follow-up actions for the 13 May 2026 meeting.",
+      "classification": "internal"
+    },
+    {
+      "key": "minutes-executive-team-2026-05-13-v2",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "version": 2,
+      "title": "Executive Team Minutes - Approved",
+      "status": "approved",
+      "draftText": "Approved minutes capture the attendance record, the endorsed performance pack, and the action items assigned at the 13 May 2026 meeting.",
+      "approvedByPersonKey": "member-chair",
+      "approvedOn": "2026-05-14T09:15:00+10:00",
+      "publishedOn": "2026-05-14T10:00:00+10:00",
+      "publishedUrl": "https://contoso.sharepoint.com/sites/decisions-workspace/Shared Documents/Executive Team/Minutes/Executive Team Minutes - Approved.docx",
+      "classification": "internal"
+    },
+    {
+      "key": "minutes-executive-team-2026-05-13-v3",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "version": 3,
+      "title": "Executive Team Minutes - Published",
+      "status": "published",
+      "draftText": "Published minutes record the approved decisions, actions, attendance, and distribution evidence for the 13 May 2026 meeting.",
+      "approvedByPersonKey": "member-chair",
+      "approvedOn": "2026-05-14T09:15:00+10:00",
+      "publishedOn": "2026-05-14T10:30:00+10:00",
+      "publishedUrl": "https://contoso.sharepoint.com/sites/decisions-workspace/Shared Documents/Executive Team/Minutes/Executive Team Minutes - Published.pdf",
+      "sharepointSiteId": "site-decisions-workspace",
+      "sharepointDriveId": "drive-executive-team",
+      "sharepointItemId": "item-minutes-published-20260513",
+      "classification": "internal"
+    }
+  ],
+  "decisions": [
+    {
+      "key": "decision-001",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "agendaItemKey": "agenda-02",
+      "decisionNumber": "DEC-001",
+      "title": "Approve DMS service performance reporting pack",
+      "decisionText": "The Executive Team approved the service performance reporting pack for circulation to the governance forum.",
+      "authority": "Operational governance",
+      "status": "resolved",
+      "effectiveOn": "2026-05-13",
+      "reviewDueOn": "2026-08-13",
+      "ownerPersonKey": "member-chair",
+      "classification": "internal"
+    },
+    {
+      "key": "decision-002",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "agendaItemKey": "agenda-03",
+      "decisionNumber": "DEC-002",
+      "title": "Confirm monthly cadence and Planner follow-up workflow",
+      "decisionText": "The Executive Team confirmed the monthly meeting cadence and directed open follow-up actions into Planner when sync is enabled.",
+      "authority": "Executive governance",
+      "status": "resolved",
+      "effectiveOn": "2026-05-13",
+      "reviewDueOn": "2026-11-13",
+      "ownerPersonKey": "member-secretariat",
+      "classification": "internal"
+    }
+  ],
+  "actions": [
+    {
+      "key": "action-001",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "agendaItemKey": "agenda-02",
+      "decisionKey": "decision-001",
+      "actionNumber": "ACT-001",
+      "title": "Prepare service remediation schedule",
+      "ownerPersonKey": "member-operations",
+      "dueDate": "2026-05-27",
+      "status": "open",
+      "priority": "high",
+      "plannerTaskId": "planner-task-dms-001",
+      "completionEvidence": "planner://placeholder/task/planner-task-dms-001"
+    },
+    {
+      "key": "action-002",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "agendaItemKey": "agenda-03",
+      "decisionKey": "decision-002",
+      "actionNumber": "ACT-002",
+      "title": "Publish approved minutes and distribute the paper pack",
+      "ownerPersonKey": "member-secretariat",
+      "dueDate": "2026-05-16",
+      "status": "in_progress",
+      "priority": "normal",
+      "plannerTaskId": "planner-task-dms-002",
+      "completionEvidence": "sharepoint://placeholder/minutes/executive-team"
+    }
+  ],
+  "attendees": [
+    {
+      "key": "attendee-exec-chair",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "personKey": "member-chair",
+      "displayName": "Executive Chair",
+      "response": "accepted",
+      "attendanceStatus": "present",
+      "attendeeRole": "chair",
+      "isProxy": false,
+      "votingEligible": true,
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-06T09:18:00+10:00",
+      "outlookAttendeeId": "outlook-attendee-exec-chair"
+    },
+    {
+      "key": "attendee-exec-secretariat",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "personKey": "member-secretariat",
+      "displayName": "Executive Secretariat",
+      "response": "accepted",
+      "attendanceStatus": "present",
+      "attendeeRole": "secretary",
+      "isProxy": false,
+      "votingEligible": false,
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-06T09:21:00+10:00",
+      "outlookAttendeeId": "outlook-attendee-exec-secretariat"
+    },
+    {
+      "key": "attendee-exec-operations",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "personKey": "member-operations",
+      "displayName": "Operations Lead",
+      "response": "accepted",
+      "attendanceStatus": "present",
+      "attendeeRole": "required",
+      "isProxy": false,
+      "votingEligible": true,
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-06T09:25:00+10:00",
+      "outlookAttendeeId": "outlook-attendee-exec-operations"
+    },
+    {
+      "key": "attendee-exec-quality-apology",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "personKey": "member-quality",
+      "displayName": "Quality Lead",
+      "response": "declined",
+      "attendanceStatus": "apology",
+      "attendeeRole": "required",
+      "isProxy": false,
+      "votingEligible": true,
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-07T10:30:00+10:00",
+      "outlookAttendeeId": "outlook-attendee-exec-quality"
+    },
+    {
+      "key": "attendee-exec-quality-proxy",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "personKey": "member-quality-chair",
+      "displayName": "Clinical Quality Chair",
+      "response": "accepted",
+      "attendanceStatus": "present",
+      "attendeeRole": "proxy",
+      "isProxy": true,
+      "votingEligible": true,
+      "invitedOn": "2026-05-07T11:00:00+10:00",
+      "responseUpdatedOn": "2026-05-07T11:15:00+10:00",
+      "outlookAttendeeId": "outlook-attendee-exec-quality-proxy"
+    },
+    {
+      "key": "attendee-exec-observer",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "personKey": "member-msc-observer",
+      "displayName": "Medication Safety Observer",
+      "response": "tentative",
+      "attendanceStatus": "late",
+      "attendeeRole": "observer",
+      "isProxy": false,
+      "votingEligible": false,
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-08T08:45:00+10:00",
+      "outlookAttendeeId": "outlook-attendee-exec-observer"
+    },
+    {
+      "key": "attendee-external-guest",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "displayName": "External DMS Guest Presenter",
+      "emailAddress": "external.presenter@example.invalid",
+      "response": "accepted",
+      "attendanceStatus": "present",
+      "attendeeRole": "guest",
+      "isProxy": false,
+      "votingEligible": false,
+      "invitedOn": "2026-05-06T09:30:00+10:00",
+      "responseUpdatedOn": "2026-05-06T12:00:00+10:00",
+      "outlookAttendeeId": "outlook-attendee-external-guest"
+    }
+  ],
+  "transcripts": [
+    {
+      "key": "transcript-exec-team-2026-05-13-manual",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "title": "Executive Team Monthly Meeting - Manual Transcript Import",
+      "source": "manual",
+      "status": "processed",
+      "classification": "internal",
+      "transcriptText": "Chair opened the meeting and confirmed quorum. Quality Lead sent an apology and Clinical Quality Chair attended as proxy. The team reviewed the DMS service performance reporting pack, approved circulation to the governance forum, and assigned Operations Lead to prepare a remediation schedule. Secretariat confirmed the monthly meeting cadence and Planner follow-up workflow.",
+      "sourceHash": "sha256-synthetic-exec-team-transcript",
+      "processedOn": "2026-05-13T11:30:00+10:00",
+      "retentionStatus": "retained"
+    }
+  ],
+  "aiBuilderPrompts": [
+    {
+      "key": "prompt-transcript-to-minutes-v1",
+      "promptCode": "transcript_to_minutes",
+      "promptName": "Decisions Workspace - Transcript to Minutes",
+      "version": "1.0",
+      "purpose": "minutes_draft",
+      "inputType": "transcript",
+      "outputSchema": "{\"minutesDraft\":\"string\",\"candidateDecisions\":[{\"title\":\"string\",\"decisionText\":\"string\"}],\"candidateActions\":[{\"title\":\"string\",\"owner\":\"string\",\"dueDate\":\"date\"}],\"risks\":[\"string\"],\"unresolvedItems\":[\"string\"]}",
+      "approvalStatus": "approved",
+      "classificationLimit": "internal",
+      "promptText": "Draft agenda-structured minutes from the transcript. Extract candidate decisions, actions, risks, and unresolved items. Mark all output as draft pending human review."
+    }
+  ],
+  "aiBuilderRuns": [
+    {
+      "key": "aibuilder-run-exec-team-2026-05-13-draft",
+      "name": "AI Builder Run - Executive Team Draft Minutes",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "minutesKey": "minutes-executive-team-2026-05-13-v1",
+      "transcriptKey": "transcript-exec-team-2026-05-13-manual",
+      "promptKey": "prompt-transcript-to-minutes-v1",
+      "inputHash": "sha256-synthetic-exec-team-transcript",
+      "outputHash": "sha256-synthetic-exec-team-ai-output",
+      "runStatus": "completed",
+      "humanReviewStatus": "pending_review",
+      "reviewerPersonKey": "member-secretariat",
+      "correlationId": "ai-exec-team-20260513-001",
+      "outputText": "{\"minutesDraft\":\"Draft minutes record quorum, apology, proxy attendance, performance pack approval, monthly cadence confirmation, and Planner follow-up workflow.\",\"candidateDecisions\":[{\"title\":\"Approve DMS service performance reporting pack\",\"decisionText\":\"Approved for circulation to the governance forum.\"},{\"title\":\"Confirm monthly cadence and Planner follow-up workflow\",\"decisionText\":\"Monthly cadence confirmed and open follow-up actions directed into Planner when sync is enabled.\"}],\"candidateActions\":[{\"title\":\"Prepare service remediation schedule\",\"owner\":\"Operations Lead\",\"dueDate\":\"2026-05-27\"},{\"title\":\"Publish approved minutes and distribute the paper pack\",\"owner\":\"Executive Secretariat\",\"dueDate\":\"2026-05-16\"}],\"risks\":[\"Planner sync remains connector-gated.\"],\"unresolvedItems\":[\"Confirm live Teams and Planner connector references before activation.\"]}",
+      "reviewComments": "Synthetic output seeded for human-review queue validation; not approved for publication."
+    }
+  ],
+  "accessRules": [
+    {
+      "key": "access-body-internal",
+      "scope": "body_wide",
+      "ruleType": "allow",
+      "classification": "internal",
+      "governanceBodyKey": "gb-dms-executive",
+      "ruleSummary": "Executive Team members, the secretariat, and invited observers can read internal governance records."
+    },
+    {
+      "key": "access-meeting-confidential",
+      "scope": "meeting_only",
+      "ruleType": "review",
+      "classification": "confidential",
+      "meetingKey": "meeting-executive-team-2026-05-13",
+      "ruleSummary": "Confidential meeting packs require secretary review before external sharing."
+    },
+    {
+      "key": "access-paper-circulation",
+      "scope": "document_only",
+      "ruleType": "allow",
+      "classification": "internal",
+      "paperKey": "paper-performance-pack",
+      "ruleSummary": "Executive Team papers may be circulated to committee members and uploaded to SharePoint."
+    }
+  ],
+  "integrationBindings": [
+    {
+      "key": "binding-teams-team",
+      "targetSystem": "Teams",
+      "settingName": "decisions_TeamsTeamId",
+      "exampleValue": "00000000-0000-0000-0000-000000000000",
+      "purpose": "Teams workspace binding for governance notifications.",
+      "targetRecordKey": "gb-dms-executive"
+    },
+    {
+      "key": "binding-teams-channel",
+      "targetSystem": "Teams",
+      "settingName": "decisions_TeamsChannelId",
+      "exampleValue": "00000000-0000-0000-0000-000000000000",
+      "purpose": "Teams channel binding for governance notifications.",
+      "targetRecordKey": "meeting-executive-team-2026-05-13"
+    },
+    {
+      "key": "binding-planner-plan",
+      "targetSystem": "Planner",
+      "settingName": "decisions_PlannerPlanId",
+      "exampleValue": "planner-plan-id",
+      "purpose": "Planner plan binding for action follow-up items.",
+      "targetRecordKey": "action-001"
+    },
+    {
+      "key": "binding-sharepoint-site",
+      "targetSystem": "SharePoint",
+      "settingName": "decisions_SharePointSiteUrl",
+      "exampleValue": "https://contoso.sharepoint.com/sites/decisions-workspace",
+      "purpose": "SharePoint site binding for papers and minutes.",
+      "targetRecordKey": "paper-performance-pack"
+    },
+    {
+      "key": "binding-minutes-library",
+      "targetSystem": "SharePoint",
+      "settingName": "decisions_MinutesLibraryName",
+      "exampleValue": "Shared Documents",
+      "purpose": "Document library binding for agendas, papers, minutes, and packs.",
+      "targetRecordKey": "minutes-executive-team-2026-05-13-v2"
+    },
+    {
+      "key": "binding-ai-builder-prompt",
+      "targetSystem": "AI Builder",
+      "settingName": "decisions_AiBuilderPromptName",
+      "exampleValue": "Decisions Workspace - Transcript to Minutes",
+      "purpose": "Optional prompt binding for transcript-to-minutes processing.",
+      "targetRecordKey": "minutes-executive-team-2026-05-13-v1"
+    }
+  ]
+}

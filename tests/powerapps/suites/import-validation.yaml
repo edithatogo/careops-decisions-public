@@ -1,0 +1,124 @@
+name: import-validation
+displayName: Sample import validation
+status: scaffold
+intent: >
+  Validate that the sample seed data can be imported, that record counts match
+  expected thresholds, and that relationships between seeded records remain
+  intact after import and re-import. All tests in this suite are local
+  (Dataverse-first) and do not require live connectors.
+appReadiness: app-not-yet-created
+readiness: local
+selectors:
+  screen: scrGovernanceBody
+  navigation:
+    refreshCommand: btnRefreshGovernanceBodyList
+  fields:
+    governanceBodyList: galGovernanceBodyList
+    committeeList: galCommitteeList
+    meetingList: galMeetingList
+    decisionList: galDecisionRegister
+    actionList: galActionList
+tests:
+  - id: IMP-01
+    title: seed record counts match expected thresholds
+    intent: Confirm the import produces the minimum expected record counts per entity.
+    readiness: local
+    preconditions:
+      - sample-governance-data.json exists
+      - seed import script has been executed
+    actions:
+      - open: scrGovernanceBody
+      - invoke: btnRefreshGovernanceBodyList
+    assertions:
+      - at least one governance body is visible
+      - at least one committee is visible
+      - at least one terms-of-reference record is visible
+      - at least three members are visible with chair, secretariat, and member roles
+      - at least one meeting series is visible
+      - at least one meeting is visible
+      - at least two agenda items are visible
+      - at least one decision is visible
+      - at least one action is visible
+    notes:
+      - counts validated against sample-governance-data.json thresholds
+      - re-run after any seed data changes
+
+  - id: IMP-02
+    title: seed record relationship integrity
+    intent: Verify that seeded record relationships (meeting→body, agenda→meeting, decision→meeting) survive import.
+    readiness: local
+    preconditions:
+      - seed records are imported (IMP-01 passed)
+    actions:
+      - open: scrGovernanceBody
+      - open: scrMeetingAgenda
+    assertions:
+      - meetings reference a valid governance body
+      - agenda items reference the correct meeting
+      - decision records reference the correct meeting and agenda item
+      - action records reference the correct owner
+      - feature overrides reference a valid feature definition
+    notes:
+      - validates foreign-key integrity after import
+
+  - id: IMP-03
+    title: re-import idempotency
+    intent: Confirm that re-running the seed import does not create duplicate records or break relationships.
+    readiness: local
+    preconditions:
+      - seed records exist from previous import pass
+    actions:
+      - invoke: btnRefreshGovernanceBodyList
+    assertions:
+      - record counts do not exceed the expected seed thresholds after re-run
+      - no duplicate names or keys are visible
+      - existing relationships remain intact
+    notes:
+      - idempotent upsert is required for development reset cycles
+
+  - id: IMP-04
+    title: eight feature definitions seeded
+    intent: Confirm all eight feature switchboard definitions are present after seed import.
+    readiness: local
+    preconditions:
+      - seed import completed
+    actions:
+      - open: scrFeatureSwitchboard
+      - invoke: btnRefreshFeatureSwitchboard
+    assertions:
+      - at least eight feature definitions are visible
+      - feature categories include governance, ai, capture, integration, documents, calendar, identity
+      - each definition has a status of active
+    notes:
+      - matches the eight featureDefinition entries in sample-governance-data.json
+
+  - id: IMP-05
+    title: eight meeting series feature defaults seeded
+    intent: Confirm eight meeting-series feature defaults are present and mapped to the seeded series.
+    readiness: local
+    preconditions:
+      - seed import completed
+    actions:
+      - open: scrFeatureSwitchboard
+    assertions:
+      - eight feature default records are present for the executive team series
+      - each default maps to the series-executive-team-monthly series
+      - enabled states match seed expectations
+    notes:
+      - validates meetingSeriesFeatureDefaults section of seed JSON
+
+  - id: IMP-06
+    title: three meeting-level feature overrides seeded
+    intent: Confirm three meeting-level feature overrides are present for the seeded meeting.
+    readiness: local
+    preconditions:
+      - seed import completed
+      - meeting record exists
+    actions:
+      - open: scrFeatureSwitchboard
+    assertions:
+      - at least three meeting-level overrides are visible
+      - each override includes a feature definition reference
+      - each override includes a reason
+    notes:
+      - meeting-level overrides demonstrate per-instance customization

@@ -1,0 +1,114 @@
+schema: decisions.workspace.flow-catalog.v1
+solution: DecisionsWorkspace
+generatedOn: 2026-05-10
+flows:
+  - name: planner-sync
+    file: powerplatform/src/flows/planner-sync.yaml
+    displayName: Planner Task Sync
+    track: track-06-automation-integrations_20260502
+    purpose: Create and update Planner tasks for decision and action follow-through.
+    connectors:
+      - Dataverse
+      - Planner
+    envVars:
+      - decisions_PlannerPlanId
+      - decisions_IntegrationLogRetentionDays
+    bindingCandidates:
+      - target: decisions_PlannerPlanId
+        source: DMS Workplan plan
+        value: fictional-planner-plan
+        scope: optional local dev-space binding
+    idempotencyKey: dft_PlannerTaskId
+    testHook: planner-sync-manual-replay
+  - name: outlook-invite-sync
+    file: powerplatform/src/flows/outlook-invite-sync.yaml
+    displayName: Outlook Invite Sync
+    track: track-11-invites-attendees_20260502
+    purpose: Create or update Outlook calendar invites for meeting records.
+    connectors:
+      - Dataverse
+      - Office 365 Outlook
+    envVars:
+      - decisions_IntegrationLogRetentionDays
+    idempotencyKey: dft_OutlookEventId
+    testHook: outlook-invite-sync-dry-run
+  - name: teams-summary-post
+    file: powerplatform/src/flows/teams-summary-post.yaml
+    displayName: Teams Summary Post
+    track: track-06-automation-integrations_20260502
+    purpose: Post meeting and action summaries into the configured Teams channel.
+    connectors:
+      - Dataverse
+      - Microsoft Teams
+    envVars:
+      - decisions_TeamsTeamId
+      - decisions_TeamsChannelId
+      - decisions_IntegrationLogRetentionDays
+    bindingCandidates:
+      - target: decisions_TeamsTeamId
+        source: DMS Executive Team group
+        value: 11111111-1111-4111-8111-111111111111
+        scope: optional local dev-space binding
+      - target: decisions_SharePointSiteUrl
+        source: DMS Executive Team SharePoint site
+        value: https://example.invalid/sites/decisions
+        scope: optional local dev-space binding for future file links
+    idempotencyKey: dft_LastSummaryPostKey
+    testHook: teams-summary-post-preview
+  - name: org-hierarchy-sync
+    file: powerplatform/src/flows/org-hierarchy-sync.yaml
+    displayName: Org Hierarchy Sync
+    track: track-08-microsoft-platform-integration_20260502
+    purpose: Cache Office 365 Users profile and reporting hierarchy data in Dataverse.
+    connectors:
+      - Dataverse
+      - Office 365 Users
+    envVars:
+      - decisions_IntegrationLogRetentionDays
+    idempotencyKey: dft_OrgPersonObjectId
+    testHook: org-hierarchy-sync-manual-refresh
+  - name: reminders
+    file: powerplatform/src/flows/reminders.yaml
+    displayName: Reminders
+    track: track-06-automation-integrations_20260502
+    purpose: Send scheduled reminder notifications for upcoming meetings.
+    connectors:
+      - Dataverse
+    envVars:
+      - decisions_ReminderWindowHours
+      - decisions_IntegrationLogRetentionDays
+    idempotencyKey: dft_MeetingId
+    testHook: reminders-daily-run
+  - name: sharepoint-file-registration
+    file: powerplatform/src/flows/sharepoint-file-registration.yaml
+    displayName: SharePoint File Registration
+    track: track-06-automation-integrations_20260502
+    purpose: Register SharePoint file metadata against paper records in Dataverse.
+    connectors:
+      - Dataverse
+      - SharePoint
+    envVars:
+      - decisions_SharePointSiteUrl
+      - decisions_IntegrationLogRetentionDays
+    bindingCandidates:
+      - target: decisions_SharePointSiteUrl
+        source: DMS Executive Team SharePoint site
+        value: https://example.invalid/sites/decisions
+        scope: optional local dev-space binding for SharePoint connector resolution
+    idempotencyKey: dft_DocumentId
+    testHook: sharepoint-file-registration-dry-run
+  - name: ai-transcript-minutes
+    file: powerplatform/src/flows/ai-transcript-minutes.yaml
+    displayName: AI Transcript Minutes
+    track: track-12-ai-transcripts-minutes_20260502
+    purpose: Turn transcript text into reviewed draft minutes, decisions, actions, and risks.
+    connectors:
+      - Dataverse
+      - AI Builder
+    envVars:
+      - decisions_EnableAiBuilderMinutes
+      - decisions_AiBuilderPromptName
+      - decisions_IntegrationLogRetentionDays
+    reviewGate: human-review-required
+    idempotencyKey: dft_AiBuilderRunId
+    testHook: ai-transcript-minutes-sample-run

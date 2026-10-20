@@ -1,0 +1,191 @@
+schema: decisions.workspace.flow.v1
+flow:
+  name: org-hierarchy-sync
+  displayName: Org Hierarchy Sync
+  solution: DecisionsWorkspace
+  track: track-08-microsoft-platform-integration_20260502
+  status: scaffold
+  trigger:
+    type: manual-or-scheduled
+    schedule:
+      frequency: weekly
+      dayOfWeek: Monday
+    manualInputs:
+      - userPrincipalName
+      - committeeMemberOnly
+  inputs:
+    environmentVariables:
+      - decisions_IntegrationLogRetentionDays
+    readinessChecks:
+      - Office 365 Users connector is available before profile and manager lookups run
+      - manual scope is checked before Office 365 Users lookups run so disabled runs can still record a skipped integration log
+      - manual runs supply a userPrincipalName or committeeMemberOnly scope
+      - missing managers are handled as warnings, not hard failures
+      - a missing Office 365 Users connector or permission should be logged as skipped work, not treated as a runtime failure
+    sourceFields:
+      - dft_OrgPersonId
+      - dft_DisplayName
+      - dft_Mail
+      - dft_UserPrincipalName
+      - dft_JobTitle
+      - dft_Department
+      - dft_ManagerMail
+      - dft_ObjectId
+      - dft_LastHierarchySyncOn
+      - dft_HierarchySyncState
+  outputs:
+    dataverseWrites:
+      - dft_OrgPerson
+      - dft_OrgRelationship
+      - dft_IntegrationLog
+  idempotency:
+    strategy: upsert-by-object-id
+    keyFields:
+      - dft_ObjectId
+      - dft_UserPrincipalName
+    replayGuard: object id + manager chain snapshot
+  environmentVariableMapping:
+    - variable: decisions_IntegrationLogRetentionDays
+      type: Number
+      purpose: Retention period for integration log entries
+      usedInStep: all
+      sampleValue: "90"
+  retryPolicy:
+    type: exponential
+    count: 3
+    interval: PT30S
+  connectorCalls:
+    - connector: Dataverse
+      action: List rows
+      table: dft_CommitteeMembership
+    - connector: Office 365 Users
+      action: Get user profile
+    - connector: Office 365 Users
+      action: Get manager
+    - connector: Office 365 Users
+      action: List direct reports
+    - connector: Dataverse
+      action: Upsert row
+      table: dft_OrgPerson
+    - connector: Dataverse
+      action: Upsert row
+      table: dft_OrgRelationship
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_IntegrationLog
+  steps:
+    - name: check-manual-scope
+      kind: condition
+      when:
+        all:
+          - manualInputs.userPrincipalName is empty
+          - manualInputs.committeeMemberOnly equals false
+      then:
+        - name: log-not-enabled
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Office 365 Users
+            targetSystem: Dataverse
+            recordType: OrgPerson
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: Org hierarchy sync is disabled until a userPrincipalName or committeeMemberOnly scope is supplied and the Office 365 Users connector is available.
+    - name: select-sync-scope
+      kind: condition
+      when:
+        any:
+          - manualInputs.userPrincipalName is provided
+          - manualInputs.committeeMemberOnly equals true
+      then:
+        - name: load-committee-members
+          kind: dataverse.listRows
+          table: dft_CommitteeMembership
+      else:
+        - name: load-all-people
+          kind: dataverse.listRows
+          table: dft_OrgPerson
+    - name: fetch-profile
+      kind: office365users.getUserProfile
+      map:
+        userPrincipalName: manualInputs.userPrincipalName or dft_UserPrincipalName
+    - name: fetch-manager
+      kind: office365users.getManager
+      map:
+        userPrincipalName: "@{outputs('fetch-profile').userPrincipalName}"
+    - name: handle-missing-manager
+      kind: condition
+      when:
+        any:
+          - outputs('fetch-manager').id is empty
+      then:
+        - name: log-warning
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Office 365 Users
+            targetSystem: Dataverse
+            recordType: OrgPerson
+            relatedRecordId: "@{outputs('fetch-profile').id}"
+            correlationId: "@{workflow().run.name}"
+            status: Warning
+            message: Manager lookup returned no result; hierarchy sync will continue with a handled warning.
+    - name: fetch-direct-reports
+      kind: office365users.listDirectReports
+      map:
+        userPrincipalName: "@{outputs('fetch-profile').userPrincipalName}"
+    - name: upsert-org-person
+      kind: dataverse.upsertRow
+      table: dft_OrgPerson
+      values:
+        dft_DisplayName: "@{outputs('fetch-profile').displayName}"
+        dft_Mail: "@{outputs('fetch-profile').mail}"
+        dft_UserPrincipalName: "@{outputs('fetch-profile').userPrincipalName}"
+        dft_JobTitle: "@{outputs('fetch-profile').jobTitle}"
+        dft_Department: "@{outputs('fetch-profile').department}"
+        dft_ManagerMail: "@{outputs('fetch-manager').mail}"
+        dft_ObjectId: "@{outputs('fetch-profile').id}"
+        dft_LastHierarchySyncOn: "@{utcNow()}"
+        dft_HierarchySyncState: Succeeded
+    - name: upsert-org-relationships
+      kind: foreach
+      items:
+        - manager
+        - directReports
+      do:
+        - kind: dataverse.upsertRow
+          table: dft_OrgRelationship
+          values:
+            dft_ParentObjectId: "@{outputs('fetch-manager').id}"
+            dft_ChildObjectId: "@{outputs('fetch-profile').id}"
+    - name: write-success-log
+      kind: dataverse.createRow
+      table: dft_IntegrationLog
+      values:
+        sourceSystem: Office 365 Users
+        targetSystem: Dataverse
+        recordType: OrgPerson
+        relatedRecordId: "@{outputs('upsert-org-person').id}"
+        correlationId: "@{workflow().run.name}"
+        status: Succeeded
+        message: Org hierarchy synchronized.
+    - name: handle-failure
+      kind: scope
+      onError:
+        - kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Office 365 Users
+            targetSystem: Dataverse
+            recordType: OrgPerson
+            correlationId: "@{workflow().run.name}"
+            status: Failed
+            message: "@{workflow().error.message}"
+            retryCount: 0
+testHooks:
+  - name: org-hierarchy-sync-manual-refresh
+    description: Sync a single known user and verify profile, manager, and relationship rows are refreshed in Dataverse.
+    expected:
+      - org person row upserted by object id
+      - manager relationship written
+      - integration log success row written

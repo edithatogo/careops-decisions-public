@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="dft_governancebodytype" localizedName="governanceBodyType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <displaynames>
+    <displayname description="governanceBodyType" languagecode="1033" />
+  </displaynames>
+  <options>
+    <option value="602170000" IsHidden="0">
+      <labels>
+        <label description="Board" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170001" IsHidden="0">
+      <labels>
+        <label description="Council" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170002" IsHidden="0">
+      <labels>
+        <label description="Committee" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170003" IsHidden="0">
+      <labels>
+        <label description="Subcommittee" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170004" IsHidden="0">
+      <labels>
+        <label description="Working Group" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170005" IsHidden="0">
+      <labels>
+        <label description="Project Board" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170006" IsHidden="0">
+      <labels>
+        <label description="Executive Forum" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170007" IsHidden="0">
+      <labels>
+        <label description="Advisory Panel" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170008" IsHidden="0">
+      <labels>
+        <label description="Task Force" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170009" IsHidden="0">
+      <labels>
+        <label description="Other" languagecode="1033" />
+      </labels>
+    </option>
+  </options>
+</optionset>

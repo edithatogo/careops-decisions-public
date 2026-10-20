@@ -1,0 +1,64 @@
+name: Native Dataverse register schema
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  schema:
+    name: Native SDK register schema tests
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          global-json-file: global.json
+      - name: Locked restore and runtime evidence
+        shell: pwsh
+        run: |
+          dotnet --info
+          dotnet restore tests/native_register_schema/RegisterSchema.Tests.csproj --locked-mode
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git diff --exit-code -- powerplatform/native/RegisterSchema/packages.lock.json tests/native_register_schema/packages.lock.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile and test native SDK metadata without a tenant connection
+        shell: pwsh
+        run: |
+          dotnet test tests/native_register_schema/RegisterSchema.Tests.csproj -c Release --no-restore -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura "-p:CoverletOutput=$($PWD.Path)/artifacts/native-register-schema/" "-p:Include=[CareOps.Decisions.RegisterSchema]*" --logger "trx;LogFileName=native-register-schema.trx" --results-directory artifacts/native-register-schema
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Require actual tests and complete builder coverage
+        shell: pwsh
+        run: |
+          [xml]$tests = Get-Content -Raw artifacts/native-register-schema/native-register-schema.trx
+          $counts = $tests.TestRun.ResultSummary.Counters
+          if ([int]$counts.total -lt 12 -or [int]$counts.executed -ne [int]$counts.total -or [int]$counts.passed -ne [int]$counts.total) { throw 'Every schema test must execute and pass without skips.' }
+          $files = @(Get-ChildItem artifacts/native-register-schema -Recurse -Filter coverage.cobertura.xml)
+          if ($files.Count -ne 1) { throw 'Exactly one nonempty coverage receipt required.' }
+          [xml]$report = Get-Content -Raw $files[0].FullName
+          $c = $report.coverage
+          if ([int]$c.'lines-valid' -le 0 -or [int]$c.'branches-valid' -le 0) { throw 'Empty coverage is not a pass.' }
+          if ([int]$c.'lines-covered' -ne [int]$c.'lines-valid' -or [int]$c.'branches-covered' -ne [int]$c.'branches-valid') { throw 'Full register schema builder requires 100% line and branch coverage.' }
+          Write-Output "SDK schema: $($counts.passed) tests; $($c.'lines-covered') lines; $($c.'branches-covered') branches. Not a tenant test."
+      - name: Preserve source-qualification evidence and resolved dependency graph
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-register-schema-qualification
+          path: |
+            artifacts/native-register-schema/
+            powerplatform/native/RegisterSchema/bin/Release/net48/
+            powerplatform/native/RegisterSchema/packages.lock.json
+            tests/native_register_schema/packages.lock.json
+          if-no-files-found: error
+          retention-days: 14

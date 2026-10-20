@@ -1,0 +1,64 @@
+name: Native delegation safety
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  authority:
+    name: Native .NET delegation tests
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          global-json-file: global.json
+      - name: Locked restore and runtime evidence
+        shell: pwsh
+        run: |
+          dotnet --info
+          dotnet restore tests/native_authority/Authority.Tests.csproj --locked-mode
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git diff --exit-code -- powerplatform/native/Authority/packages.lock.json tests/native_authority/packages.lock.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile and execute native tests with warnings as errors
+        shell: pwsh
+        run: |
+          dotnet test tests/native_authority/Authority.Tests.csproj -c Release --no-restore -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura "-p:CoverletOutput=$($PWD.Path)/artifacts/native-authority/" "-p:Include=[CareOps.Decisions.Authority]*" --logger "trx;LogFileName=native-authority.trx" --results-directory artifacts/native-authority
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Require real tests and complete coverage
+        shell: pwsh
+        run: |
+          [xml]$tests = Get-Content -Raw artifacts/native-authority/native-authority.trx
+          $counts = $tests.TestRun.ResultSummary.Counters
+          if ([int]$counts.total -lt 22 -or [int]$counts.executed -ne [int]$counts.total -or [int]$counts.passed -ne [int]$counts.total) { throw 'Native tests must execute and pass without skips.' }
+          $files = @(Get-ChildItem artifacts/native-authority -Recurse -Filter coverage.cobertura.xml)
+          if ($files.Count -ne 1) { throw 'Exactly one coverage receipt required.' }
+          [xml]$report = Get-Content -Raw $files[0].FullName
+          $c = $report.coverage
+          if ([int]$c.'lines-valid' -le 0 -or [int]$c.'branches-valid' -le 0) { throw 'Empty native coverage is not a pass.' }
+          Write-Output "Coverage: $($c.'lines-covered')/$($c.'lines-valid') lines; $($c.'branches-covered')/$($c.'branches-valid') branches."
+          if ([int]$c.'lines-covered' -ne [int]$c.'lines-valid' -or [int]$c.'branches-covered' -ne [int]$c.'branches-valid') { throw 'Whole native authority library requires 100% line and branch coverage.' }
+      - name: Preserve native assembly and qualification evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-authority-qualification
+          path: |
+            artifacts/native-authority/
+            powerplatform/native/Authority/bin/Release/net462/
+            powerplatform/native/Authority/packages.lock.json
+            tests/native_authority/packages.lock.json
+          if-no-files-found: error
+          retention-days: 14

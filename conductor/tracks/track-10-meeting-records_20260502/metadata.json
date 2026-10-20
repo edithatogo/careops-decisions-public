@@ -1,0 +1,23 @@
+{
+  "id": "track-10-meeting-records_20260502",
+  "status": "completed",
+  "owner": "worker-canvas-app",
+  "parallelizable": true,
+  "dependsOn": ["track-03-power-platform-architecture_20260502", "track-09-governance-model_20260502"],
+  "workstreams": [
+    {"name": "Minutes state machine", "status": "completed", "description": "Documented allowed transitions and seeded draft, approved, and published minute versions for the same meeting."},
+    {"name": "Decision and action registers", "status": "completed", "description": "Documented register format and seeded decisions/actions linked to meeting and agenda records."},
+    {"name": "Document storage abstraction", "status": "completed", "description": "Documented Dataverse-first storage with SharePoint migration fields and resolution logic."},
+    {"name": "Pack generation requirements", "status": "completed", "description": "Agenda, paper, and minutes pack requirements documented with DMS integration deferred."},
+    {"name": "Agenda templates", "status": "completed", "description": "Agenda item seed covers standing attendance/conflicts, discussion, and decision/action patterns."},
+    {"name": "track-closeout-review", "status": "completed", "description": "Seed dry run validates agenda, paper, minute, decision, and action records with meeting and agenda linkage."}
+  ],
+  "closedOn": "2026-05-11",
+  "completionEvidence": [
+    "docs/architecture/meeting-records.md",
+    "docs/architecture/document-storage-abstraction.md",
+    "powerplatform/src/seed/sample-governance-data.json",
+    "scripts/Import-SeedData.ps1",
+    "scripts/Test-SeedImportPlan.ps1"
+  ]
+}

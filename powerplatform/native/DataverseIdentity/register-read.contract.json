@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "native-plugin-source-not-registered",
+  "nativeRegistrationVerified": false,
+  "productionEnabled": false,
+  "pluginType": "CareOps.Decisions.DataverseIdentity.ReadCredentialingRecord",
+  "pluginTypeId": null,
+  "customApi": {
+    "uniqueName": "dft_ReadCredentialingRecordV1",
+    "bindingType": 1,
+    "boundEntityLogicalName": "dft_credentialingrecord",
+    "allowedCustomProcessingStepType": 0,
+    "isFunction": false,
+    "isPrivate": true,
+    "workflowSdkStepEnabled": false,
+    "isCustomizableInManagedSolution": false
+  },
+  "requireResolvedExecutePrivilege": true,
+  "resolvedExecutePrivilegeName": null,
+  "executePrivilegeResolution": "verify existing table read privilege during approved native registration; do not invent or omit",
+  "implicitTarget": "platform-generated EntityReference; no duplicate custom request parameter",
+  "additionalRequestParameters": [],
+  "responseProperties": [
+    {"uniqueName": "ReadSucceeded", "type": 0, "isCustomizableInManagedSolution": false},
+    {"uniqueName": "Record", "type": 3, "logicalEntityName": "dft_credentialingrecord", "isCustomizableInManagedSolution": false},
+    {"uniqueName": "UnavailableFields", "type": 11, "isCustomizableInManagedSolution": false},
+    {"uniqueName": "ReadDisposition", "type": 10, "isCustomizableInManagedSolution": false},
+    {"uniqueName": "RetrievedAtUtc", "type": 1, "isCustomizableInManagedSolution": false}
+  ],
+  "readDisposition": "recorded-data-only-not-practice-clearance",
+  "liveRecordWrites": false,
+  "newEntraApplicationRequiredByPilot": false
+}

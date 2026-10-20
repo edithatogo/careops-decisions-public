@@ -1,0 +1,25 @@
+{
+  "id": "track-06-automation-integrations_20260502",
+  "status": "completed",
+  "owner": "worker-automation",
+  "parallelizable": true,
+  "dependsOn": ["track-03-power-platform-architecture_20260502", "track-04-alm-test-harness_20260502"],
+  "workstreams": [
+    { "name": "planner-sync-flow", "status": "completed", "description": "Planner sync flow contract enhanced with retryPolicy and environmentVariableMapping." },
+    { "name": "teams-summary-flow", "status": "completed", "description": "Teams summary post flow contract enhanced with retryPolicy and environmentVariableMapping." },
+    { "name": "reminders-flow", "status": "completed", "description": "New reminders flow contract created with scheduled trigger, configurable window, integration logging." },
+    { "name": "sharepoint-file-registration-flow", "status": "completed", "description": "New SharePoint file registration flow contract created with Dataverse trigger." },
+    { "name": "flow-catalog-and-env-vars", "status": "completed", "description": "Flow catalog updated, decisions_ReminderWindowHours added to env var manifest and deployment settings." },
+    { "name": "track-closeout-review", "status": "completed", "description": "Verified cataloged flow contracts, idempotency/logging coverage, environment-variable mappings, and app command cross-references." }
+  ],
+  "closedOn": "2026-05-11",
+  "completionEvidence": [
+    "powerplatform/src/flows/flow-catalog.yaml",
+    "powerplatform/src/flows/planner-sync.yaml",
+    "powerplatform/src/flows/teams-summary-post.yaml",
+    "powerplatform/src/flows/reminders.yaml",
+    "powerplatform/src/flows/sharepoint-file-registration.yaml",
+    "powerplatform/src/app/flow-contract-matrix.yaml",
+    "scripts/Test-FlowContracts.ps1"
+  ]
+}

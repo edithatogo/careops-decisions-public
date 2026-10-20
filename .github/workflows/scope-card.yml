@@ -1,0 +1,62 @@
+name: Recorded scope card safety
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  card:
+    name: Read-only register card
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24.21.0'
+          package-manager-cache: false
+      - name: Syntax and complete JavaScript coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/scope-card
+          node --version
+          node --check powerplatform/src/app/credentialing-register/scope-card.js
+          node --check powerplatform/src/app/credentialing-register/preview.js
+          node --check powerplatform/src/app/credentialing-register/form-binding.js
+          node --test --test-reporter=tap --experimental-test-coverage --test-coverage-include='powerplatform/src/app/credentialing-register/*.js' --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 tests/scope_card/*.test.cjs | tee artifacts/scope-card/node-tests.txt
+          grep -q '^# tests 44$' artifacts/scope-card/node-tests.txt
+          grep -q '^# pass 44$' artifacts/scope-card/node-tests.txt
+          grep -q '^# skipped 0$' artifacts/scope-card/node-tests.txt
+          grep -Eq 'form-binding.js[[:space:]]+[|][[:space:]]+100.00[[:space:]]+[|][[:space:]]+100.00[[:space:]]+[|][[:space:]]+100.00' artifacts/scope-card/node-tests.txt
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Install pinned test-only browser tools
+        run: |
+          python -m pip install --only-binary=:all: --require-hashes -r tests/scope_card/browser-requirements.lock
+          python -m pip check
+          python -m playwright install --with-deps chromium
+      - name: Synthetic browser, keyboard and narrow-screen smoke
+        run: python tests/scope_card/browser_smoke.py
+      - name: Real browser composition of form binding and iframe card
+        run: python tests/scope_card/form_browser_smoke.py
+      - name: Retain actual evidence and source-only preview
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: recorded-scope-card-qualification
+          path: |
+            artifacts/scope-card/
+            synthetic-register-preview.png
+            browser-smoke-receipt.json
+            powerplatform/src/app/credentialing-register/
+          if-no-files-found: error
+          retention-days: 14

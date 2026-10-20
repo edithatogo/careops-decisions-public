@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../powerplatform/native/Authority/CareOps.Decisions.Authority.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" PrivateAssets="all" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" PrivateAssets="all" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" PrivateAssets="all" />
+    <PackageReference Include="coverlet.msbuild" Version="10.0.1" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

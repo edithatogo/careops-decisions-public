@@ -1,0 +1,284 @@
+schema: decisions.workspace.state-transitions.v1
+
+description: >
+  Comprehensive state machine for the Decisions Workspace canvas app.
+  All transitions are gated by role, preconditions, and optional flow triggers.
+
+entities:
+  dft_Meeting:
+    states:
+      - planned
+      - invited
+      - in_progress
+      - completed
+      - cancelled
+    transitions:
+      - from: planned
+        to: invited
+        role: secretariat
+        precondition: agenda items defined AND meeting date set
+        flow_trigger: outlook-invite-sync
+        notes: Outlook invite sent to eligible attendees.
+      - from: invited
+        to: in_progress
+        role: secretariat
+        precondition: agenda items defined AND quorum checked
+        flow_trigger: none (app-internal)
+        notes: Meeting is underway.
+      - from: in_progress
+        to: completed
+        role: chair
+        precondition: minutes approved AND quorum met
+        flow_trigger: none (app-internal)
+        notes: Meeting is closed for new agenda work.
+      - from: planned
+        to: cancelled
+        role: governance_administrator
+        precondition: none
+        flow_trigger: none (app-internal)
+        notes: Meeting cancelled before invites sent.
+      - from: invited
+        to: cancelled
+        role: governance_administrator
+        precondition: none
+        flow_trigger: none (app-internal)
+        notes: Meeting cancelled after invites sent; attendee apology records captured.
+      - from: in_progress
+        to: cancelled
+        role: governance_administrator
+        precondition: none
+        flow_trigger: none (app-internal)
+        notes: Emergency cancellation during meeting.
+
+  dft_Minutes:
+    states:
+      - draft
+      - chair_review
+      - approved
+      - published
+      - archived
+    transitions:
+      - from: draft
+        to: chair_review
+        role: secretariat
+        precondition: transcript imported OR manual text entered
+        flow_trigger: none (app-internal)
+        notes: Minutes ready for chair review.
+      - from: chair_review
+        to: approved
+        role: chair
+        precondition: AI-assisted minutes must have HumanReviewStatus = accepted or edited
+        flow_trigger: none (app-internal)
+        notes: Chair approves minutes content.
+      - from: chair_review
+        to: draft
+        role: chair
+        precondition: none
+        flow_trigger: none (app-internal)
+        notes: Chair returns minutes for revision.
+      - from: approved
+        to: published
+        role: secretariat
+        precondition: decisions promoted AND actions created
+        flow_trigger: teams-summary-post (if enabled)
+        notes: Final publication. Triggers Teams post flow.
+      - from: approved
+        to: published
+        role: chair
+        precondition: decisions promoted AND actions created
+        flow_trigger: teams-summary-post (if enabled)
+        notes: Chair can also publish.
+      - from: published
+        to: archived
+        role: governance_administrator
+        precondition: 90 days since publish (configurable)
+        flow_trigger: none
+        notes: Administrative archive.
+
+  dft_Decision:
+    states:
+      - draft
+      - approved
+      - published
+      - superseded
+    transitions:
+      - from: draft
+        to: approved
+        role: chair
+        precondition: minutes in chair_review or approved
+        flow_trigger: none
+        notes: Decision endorsed by chair.
+      - from: approved
+        to: published
+        role: secretariat
+        precondition: minutes published
+        flow_trigger: none
+        notes: Decision enters the formal record.
+      - from: approved
+        to: superseded
+        role: chair
+        precondition: newer decision exists on same topic
+        flow_trigger: none
+        notes: Later decision overrides this one.
+      - from: published
+        to: superseded
+        role: chair
+        precondition: newer published decision exists
+        flow_trigger: none
+        notes: Later published decision overrides.
+
+  dft_ActionItem:
+    states:
+      - open
+      - in_progress
+      - completed
+      - overdue
+      - closed
+    transitions:
+      - from: open
+        to: in_progress
+        role: member
+        precondition: action has owner
+        flow_trigger: none
+        notes: Owner starts work.
+      - from: open
+        to: completed
+        role: member
+        precondition: evidence link provided
+        flow_trigger: planner-sync (if enabled)
+        notes: Action marked done.
+      - from: in_progress
+        to: completed
+        role: member
+        precondition: evidence link provided
+        flow_trigger: planner-sync (if enabled)
+        notes: Work finished.
+      - from: open
+        to: overdue
+        role: system
+        precondition: due date passed
+        flow_trigger: planner-sync (if enabled)
+        notes: Auto-transition by scheduled flow.
+      - from: in_progress
+        to: overdue
+        role: system
+        precondition: due date passed AND not completed
+        flow_trigger: planner-sync (if enabled)
+        notes: Auto-transition by scheduled flow.
+      - from: completed
+        to: closed
+        role: secretariat
+        precondition: reviewed by secretariat
+        flow_trigger: none
+        notes: Administrative closure.
+
+  dft_Paper:
+    states:
+      - draft
+      - submitted
+      - superseded
+    transitions:
+      - from: draft
+        to: submitted
+        role: secretariat
+        precondition: paper has classification
+        flow_trigger: sharepoint-sync (if enabled)
+        notes: Paper published for meeting.
+      - from: submitted
+        to: superseded
+        role: secretariat
+        precondition: newer paper version exists
+        flow_trigger: none
+        notes: Replaced by updated paper.
+
+  dft_AgendaItem:
+    states:
+      - draft
+      - confirmed
+      - completed
+      - deferred
+    transitions:
+      - from: draft
+        to: confirmed
+        role: chair
+        precondition: agenda item has presenter AND time allocation
+        flow_trigger: none
+        notes: Agenda finalised by chair.
+      - from: confirmed
+        to: completed
+        role: chair
+        precondition: minutes published for parent meeting
+        flow_trigger: none
+        notes: Item has been addressed.
+      - from: confirmed
+        to: deferred
+        role: chair
+        precondition: meeting completed and item not addressed
+        flow_trigger: none
+        notes: Carried to next meeting.
+
+  dft_Vote:
+    states:
+      - open
+      - closed
+      - recorded
+    transitions:
+      - from: open
+        to: closed
+        role: chair
+        precondition: all eligible voters responded
+        flow_trigger: none
+        notes: Voting period ends.
+      - from: closed
+        to: recorded
+        role: secretariat
+        precondition: vote outcome linked to decision
+        flow_trigger: none
+        notes: Vote result enters formal record.
+
+  dft_Transcript:
+    states:
+      - uploaded
+      - processing
+      - needs_review
+      - reviewed
+    transitions:
+      - from: uploaded
+        to: processing
+        role: system
+        precondition: AI Builder enabled
+        flow_trigger: ai-transcript-minutes
+        notes: Flow picks up and processes.
+      - from: processing
+        to: needs_review
+        role: system
+        precondition: AI run completed
+        flow_trigger: none (callback from flow)
+        notes: Draft minutes, decisions, actions created.
+      - from: needs_review
+        to: reviewed
+        role: chair
+        precondition: minutes reviewed and approved
+        flow_trigger: none
+        notes: Human review recorded.
+
+state_ui_mapping:
+  badge_colors:
+    draft: "#FFB74D"
+    reviewed: "#64B5F6"
+    approved: "#81C784"
+    finalized: "#4DB6AC"
+    published: "#4CAF50"
+    overdue: "#E57373"
+    closed: "#BDBDBD"
+    cancelled: "#EF5350"
+    archived: "#90A4AE"
+    deferred: "#FFD54F"
+
+  badge_icons:
+    draft: circle
+    reviewed: check-circle
+    approved: check
+    published: send
+    overdue: alert-triangle
+    closed: x-circle

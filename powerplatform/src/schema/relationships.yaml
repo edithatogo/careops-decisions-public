@@ -1,0 +1,475 @@
+publisherPrefix: dft
+schemaVersion: 0.1
+relationshipGroups:
+  mvp:
+    description: Direct lookups needed for the first release.
+  future:
+    description: Relationships that become more useful with Graph, enterprise security, or richer automation.
+relationships:
+  - name: dft_GovernanceBody_Parent_GovernanceBody
+    fromTable: dft_GovernanceBody
+    fromColumn: dft_parentgovernancebodyid
+    toTable: dft_GovernanceBody
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_GovernanceBody_Owner_OrgPerson
+    fromTable: dft_GovernanceBody
+    fromColumn: dft_ownerpersonid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_TermsOfReference_GovernanceBody
+    fromTable: dft_TermsOfReference
+    fromColumn: dft_governancebodyid
+    toTable: dft_GovernanceBody
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_CommitteeMembership_GovernanceBody
+    fromTable: dft_CommitteeMembership
+    fromColumn: dft_governancebodyid
+    toTable: dft_GovernanceBody
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_CommitteeMembership_OrgPerson
+    fromTable: dft_CommitteeMembership
+    fromColumn: dft_orgpersonid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_OrgRelationship_Source_OrgPerson
+    fromTable: dft_OrgRelationship
+    fromColumn: dft_sourcepersonid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_OrgRelationship_Target_OrgPerson
+    fromTable: dft_OrgRelationship
+    fromColumn: dft_targetpersonid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_MeetingSeries_GovernanceBody
+    fromTable: dft_MeetingSeries
+    fromColumn: dft_governancebodyid
+    toTable: dft_GovernanceBody
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_MeetingSeries_SeriesOwner_OrgPerson
+    fromTable: dft_MeetingSeries
+    fromColumn: dft_seriesownerid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Meeting_MeetingSeries
+    fromTable: dft_Meeting
+    fromColumn: dft_meetingseriesid
+    toTable: dft_MeetingSeries
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Meeting_Chair_OrgPerson
+    fromTable: dft_Meeting
+    fromColumn: dft_chairpersonid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Attendee_Meeting
+    fromTable: dft_Attendee
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: mvp
+
+  - name: dft_Attendee_OrgPerson
+    fromTable: dft_Attendee
+    fromColumn: dft_orgpersonid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_AgendaItem_Meeting
+    fromTable: dft_AgendaItem
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: mvp
+
+  - name: dft_AgendaItem_Presenter_OrgPerson
+    fromTable: dft_AgendaItem
+    fromColumn: dft_presenterid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Paper_Meeting
+    fromTable: dft_Paper
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: mvp
+
+  - name: dft_Paper_AgendaItem
+    fromTable: dft_Paper
+    fromColumn: dft_agendaitemid
+    toTable: dft_AgendaItem
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Paper_Owner_OrgPerson
+    fromTable: dft_Paper
+    fromColumn: dft_ownerid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Minutes_Meeting
+    fromTable: dft_Minutes
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: mvp
+
+  - name: dft_Minutes_ApprovedBy_OrgPerson
+    fromTable: dft_Minutes
+    fromColumn: dft_approvedbyid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Transcript_Meeting
+    fromTable: dft_Transcript
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: mvp
+
+  - name: dft_Decision_Meeting
+    fromTable: dft_Decision
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: mvp
+
+  - name: dft_Decision_AgendaItem
+    fromTable: dft_Decision
+    fromColumn: dft_agendaitemid
+    toTable: dft_AgendaItem
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Decision_GovernanceBody
+    fromTable: dft_Decision
+    fromColumn: dft_governancebodyid
+    toTable: dft_GovernanceBody
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_Decision_Owner_OrgPerson
+    fromTable: dft_Decision
+    fromColumn: dft_ownerid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_ActionItem_Meeting
+    fromTable: dft_ActionItem
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: mvp
+
+  - name: dft_ActionItem_Decision
+    fromTable: dft_ActionItem
+    fromColumn: dft_decisionid
+    toTable: dft_Decision
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_ActionItem_GovernanceBody
+    fromTable: dft_ActionItem
+    fromColumn: dft_governancebodyid
+    toTable: dft_GovernanceBody
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_ActionItem_AgendaItem
+    fromTable: dft_ActionItem
+    fromColumn: dft_agendaitemid
+    toTable: dft_AgendaItem
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_ActionItem_Owner_OrgPerson
+    fromTable: dft_ActionItem
+    fromColumn: dft_ownerid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_Vote_Meeting
+    fromTable: dft_Vote
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: future
+
+  - name: dft_Vote_Decision
+    fromTable: dft_Vote
+    fromColumn: dft_decisionid
+    toTable: dft_Decision
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_Vote_AgendaItem
+    fromTable: dft_Vote
+    fromColumn: dft_agendaitemid
+    toTable: dft_AgendaItem
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_VoteResponse_Vote
+    fromTable: dft_VoteResponse
+    fromColumn: dft_voteid
+    toTable: dft_Vote
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: future
+
+  - name: dft_VoteResponse_OrgPerson
+    fromTable: dft_VoteResponse
+    fromColumn: dft_orgpersonid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_ConflictOfInterest_Meeting
+    fromTable: dft_ConflictOfInterest
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: future
+
+  - name: dft_ConflictOfInterest_AgendaItem
+    fromTable: dft_ConflictOfInterest
+    fromColumn: dft_agendaitemid
+    toTable: dft_AgendaItem
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_ConflictOfInterest_OrgPerson
+    fromTable: dft_ConflictOfInterest
+    fromColumn: dft_orgpersonid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AccessRule_GovernanceBody
+    fromTable: dft_AccessRule
+    fromColumn: dft_governancebodyid
+    toTable: dft_GovernanceBody
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AccessRule_Meeting
+    fromTable: dft_AccessRule
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AccessRule_Paper
+    fromTable: dft_AccessRule
+    fromColumn: dft_paperid
+    toTable: dft_Paper
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AIBuilderRun_Prompt
+    fromTable: dft_AIBuilderRun
+    fromColumn: dft_aibuilderpromptid
+    toTable: dft_AIBuilderPrompt
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AIBuilderRun_Meeting
+    fromTable: dft_AIBuilderRun
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AIBuilderRun_Minutes
+    fromTable: dft_AIBuilderRun
+    fromColumn: dft_minutesid
+    toTable: dft_Minutes
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AIBuilderRun_Transcript
+    fromTable: dft_AIBuilderRun
+    fromColumn: dft_transcriptid
+    toTable: dft_Transcript
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AIBuilderRun_Paper
+    fromTable: dft_AIBuilderRun
+    fromColumn: dft_paperid
+    toTable: dft_Paper
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_AIBuilderRun_Reviewer_OrgPerson
+    fromTable: dft_AIBuilderRun
+    fromColumn: dft_reviewerid
+    toTable: dft_OrgPerson
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: future
+
+  - name: dft_FeatureTemplate_FeatureDefinition
+    fromTable: dft_FeatureTemplate
+    fromColumn: dft_featuredefinitionid
+    toTable: dft_FeatureDefinition
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_FeatureTemplate_GovernanceBody
+    fromTable: dft_FeatureTemplate
+    fromColumn: dft_governancebodyid
+    toTable: dft_GovernanceBody
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_FeatureTemplate_MeetingSeries
+    fromTable: dft_FeatureTemplate
+    fromColumn: dft_meetingseriesid
+    toTable: dft_MeetingSeries
+    type: many-to-one
+    required: false
+    deleteBehavior: restrict
+    group: mvp
+
+  - name: dft_MeetingFeatureOverride_Meeting
+    fromTable: dft_MeetingFeatureOverride
+    fromColumn: dft_meetingid
+    toTable: dft_Meeting
+    type: many-to-one
+    required: true
+    deleteBehavior: cascade
+    group: mvp
+
+  - name: dft_MeetingFeatureOverride_FeatureDefinition
+    fromTable: dft_MeetingFeatureOverride
+    fromColumn: dft_featuredefinitionid
+    toTable: dft_FeatureDefinition
+    type: many-to-one
+    required: true
+    deleteBehavior: restrict
+    group: mvp

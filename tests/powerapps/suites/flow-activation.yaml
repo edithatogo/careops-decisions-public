@@ -1,0 +1,93 @@
+name: flow-activation
+displayName: Flow contract activation
+status: scaffold
+intent: >
+  Validate that cloud flows referenced by the app are present, their triggers
+  are configured, environment variables resolve, and connector references are
+  bound. Tests that require live connector calls are marked
+  requires-live-dylan. All others pass against the unpacked solution source.
+appReadiness: app-not-yet-created
+readiness: local
+selectors:
+  screen: scrIntegrations
+  navigation:
+    openCommand: btnOpenIntegrations
+    refreshCommand: btnRefreshIntegrationStatus
+  fields:
+    plannerState: lblPlannerStatus
+    teamsState: lblTeamsStatus
+    sharePointState: lblSharePointStatus
+    aiBuilderState: lblAiBuilderStatus
+    integrationLog: galIntegrationLog
+tests:
+  - id: FLO-01
+    title: flow trigger contracts are sound
+    intent: Confirm each expected cloud flow has a valid trigger in the unpacked solution source.
+    readiness: local
+    preconditions:
+      - solution is unpacked to powerplatform/solutions/DecisionsWorkspace
+      - flow definition files exist in the solution folder
+    actions:
+      - open: scrIntegrations
+    assertions:
+      - flow manifest references are present in solution source
+      - each referenced flow has a trigger definition
+      - trigger type is one of the expected types (manual, scheduled, Dataverse webhook)
+    notes:
+      - local validation against source, not live flow runtime
+
+  - id: FLO-02
+    title: environment variable binding
+    intent: Verify flows reference environment variables by schema name and that the referenced vars exist in the manifest.
+    readiness: local
+    preconditions:
+      - environment-variable-manifest.json is present
+      - flow definition files are available
+    actions:
+      - open: scrIntegrations
+    assertions:
+      - each environment variable used in flow definitions appears in the manifest
+      - decisions_TeamsTeamId is referenced where Teams flows exist
+      - decisions_TeamsChannelId is referenced where Teams flows exist
+      - decisions_SharePointSiteUrl is referenced where SharePoint flows exist
+      - decisions_EnableAiBuilderMinutes is referenced where AI flows exist
+      - decisions_EnableGraphTranscriptSync is referenced where Graph flows exist
+    notes:
+      - local validation only; live binding verified in requires-live-dylan tests
+
+  - id: FLO-03
+    title: connector reference binding
+    intent: Verify each flow references expected connectors and that connection references are declared in settings.
+    readiness: local
+    preconditions:
+      - connection-references.json is present
+    actions:
+      - open: scrIntegrations
+    assertions:
+      - Dataverse connector reference exists for every flow
+      - Office 365 Users connector reference exists for membership flows
+      - Microsoft Teams connector reference exists for Teams-posting flows
+      - Planner connector reference exists for sync flows
+      - SharePoint connector reference exists for document flows
+      - AI Builder connector reference exists for transcript flows
+    notes:
+      - connector references validated from source, not live environment
+
+  - id: FLO-04
+    title: live flow activation status (requires live Dylan)
+    intent: Confirm flows are activated in the live Dylan environment and show green runtime status.
+    readiness: requires-live-dylan
+    preconditions:
+      - solution is imported to Dylan environment
+      - test user has system customizer or environment admin role
+    actions:
+      - open: scrIntegrations
+      - invoke: btnRefreshIntegrationStatus
+    assertions:
+      - planner sync flow shows activated or configured status
+      - teams posting flow shows activated or configured status
+      - ai builder flow shows activated or configured status
+      - integration log does not show persistent activation failures
+    notes:
+      - requires live Dylan environment with solution deployed
+      - skip when Dylan is unavailable; record status as blocked

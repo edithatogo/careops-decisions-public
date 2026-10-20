@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "0.1.0",
+  "profileId": "chhhs-credentialing-delegations-candidate",
+  "status": "draft-source-reconciliation-required",
+  "active": false,
+  "controlledSourceVerified": false,
+  "grants": [],
+  "source": {
+    "title": "CHHHS Human Resources Sub-Delegations Manual",
+    "referenceCopyEffectiveDate": "2024-10-29",
+    "section": "43",
+    "pages": [48, 49],
+    "separateCredentialingInstrumentRequired": true,
+    "tableImageVerificationOutstanding": true,
+    "sourceDocumentPublishedHere": false
+  },
+  "functionCandidates": [
+    {"id": "43.1", "function": "appoint-committee-chair", "observedBands": ["HSCE", "Band-4-conditional"]},
+    {"id": "43.2", "function": "appoint-committee-member", "observedBands": ["HSCE", "Band-4-conditional"]},
+    {"id": "43.3", "function": "approve-individual-scope", "observedBands": ["HSCE", "Band-4-conditional"]},
+    {"id": "43.4", "function": "approve-temporary-scope", "observedBands": ["HSCE", "Band-4-conditional"]},
+    {"id": "43.5", "function": "terminate-suspend-reduce-scope", "observedBands": ["HSCE", "Band-4-conditional"], "ordinaryPathRequiresCommitteeIndependence": true, "immediateSafetyExceptionRequiresSeparateHumanPathway": true},
+    {"id": "43.6", "function": "approve-scope-after-appeal", "observedBands": ["HSCE"]}
+  ],
+  "conditionalRoleCandidates": ["EDMS", "EDNMS", "EDAH"],
+  "roleAliases": [],
+  "activationRequirements": [
+    "current-controlled-manual-and-separate-signed-instrument",
+    "visually-verified-table-conditions-and-profession-applicability",
+    "verified-occupancy-and-authorised-acting-period",
+    "approved-role-title-continuity-mapping-if-required",
+    "function-pathway-facility-profession-and-condition-mapping",
+    "editor-independent-authorised-approval-and-release-record",
+    "negative-synthetic-tests-and-private-configuration-validation"
+  ],
+  "evidenceBoundary": "Candidates are an editable source index, not granted authority. They are not loaded by the reference evaluator. A protected deployment adapter must create a separately approved Profile; no user or agent can activate authority by editing this JSON."
+}

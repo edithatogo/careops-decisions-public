@@ -1,0 +1,121 @@
+name: review-gate
+displayName: Human review gate
+status: scaffold
+intent: >
+  Validate that draft minutes and AI-generated content cannot be published
+  until a human reviewer records an accept, edit, or reject decision. The
+  review gate covers the draft-to-review transition, the review-to-approve
+  transition, and the block on publish without evidence of review. All tests
+  in this suite validate Dataverse-first behavior and do not require live
+  AI Builder.
+appReadiness: app-not-yet-created
+readiness: local
+selectors:
+  screen: scrMinutesDecisionsActions
+  navigation:
+    openCommand: btnOpenMinutes
+    saveCommand: btnSaveMinutes
+    approveCommand: btnApproveMinutes
+    publishCommand: btnPublishMinutes
+    rejectCommand: btnRejectMinutes
+    requestReviewCommand: btnRequestReview
+  fields:
+    attendance: chkMeetingAttendance
+    approvalStatus: cmbMinutesApprovalStatus
+    reviewer: cmbMinutesReviewer
+    reviewTime: dtpMinutesReviewTime
+    reviewNotes: txtMinutesReviewNotes
+    publishBlocked: lblPublishBlockedMessage
+    minutesStatus: lblMinutesStatus
+tests:
+  - id: RVW-01
+    title: draft minutes transition to review state
+    intent: Confirm that draft minutes can be submitted for review and the status changes from draft to in-review.
+    readiness: local
+    preconditions:
+      - minutes draft exists (MDA-01 passed)
+    actions:
+      - open: scrMinutesDecisionsActions
+      - invoke: btnRequestReview
+    assertions:
+      - minutes status transitions from draft to in-review
+      - reviewer field becomes editable
+      - publish command remains disabled during review
+    notes:
+      - review request is the first gate before approval
+
+  - id: RVW-02
+    title: reviewer can approve minutes
+    intent: Confirm an authorized reviewer can accept minutes, recording reviewer identity, timestamp, and approval state.
+    readiness: local
+    preconditions:
+      - minutes are in in-review state (RVW-01 passed)
+    actions:
+      - open: scrMinutesDecisionsActions
+      - set:
+          approvalStatus: approved
+          reviewer: committee chair
+          reviewNotes: approved as presented
+      - invoke: btnApproveMinutes
+      - save: btnSaveMinutes
+    assertions:
+      - approval status is stored as approved
+      - reviewer field is persisted
+      - review timestamp is recorded
+      - minutes status transitions to approved
+      - publish command becomes available after approval
+    notes:
+      - approval is the second gate that unblocks publish
+
+  - id: RVW-03
+    title: reviewer can reject minutes with notes
+    intent: Confirm that a reviewer can reject minutes and return them to draft with comments.
+    readiness: local
+    preconditions:
+      - minutes are in in-review state (RVW-01 passed)
+    actions:
+      - open: scrMinutesDecisionsActions
+      - set:
+          approvalStatus: rejected
+          reviewer: committee chair
+          reviewNotes: requires clarification on item 3
+      - invoke: btnRejectMinutes
+      - save: btnSaveMinutes
+    assertions:
+      - approval status is stored as rejected
+      - minutes status returns to draft
+      - review notes are persisted for the author
+      - publish command remains disabled
+    notes:
+      - reject returns the record to draft for revision
+
+  - id: RVW-04
+    title: AI-generated draft blocked without review
+    intent: Confirm that minutes generated from an AI transcript source cannot be published unless a review decision is recorded.
+    readiness: local
+    preconditions:
+      - minutes exist with AI-generated source metadata
+      - no review decision has been recorded
+    actions:
+      - open: scrMinutesDecisionsActions
+    assertions:
+      - publish command is disabled or hidden
+      - a blocked-publish message is visible
+      - the review gate requirement is surfaced to the user
+    notes:
+      - AI source marking is metadata-driven, not dependent on live AI Builder
+
+  - id: RVW-05
+    title: review audit trail is complete
+    intent: Confirm that the review record includes all required audit fields for traceability.
+    readiness: local
+    preconditions:
+      - a review decision exists (approved or rejected)
+    actions:
+      - open: scrMinutesDecisionsActions
+    assertions:
+      - reviewer identity field is populated
+      - review timestamp is recorded
+      - review notes are present
+    notes:
+      - audit fields are required for governance compliance

@@ -1,0 +1,81 @@
+{
+  "EnvironmentVariables": [
+    {
+      "SchemaName": "decisions_TeamsChannelId",
+      "Value": "19:fictional-channel@thread.tacv2"
+    },
+    {
+      "SchemaName": "decisions_TeamsTeamId",
+      "Value": "11111111-1111-4111-8111-111111111111"
+    },
+    {
+      "SchemaName": "decisions_PlannerPlanId",
+      "Value": "fictional-planner-plan"
+    },
+    {
+      "SchemaName": "decisions_SharePointSiteUrl",
+      "Value": "https://example.invalid/sites/decisions"
+    },
+    {
+      "SchemaName": "decisions_MinutesLibraryName",
+      "Value": "Shared Documents"
+    },
+    {
+      "SchemaName": "decisions_EnableAiBuilderMinutes",
+      "Value": "false"
+    },
+    {
+      "SchemaName": "decisions_EnableGraphTranscriptSync",
+      "Value": "false"
+    },
+    {
+      "SchemaName": "decisions_AiBuilderPromptName",
+      "Value": "Decisions Workspace - Transcript to Minutes"
+    },
+    {
+      "SchemaName": "decisions_IntegrationLogRetentionDays",
+      "Value": "90"
+    },
+    {
+      "SchemaName": "decisions_ReminderWindowHours",
+      "Value": "24"
+    }
+  ],
+  "ConnectionReferences": [
+    {
+      "LogicalName": "decisions_sharedcommondataserviceforapps",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps/connections/replace-with-dataverse-connection-id",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+    },
+    {
+      "LogicalName": "decisions_sharedteams",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_teams/connections/replace-with-teams-connection-id",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_teams"
+    },
+    {
+      "LogicalName": "decisions_sharedplanner",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_planner/connections/replace-with-planner-connection-id",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_planner"
+    },
+    {
+      "LogicalName": "decisions_sharedsharepointonline",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline/connections/replace-with-sharepoint-connection-id",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    },
+    {
+      "LogicalName": "decisions_sharedoffice365users",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_office365users/connections/replace-with-office365users-connection-id",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_office365users"
+    },
+    {
+      "LogicalName": "decisions_sharedoffice365",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_office365/connections/replace-with-outlook-connection-id",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+    },
+    {
+      "LogicalName": "decisions_sharedaibuilder",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps/connections/replace-with-ai-builder-capable-connection-id",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+    }
+  ]
+}

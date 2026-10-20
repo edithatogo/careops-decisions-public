@@ -1,0 +1,537 @@
+schema: decisions.workspace.reporting.v1
+solution: DecisionsWorkspace
+generatedOn: 2026-05-04
+scope:
+  implementationLayer: Dataverse operational views and app dashboards
+  deferred:
+    - Power BI semantic model
+    - Fabric lakehouse or shortcuts
+    - Graph-backed enterprise analytics
+dashboards:
+  - name: secretary-workbench
+    displayName: Secretary Workbench
+    audience:
+      - Governance Secretary
+      - Governance Administrator
+    purpose: Show preparation and follow-up work that needs secretariat action.
+    views:
+      - meeting-pipeline-next-30-days
+      - upcoming-meetings-missing-agenda
+      - draft-minutes-pending-review
+      - unapproved-minutes-with-publish-url
+      - papers-missing-or-late
+      - integration-errors-open
+    metrics:
+      - meetingsScheduledNext30Days
+      - meetingsMissingAgendaNext30Days
+      - minutesPendingReviewCount
+      - unapprovedMinutesWithPublishUrlCount
+      - latePaperCount
+      - openIntegrationErrorCount
+  - name: chair-review
+    displayName: Chair Review
+    audience:
+      - Chair
+      - Governance Administrator
+    purpose: Show decisions, minutes, conflicts, and overdue governance review work awaiting chair attention.
+    views:
+      - minutes-awaiting-chair-approval
+      - decision-register-open
+      - decisions-overdue-review
+      - overdue-actions
+      - ai-review-queue
+    metrics:
+      - minutesAwaitingChairApproval
+      - openDecisionCount
+      - decisionsOverdueReviewCount
+      - overdueActionCount
+      - aiRunsPendingReview
+  - name: member-actions
+    displayName: Member Actions
+    audience:
+      - Committee Member
+      - Action Owner
+    purpose: Show actions and decisions relevant to the signed-in member.
+    views:
+      - my-open-actions
+      - my-overdue-actions
+      - actions-synced-without-planner-task-id
+      - decisions-assigned-to-me
+    metrics:
+      - myOpenActionCount
+      - myOverdueActionCount
+      - syncedActionsMissingPlannerTaskId
+      - assignedDecisionCount
+  - name: governance-audit
+    displayName: Governance Audit
+    audience:
+      - Governance Auditor
+      - Governance Administrator
+    purpose: Show audit, access, AI review, integration, and data-quality exceptions.
+    views:
+      - access-exceptions-active
+      - integration-errors-open
+      - stale-integration-status
+      - ai-review-queue
+      - records-missing-owner
+      - overdue-review-register
+    metrics:
+      - activeAccessExceptionCount
+      - openIntegrationErrorCount
+      - staleIntegrationStatusCount
+      - aiRunsPendingReview
+      - recordsMissingOwnerCount
+      - overdueReviewCount
+  - name: governance-configuration-health
+    displayName: Governance Configuration Health
+    audience:
+      - Governance Administrator
+      - Governance Auditor
+    purpose: Show governance hierarchy coverage, feature-switch adoption, access exceptions, and connector health.
+    views:
+      - governance-hierarchy-overview
+      - feature-switch-defaults
+      - feature-switch-templates
+      - meeting-feature-overrides
+      - connector-health-summary
+      - access-exceptions-active
+      - integration-errors-open
+      - stale-integration-status
+    metrics:
+      - governanceHierarchyBodyCount
+      - featureSwitchTemplateCount
+      - meetingFeatureOverrideCount
+      - connectorHealthEventCount
+      - activeAccessExceptionCount
+      - openIntegrationErrorCount
+      - staleIntegrationStatusCount
+views:
+  - name: meeting-pipeline-next-30-days
+    displayName: Meeting Pipeline - Next 30 Days
+    table: dft_Meeting
+    filter: "dft_meetingstatus in Draft,Planned,Invited and dft_startdatetime between today and today+30"
+    sort: "dft_startdatetime asc"
+    columns:
+      - dft_name
+      - dft_meetingseriesid
+      - dft_chairpersonid
+      - dft_startdatetime
+      - dft_meetingstatus
+      - dft_invitesyncstate
+  - name: upcoming-meetings-missing-agenda
+    displayName: Upcoming Meetings Missing Agenda
+    table: dft_Meeting
+    filter: "dft_meetingstatus in Draft,Planned,Invited and dft_startdatetime <= today+30 and no active dft_AgendaItem exists"
+    sort: "dft_startdatetime asc"
+    columns:
+      - dft_name
+      - dft_meetingseriesid
+      - dft_chairpersonid
+      - dft_startdatetime
+      - dft_meetingstatus
+  - name: draft-minutes-pending-review
+    displayName: Draft Minutes Pending Review
+    table: dft_Minutes
+    filter: "dft_status in Draft,Chair Review"
+    sort: "modifiedon asc"
+    columns:
+      - dft_name
+      - dft_meetingid
+      - dft_status
+      - dft_approvedbyid
+      - modifiedon
+  - name: minutes-awaiting-chair-approval
+    displayName: Minutes Awaiting Chair Approval
+    table: dft_Minutes
+    filter: "dft_status = Chair Review and dft_approvedon is null"
+    sort: "modifiedon asc"
+    columns:
+      - dft_name
+      - dft_meetingid
+      - dft_status
+      - dft_approvedbyid
+      - modifiedon
+  - name: unapproved-minutes-with-publish-url
+    displayName: Unapproved Minutes With Publish URL
+    table: dft_Minutes
+    filter: "dft_status not in Approved,Published,Archived and dft_publishedurl is not null"
+    sort: "modifiedon desc"
+    columns:
+      - dft_name
+      - dft_meetingid
+      - dft_status
+      - dft_publishedurl
+      - dft_approvedon
+  - name: papers-missing-or-late
+    displayName: Papers Missing Or Late
+    table: dft_Paper
+    filter: "dft_paperstatus in Draft,Submitted and dft_sharepointurl is null"
+    sort: "modifiedon asc"
+    columns:
+      - dft_name
+      - dft_agendaitemid
+      - dft_ownerid
+      - dft_paperstatus
+      - dft_sharepointurl
+  - name: decision-register-open
+    displayName: Decision Register - Open
+    table: dft_Decision
+    filter: "dft_status in Proposed,Deferred"
+    sort: "dft_reviewdueon asc, createdon desc"
+    columns:
+      - dft_decisionnumber
+      - dft_name
+      - dft_governancebodyid
+      - dft_ownerid
+      - dft_status
+      - dft_reviewdueon
+  - name: decisions-overdue-review
+    displayName: Decisions Overdue Review
+    table: dft_Decision
+    filter: "dft_reviewdueon < today and dft_status not in Rescinded,Superseded"
+    sort: "dft_reviewdueon asc"
+    columns:
+      - dft_decisionnumber
+      - dft_name
+      - dft_governancebodyid
+      - dft_ownerid
+      - dft_status
+      - dft_reviewdueon
+  - name: decisions-assigned-to-me
+    displayName: Decisions Assigned To Me
+    table: dft_Decision
+    filter: "dft_ownerid = current user person and dft_status not in Rescinded,Superseded"
+    sort: "dft_reviewdueon asc"
+    columns:
+      - dft_decisionnumber
+      - dft_name
+      - dft_governancebodyid
+      - dft_status
+      - dft_reviewdueon
+  - name: my-open-actions
+    displayName: My Open Actions
+    table: dft_ActionItem
+    filter: "dft_ownerid = current user person and dft_status not in Completed,Closed,Cancelled"
+    sort: "dft_duedate asc"
+    columns:
+      - dft_name
+      - dft_meetingid
+      - dft_decisionid
+      - dft_ownerid
+      - dft_duedate
+      - dft_status
+      - dft_plannersyncstatus
+  - name: my-overdue-actions
+    displayName: My Overdue Actions
+    table: dft_ActionItem
+    filter: "dft_ownerid = current user person and dft_duedate < today and dft_status not in Completed,Closed,Cancelled"
+    sort: "dft_duedate asc"
+    columns:
+      - dft_name
+      - dft_governancebodyid
+      - dft_ownerid
+      - dft_duedate
+      - dft_status
+  - name: overdue-actions
+    displayName: Overdue Actions
+    table: dft_ActionItem
+    filter: "dft_duedate < today and dft_status not in Completed,Closed,Cancelled"
+    sort: "dft_duedate asc"
+    columns:
+      - dft_name
+      - dft_governancebodyid
+      - dft_ownerid
+      - dft_duedate
+      - dft_status
+      - dft_plannersyncstatus
+  - name: actions-synced-without-planner-task-id
+    displayName: Actions Synced Without Planner Task ID
+    table: dft_ActionItem
+    filter: "dft_plannersyncstatus = Succeeded and dft_plannertaskid is null"
+    sort: "dft_plannersyncedon desc"
+    columns:
+      - dft_name
+      - dft_ownerid
+      - dft_duedate
+      - dft_plannersyncstatus
+      - dft_plannersyncedon
+      - dft_plannertaskid
+  - name: governance-hierarchy-overview
+    displayName: Governance Hierarchy Overview
+    table: dft_GovernanceBody
+    filter: "governance bodies with parent, owner, and status coverage"
+    sort: "dft_parentgovernancebodyid asc, dft_bodytype asc, dft_name asc"
+    columns:
+      - dft_name
+      - dft_bodycode
+      - dft_bodytype
+      - dft_parentgovernancebodyid
+      - dft_ownerpersonid
+      - dft_status
+      - dft_defaultclassification
+  - name: feature-switch-defaults
+    displayName: Feature Switch Defaults
+    table: dft_FeatureDefinition
+    filter: "all feature definition rows that establish the environment baseline"
+    sort: "dft_sortorder asc, dft_name asc"
+    columns:
+      - dft_name
+      - dft_featurekey
+      - dft_defaultstate
+      - dft_sortorder
+      - dft_description
+  - name: feature-switch-templates
+    displayName: Feature Switch Templates
+    table: dft_FeatureTemplate
+    filter: "governance body or meeting series template rows that adapt the baseline feature state"
+    sort: "modifiedon desc"
+    columns:
+      - dft_name
+      - dft_featuredefinitionid
+      - dft_governancebodyid
+      - dft_meetingseriesid
+      - dft_state
+      - dft_notes
+  - name: meeting-feature-overrides
+    displayName: Meeting Feature Overrides
+    table: dft_MeetingFeatureOverride
+    filter: "per-meeting feature overrides that depart from inherited defaults"
+    sort: "createdon desc"
+    columns:
+      - dft_name
+      - dft_meetingid
+      - dft_featuredefinitionid
+      - dft_state
+      - dft_reason
+  - name: connector-health-summary
+    displayName: Connector Health Summary
+    table: dft_IntegrationLog
+    filter: "recent connector activity across Dataverse and external systems"
+    sort: "dft_loggedon desc"
+    columns:
+      - dft_sourcesystem
+      - dft_targetsystem
+      - dft_operation
+      - dft_status
+      - dft_retrycount
+      - dft_actor
+      - dft_correlationid
+      - dft_loggedon
+  - name: access-exceptions-active
+    displayName: Active Access Exceptions
+    table: dft_AccessRule
+    filter: "dft_ruletype = Exception or dft_classification in Restricted,Legal"
+    sort: "modifiedon desc"
+    columns:
+      - dft_name
+      - dft_governancebodyid
+      - dft_meetingid
+      - dft_paperid
+      - dft_scope
+      - dft_ruletype
+      - dft_classification
+  - name: integration-errors-open
+    displayName: Open Integration Errors
+    table: dft_IntegrationLog
+    filter: "dft_status in Failed,Retried"
+    sort: "createdon desc"
+    columns:
+      - dft_name
+      - dft_sourcesystem
+      - dft_targetsystem
+      - dft_operation
+      - dft_relatedrecordid
+      - dft_correlationid
+      - dft_errormessage
+      - dft_loggedon
+  - name: stale-integration-status
+    displayName: Stale Integration Status
+    table: dft_IntegrationLog
+    filter: "dft_status in Queued,Retried and dft_loggedon < now-24h"
+    sort: "dft_loggedon asc"
+    columns:
+      - dft_name
+      - dft_sourcesystem
+      - dft_targetsystem
+      - dft_operation
+      - dft_relatedrecordid
+      - dft_status
+      - dft_correlationid
+      - dft_loggedon
+  - name: ai-review-queue
+    displayName: AI Review Queue
+    table: dft_AIBuilderRun
+    filter: "dft_humanreviewstatus = Pending and dft_runstatus = Completed"
+    sort: "createdon asc"
+    columns:
+      - dft_name
+      - dft_aibuilderpromptid
+      - dft_meetingid
+      - dft_minutesid
+      - dft_runstatus
+      - dft_humanreviewstatus
+      - dft_reviewerid
+      - createdon
+  - name: records-missing-owner
+    displayName: Records Missing Owner
+    table: mixed
+    filter: "dft_GovernanceBody.dft_ownerpersonid is null or dft_Decision.dft_ownerid is null or dft_ActionItem.dft_ownerid is null or dft_Paper.dft_ownerid is null"
+    sort: "createdon asc"
+    columns:
+      - sourceTable
+      - dft_name
+      - governanceContext
+      - createdon
+  - name: overdue-review-register
+    displayName: Overdue Review Register
+    table: mixed
+    filter: "dft_Decision.dft_reviewdueon < today or dft_TermsOfReference.dft_reviewdueon < today"
+    sort: "reviewDueOn asc"
+    columns:
+      - sourceTable
+      - dft_name
+      - governanceContext
+      - ownerPerson
+      - reviewDueOn
+metrics:
+  - name: meetingsScheduledNext30Days
+    definition: Count of draft, planned, or invited meeting rows with start date in the next 30 days.
+    source: dft_Meeting
+    view: meeting-pipeline-next-30-days
+    aggregation: count
+  - name: meetingsMissingAgendaNext30Days
+    definition: Count of next-30-day meetings that have no active agenda items.
+    source: dft_Meeting
+    view: upcoming-meetings-missing-agenda
+    aggregation: count
+  - name: minutesPendingReviewCount
+    definition: Count of draft or chair-review minutes.
+    source: dft_Minutes
+    view: draft-minutes-pending-review
+    aggregation: count
+  - name: minutesAwaitingChairApproval
+    definition: Count of minutes pending approval with no approval timestamp.
+    source: dft_Minutes
+    view: minutes-awaiting-chair-approval
+    aggregation: count
+  - name: unapprovedMinutesWithPublishUrlCount
+    definition: Count of minutes that are not approved, published, or archived but already have a publish URL.
+    source: dft_Minutes
+    view: unapproved-minutes-with-publish-url
+    aggregation: count
+  - name: latePaperCount
+    definition: Count of draft or submitted papers missing a SharePoint URL.
+    source: dft_Paper
+    view: papers-missing-or-late
+    aggregation: count
+  - name: openDecisionCount
+    definition: Count of proposed or deferred decisions in the operational decision register.
+    source: dft_Decision
+    view: decision-register-open
+    aggregation: count
+  - name: decisionsOverdueReviewCount
+    definition: Count of non-rescinded and non-superseded decisions with a review due date before today.
+    source: dft_Decision
+    view: decisions-overdue-review
+    aggregation: count
+  - name: assignedDecisionCount
+    definition: Count of non-rescinded and non-superseded decisions owned by the signed-in person.
+    source: dft_Decision
+    view: decisions-assigned-to-me
+    aggregation: count
+  - name: myOpenActionCount
+    definition: Count of non-completed, non-closed actions owned by the signed-in person.
+    source: dft_ActionItem
+    view: my-open-actions
+    aggregation: count
+  - name: myOverdueActionCount
+    definition: Count of overdue non-completed, non-closed actions owned by the signed-in person.
+    source: dft_ActionItem
+    view: my-overdue-actions
+    aggregation: count
+  - name: overdueActionCount
+    definition: Count of overdue non-completed, non-closed actions across the viewer's accessible governance bodies.
+    source: dft_ActionItem
+    view: overdue-actions
+    aggregation: count
+  - name: syncedActionsMissingPlannerTaskId
+    definition: Count of action items marked as Planner sync succeeded but missing Planner task ID.
+    source: dft_ActionItem
+    view: actions-synced-without-planner-task-id
+    aggregation: count
+  - name: activeAccessExceptionCount
+    definition: Count of exception access rules or restricted/legal access rules.
+    source: dft_AccessRule
+    view: access-exceptions-active
+    aggregation: count
+  - name: openIntegrationErrorCount
+    definition: Count of integration log rows in failed or retried state.
+    source: dft_IntegrationLog
+    view: integration-errors-open
+    aggregation: count
+  - name: staleIntegrationStatusCount
+    definition: Count of integration log rows still queued or retried after 24 hours.
+    source: dft_IntegrationLog
+    view: stale-integration-status
+    aggregation: count
+  - name: governanceHierarchyBodyCount
+    definition: Count of governance bodies represented in the hierarchy overview.
+    source: dft_GovernanceBody
+    view: governance-hierarchy-overview
+    aggregation: count
+  - name: featureSwitchTemplateCount
+    definition: Count of contextual feature templates across governance bodies and meeting series.
+    source: dft_FeatureTemplate
+    view: feature-switch-templates
+    aggregation: count
+  - name: meetingFeatureOverrideCount
+    definition: Count of explicit meeting-level feature overrides.
+    source: dft_MeetingFeatureOverride
+    view: meeting-feature-overrides
+    aggregation: count
+  - name: connectorHealthEventCount
+    definition: Count of recent connector and flow activity rows across Dataverse and external systems.
+    source: dft_IntegrationLog
+    view: connector-health-summary
+    aggregation: count
+  - name: aiRunsPendingReview
+    definition: Count of completed AI Builder runs with pending human review.
+    source: dft_AIBuilderRun
+    view: ai-review-queue
+    aggregation: count
+  - name: recordsMissingOwnerCount
+    definition: Count of governance bodies, decisions, actions, or papers missing their accountable owner lookup.
+    source: mixed
+    view: records-missing-owner
+    aggregation: count
+  - name: overdueReviewCount
+    definition: Count of decisions or terms of reference with review due dates before today.
+    source: mixed
+    view: overdue-review-register
+    aggregation: count
+dataQualityChecks:
+  - name: missing-owners
+    severity: warning
+    metric: recordsMissingOwnerCount
+    rule: "dft_GovernanceBody.dft_ownerpersonid is null or dft_Decision.dft_ownerid is null or dft_ActionItem.dft_ownerid is null or dft_Paper.dft_ownerid is null"
+    remediation: Assign the responsible person before relying on escalation, workload, or owner reporting.
+  - name: overdue-reviews
+    severity: warning
+    metric: overdueReviewCount
+    rule: "dft_Decision.dft_reviewdueon < today or dft_TermsOfReference.dft_reviewdueon < today"
+    remediation: Update the review outcome, extend the review due date with approval evidence, or close the decision or terms review.
+  - name: stale-integration-status
+    severity: warning
+    metric: staleIntegrationStatusCount
+    rule: "dft_IntegrationLog.dft_status in Queued,Retried and dft_IntegrationLog.dft_loggedon < now-24h"
+    remediation: Replay, fail, or close the integration log with correlation ID evidence.
+  - name: unapproved-minutes-with-publish-url
+    severity: error
+    metric: unapprovedMinutesWithPublishUrlCount
+    rule: "dft_Minutes.dft_status not in Approved,Published,Archived and dft_Minutes.dft_publishedurl is not null"
+    remediation: Remove the publish URL or complete chair approval and human review evidence before publication.
+  - name: actions-synced-without-planner-task-id
+    severity: error
+    metric: syncedActionsMissingPlannerTaskId
+    rule: "dft_ActionItem.dft_plannersyncstatus = Succeeded and dft_ActionItem.dft_plannertaskid is null"
+    remediation: Reconcile the Planner task, write the task ID, or reset the sync status to retry or failed.

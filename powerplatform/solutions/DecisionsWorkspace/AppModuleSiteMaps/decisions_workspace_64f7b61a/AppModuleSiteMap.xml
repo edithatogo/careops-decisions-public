@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppModuleSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SiteMapUniqueName>decisions_workspace_64f7b61a</SiteMapUniqueName>
+  <EnableCollapsibleGroups>True</EnableCollapsibleGroups>
+  <ShowHome>True</ShowHome>
+  <ShowPinned>True</ShowPinned>
+  <ShowRecents>True</ShowRecents>
+  <SiteMap IntroducedVersion="7.0.0.0">
+    <Area Id="area_governance_operations" ShowGroups="true" IntroducedVersion="7.0.0.0">
+      <Titles>
+        <Title Title="Decisions Workspace" LCID="1033" />
+      </Titles>
+      <Group Id="group_workspace_home" IntroducedVersion="7.0.0.0">
+        <Titles>
+          <Title Title="Workspace Home" LCID="1033" />
+        </Titles>
+        <SubArea Id="subarea_workspace_home" Entity="dft_meeting">
+          <Titles>
+            <Title Title="Prepare Meetings" LCID="1033" />
+          </Titles>
+          <Descriptions>
+            <Description Description="Start here for the meeting workspace, agenda, attendance, papers, minutes, decisions, actions, and integration follow-up." LCID="1033" />
+          </Descriptions>
+        </SubArea>
+        <SubArea Id="subarea_home_decisions_actions" Entity="dft_actionitem">
+          <Titles>
+            <Title Title="My Decisions and Actions" LCID="1033" />
+          </Titles>
+        </SubArea>
+        <SubArea Id="subarea_home_integration_health" Entity="dft_integrationlog">
+          <Titles>
+            <Title Title="Integration Health" LCID="1033" />
+          </Titles>
+        </SubArea>
+        <SubArea Id="subarea_419b1ed5" ResourceId="SitemapDesigner.NewSubArea" VectorIcon="/_imgs/TableIconsFluentV9/document_one_page_sparkle.svg" Icon="/_imgs/imagestrips/transparent_spacer.gif" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" GenPageId="db9d638c-7435-4e3c-8039-fff537edf5e9">
+          <Titles>
+            <Title LCID="1033" Title="Quick Start Guide" />
+          </Titles>
+        </SubArea>
+      </Group>
+      <Group Id="group_meetings" IntroducedVersion="7.0.0.0">
+        <Titles>
+          <Title Title="Meetings" LCID="1033" />
+        </Titles>
+        <SubArea Id="subarea_meetings" Entity="dft_meeting" />
+        <SubArea Id="subarea_agenda_items" Entity="dft_agendaitem" />
+        <SubArea Id="subarea_papers" Entity="dft_paper" />
+        <SubArea Id="subarea_attendees" Entity="dft_attendee" />
+      </Group>
+      <Group Id="group_outcomes" IntroducedVersion="7.0.0.0">
+        <Titles>
+          <Title Title="Minutes, Decisions and Actions" LCID="1033" />
+        </Titles>
+        <SubArea Id="subarea_minutes" Entity="dft_minutes" />
+        <SubArea Id="subarea_decisions" Entity="dft_decision" />
+        <SubArea Id="subarea_actions" Entity="dft_actionitem" />
+        <SubArea Id="subarea_transcripts" Entity="dft_transcript" />
+      </Group>
+      <Group Id="group_governance" IntroducedVersion="7.0.0.0">
+        <Titles>
+          <Title Title="Governance Structure" LCID="1033" />
+        </Titles>
+        <SubArea Id="subarea_governance_bodies" Entity="dft_governancebody" />
+        <SubArea Id="subarea_meeting_series" Entity="dft_meetingseries" />
+        <SubArea Id="subarea_terms_of_reference" Entity="dft_termsofreference" />
+        <SubArea Id="subarea_memberships" Entity="dft_committeemembership" />
+        <SubArea Id="subarea_people" Entity="dft_orgperson" />
+        <SubArea Id="subarea_reporting_lines" Entity="dft_orgrelationship" />
+      </Group>
+      <Group Id="group_configuration" IntroducedVersion="7.0.0.0">
+        <Titles>
+          <Title Title="Configuration and Integrations" LCID="1033" />
+        </Titles>
+        <SubArea Id="subarea_feature_definitions" Entity="dft_featuredefinition" />
+        <SubArea Id="subarea_feature_templates" Entity="dft_featuretemplate" />
+        <SubArea Id="subarea_meeting_feature_overrides" Entity="dft_meetingfeatureoverride" />
+        <SubArea Id="subarea_access_rules" Entity="dft_accessrule" />
+        <SubArea Id="subarea_ai_prompts" Entity="dft_aibuilderprompt" />
+        <SubArea Id="subarea_ai_runs" Entity="dft_aibuilderrun" />
+        <SubArea Id="subarea_integration_logs" Entity="dft_integrationlog" />
+      </Group>
+    </Area>
+  </SiteMap>
+  <LocalizedNames>
+    <LocalizedName description="Decisions Workspace" languagecode="1033" />
+  </LocalizedNames>
+</AppModuleSiteMap>

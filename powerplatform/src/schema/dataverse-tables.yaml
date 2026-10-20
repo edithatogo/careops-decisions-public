@@ -1,0 +1,1578 @@
+publisherPrefix: dft
+modelName: Decisions Workspace governance meeting system
+schemaVersion: 0.1
+compatibility:
+  mvp: Dataverse for Teams compatible
+  future: Full Dataverse with managed solution, roles, and environment variables
+tables:
+  - logicalName: dft_GovernanceBody
+    displayName: Governance Body
+    description: Board, council, committee, subcommittee, working group, project board, or recurring forum.
+    purpose: Anchor for governance hierarchy, ownership, and reporting lines.
+    mvpNotes:
+      - Use one table for all governance forums in the MVP to keep the model simple.
+      - Model the body type with a choice rather than separate tables.
+    futureNotes:
+      - Split into specialized subtypes only if reporting or security rules require it.
+    primaryName:
+      logicalName: dft_name
+      label: Name
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_governancebody_code
+        columns: [dft_bodycode]
+    columns:
+      - logicalName: dft_bodycode
+        label: Body Code
+        type: text
+        required: true
+        maxLength: 50
+        unique: true
+      - logicalName: dft_bodytype
+        label: Body Type
+        type: choice
+        choiceSet: governanceBodyType
+        required: true
+      - logicalName: dft_parentgovernancebodyid
+        label: Parent Governance Body
+        type: lookup
+        relatedTable: dft_GovernanceBody
+        required: false
+      - logicalName: dft_ownerpersonid
+        label: Owner Person
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+      - logicalName: dft_status
+        label: Status
+        type: choice
+        choiceSet: governanceBodyStatus
+        required: true
+      - logicalName: dft_description
+        label: Description
+        type: multilineText
+        required: false
+        maxLength: 2000
+      - logicalName: dft_defaultclassification
+        label: Default Classification
+        type: choice
+        choiceSet: recordClassification
+        required: false
+
+  - logicalName: dft_TermsOfReference
+    displayName: Terms Of Reference
+    description: Versioned mandate, quorum, membership rules, review cycle, and approval record.
+    purpose: Store the current and historical authority for a governance body.
+    mvpNotes:
+      - Keep only one current record per governance body, but preserve previous versions.
+      - Treat approval and review dates as plain columns, not workflow-enforced rules.
+    futureNotes:
+      - Add stronger approval workflows and document generation when the enterprise path is active.
+    primaryName:
+      logicalName: dft_name
+      label: Title
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_tor_version_key
+        columns: [dft_governancebodyid, dft_versionnumber]
+    columns:
+      - logicalName: dft_governancebodyid
+        label: Governance Body
+        type: lookup
+        relatedTable: dft_GovernanceBody
+        required: true
+      - logicalName: dft_versionnumber
+        label: Version
+        type: wholeNumber
+        required: true
+      - logicalName: dft_effectivefrom
+        label: Effective From
+        type: dateOnly
+        required: true
+      - logicalName: dft_effectiveto
+        label: Effective To
+        type: dateOnly
+        required: false
+      - logicalName: dft_reviewdueon
+        label: Review Due On
+        type: dateOnly
+        required: false
+      - logicalName: dft_status
+        label: Status
+        type: choice
+        choiceSet: torStatus
+        required: true
+      - logicalName: dft_quorumnumber
+        label: Quorum Number
+        type: decimal
+        required: false
+      - logicalName: dft_quorumdenominator
+        label: Quorum Denominator
+        type: choice
+        choiceSet: quorumDenominator
+        required: false
+      - logicalName: dft_approvalstatus
+        label: Approval Status
+        type: choice
+        choiceSet: approvalStatus
+        required: true
+      - logicalName: dft_approvedon
+        label: Approved On
+        type: dateTime
+        required: false
+
+  - logicalName: dft_CommitteeMembership
+    displayName: Committee Membership
+    description: Person-to-governance-body membership, role, term, and voting rights.
+    purpose: Keep an auditable record of who belongs to each governance body.
+    mvpNotes:
+      - Use this table for both formal membership and alternate/proxy roles.
+      - Cache Office 365 Users data on the person table and join by stable IDs.
+    futureNotes:
+      - Sync membership from Entra groups or source HR systems when available.
+    primaryName:
+      logicalName: dft_name
+      label: Membership
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_membership_unique
+        columns: [dft_governancebodyid, dft_orgpersonid, dft_startdate]
+    columns:
+      - logicalName: dft_governancebodyid
+        label: Governance Body
+        type: lookup
+        relatedTable: dft_GovernanceBody
+        required: true
+      - logicalName: dft_orgpersonid
+        label: Person
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: true
+      - logicalName: dft_membershiprole
+        label: Membership Role
+        type: choice
+        choiceSet: membershipRole
+        required: true
+      - logicalName: dft_startdate
+        label: Start Date
+        type: dateOnly
+        required: true
+      - logicalName: dft_enddate
+        label: End Date
+        type: dateOnly
+        required: false
+      - logicalName: dft_membershipstatus
+        label: Membership Status
+        type: choice
+        choiceSet: membershipStatus
+        required: true
+      - logicalName: dft_votingrights
+        label: Voting Rights
+        type: yesNo
+        required: true
+      - logicalName: dft_isalternate
+        label: Is Alternate
+        type: yesNo
+        required: true
+
+  - logicalName: dft_OrgPerson
+    displayName: Org Person
+    description: Cached identity record from Office 365 Users or later Graph sync.
+    purpose: Stable person cache for joins, ownership, and reporting.
+    mvpNotes:
+      - Store the fields returned by the Office 365 Users connector so the app can work without Graph.
+      - Do not join on display name.
+    futureNotes:
+      - Refresh the cache from Entra IDs and Graph when enterprise sync is enabled.
+    primaryName:
+      logicalName: dft_name
+      label: Display Name
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_orgperson_objectid
+        columns: [dft_aadobjectid]
+      - name: dft_orgperson_workmail
+        columns: [dft_workemail]
+    columns:
+      - logicalName: dft_aadobjectid
+        label: Entra Object ID
+        type: text
+        required: false
+        maxLength: 100
+        unique: true
+      - logicalName: dft_workemail
+        label: Work Email
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_userprincipalname
+        label: User Principal Name
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_jobtitle
+        label: Job Title
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_department
+        label: Department
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_manageremail
+        label: Manager Email
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_lastsyncedon
+        label: Last Synced On
+        type: dateTime
+        required: false
+
+  - logicalName: dft_OrgRelationship
+    displayName: Org Relationship
+    description: Reporting, manager, delegate, and other organization relationships.
+    purpose: Preserve hierarchy hints separately from governance membership.
+    mvpNotes:
+      - Use this as a cache of org relationships from Office 365 Users.
+    futureNotes:
+      - Replace or augment with Graph or HR-system sync when available.
+    primaryName:
+      logicalName: dft_name
+      label: Relationship
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_orgrelationship_unique
+        columns: [dft_sourcepersonid, dft_targetpersonid, dft_relationshiptype]
+    columns:
+      - logicalName: dft_sourcepersonid
+        label: Source Person
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: true
+      - logicalName: dft_targetpersonid
+        label: Target Person
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: true
+      - logicalName: dft_relationshiptype
+        label: Relationship Type
+        type: choice
+        choiceSet: orgRelationshipType
+        required: true
+      - logicalName: dft_effectivefrom
+        label: Effective From
+        type: dateOnly
+        required: false
+      - logicalName: dft_effectiveto
+        label: Effective To
+        type: dateOnly
+        required: false
+      - logicalName: dft_source
+        label: Source
+        type: choice
+        choiceSet: identitySource
+        required: true
+
+  - logicalName: dft_FeatureDefinition
+    displayName: Feature Definition
+    description: Canonical capability switch that can be resolved at environment, governance body, series, or meeting level.
+    purpose: Hold the environment default for each switchable meeting capability.
+    mvpNotes:
+      - Keep one row per capability switch so the app can resolve voting, AI minutes, transcript import, Planner sync, Teams posts, SharePoint papers and minutes, Outlook invites, and org hierarchy without hard-coded flags.
+      - Treat the default state on this table as the environment baseline before any contextual template or meeting override is applied.
+    futureNotes:
+      - Add admin management screens only when the switchboard needs non-technical maintenance.
+    primaryName:
+      logicalName: dft_name
+      label: Feature
+      type: text
+      required: true
+      maxLength: 200
+    columns:
+      - logicalName: dft_featurekey
+        label: Feature Key
+        type: choice
+        choiceSet: featureKey
+        required: true
+      - logicalName: dft_defaultstate
+        label: Default State
+        type: choice
+        choiceSet: featureSwitchState
+        required: true
+      - logicalName: dft_description
+        label: Description
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_sortorder
+        label: Sort Order
+        type: wholeNumber
+        required: false
+
+  - logicalName: dft_MeetingSeries
+    displayName: Meeting Series
+    description: Recurring meeting pattern and default operating context.
+    purpose: Define the cadence, owner, and defaults for a set of meetings.
+    mvpNotes:
+      - Keep recurrence simple and store the pattern as a choice plus free-text rule.
+    futureNotes:
+      - Add richer recurrence expression handling if a single choice is not enough.
+    primaryName:
+      logicalName: dft_name
+      label: Series Name
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_meetingseries_code
+        columns: [dft_seriescode]
+    columns:
+      - logicalName: dft_seriescode
+        label: Series Code
+        type: text
+        required: true
+        maxLength: 50
+        unique: true
+      - logicalName: dft_governancebodyid
+        label: Governance Body
+        type: lookup
+        relatedTable: dft_GovernanceBody
+        required: true
+      - logicalName: dft_seriesownerid
+        label: Series Owner
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+      - logicalName: dft_meetingcadence
+        label: Meeting Cadence
+        type: choice
+        choiceSet: recurrencePattern
+        required: true
+      - logicalName: dft_recurrencerule
+        label: Recurrence Rule
+        type: text
+        required: false
+        maxLength: 500
+      - logicalName: dft_defaultlocation
+        label: Default Location
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_defaultchannelid
+        label: Default Channel Id
+        type: text
+        required: false
+        maxLength: 100
+      - logicalName: dft_defaultteamid
+        label: Default Team Id
+        type: text
+        required: false
+        maxLength: 100
+      - logicalName: dft_seriesstatus
+        label: Series Status
+        type: choice
+        choiceSet: seriesStatus
+        required: true
+
+  - logicalName: dft_FeatureTemplate
+    displayName: Feature Template
+    description: Context-specific feature default that sits between the feature definition and a per-meeting override.
+    purpose: Store template rows for governance body, meeting series, or named default contexts.
+    mvpNotes:
+      - Allow a blank-context row to act as the environment template when no governance body or meeting series is supplied.
+      - Resolve the nearest matching row in this order: meeting override, meeting series template, governance body template, then feature definition default.
+    futureNotes:
+      - Add template-copy tooling only if administrators need reusable bundles of switch settings.
+    primaryName:
+      logicalName: dft_name
+      label: Template Name
+      type: text
+      required: true
+      maxLength: 200
+    columns:
+      - logicalName: dft_templatecode
+        label: Template Code
+        type: text
+        required: false
+        maxLength: 100
+      - logicalName: dft_featuredefinitionid
+        label: Feature Definition
+        type: lookup
+        relatedTable: dft_FeatureDefinition
+        required: true
+      - logicalName: dft_governancebodyid
+        label: Governance Body
+        type: lookup
+        relatedTable: dft_GovernanceBody
+        required: false
+      - logicalName: dft_meetingseriesid
+        label: Meeting Series
+        type: lookup
+        relatedTable: dft_MeetingSeries
+        required: false
+      - logicalName: dft_state
+        label: State
+        type: choice
+        choiceSet: featureSwitchState
+        required: true
+      - logicalName: dft_notes
+        label: Notes
+        type: multilineText
+        required: false
+        maxLength: 4000
+
+  - logicalName: dft_Meeting
+    displayName: Meeting
+    description: Individual meeting instance with agenda, invite, minutes, decisions, actions, and sync metadata.
+    purpose: Authoritative record for one meeting occurrence.
+    mvpNotes:
+      - Keep the meeting row authoritative even when Outlook, Teams, or SharePoint hold copies.
+      - Store external IDs on the meeting record so flows can be idempotent.
+    futureNotes:
+      - Extend with richer Graph meeting metadata and attendance data when available.
+    primaryName:
+      logicalName: dft_name
+      label: Meeting Title
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_meeting_external_event
+        columns: [dft_externalcalendarid]
+    columns:
+      - logicalName: dft_meetingseriesid
+        label: Meeting Series
+        type: lookup
+        relatedTable: dft_MeetingSeries
+        required: true
+      - logicalName: dft_subject
+        label: Subject
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_meetingnumber
+        label: Meeting Number
+        type: wholeNumber
+        required: false
+      - logicalName: dft_startdatetime
+        label: Start Date Time
+        type: dateTime
+        required: true
+      - logicalName: dft_enddatetime
+        label: End Date Time
+        type: dateTime
+        required: false
+      - logicalName: dft_scheduledstartutc
+        label: Scheduled Start UTC
+        type: dateTime
+        required: true
+      - logicalName: dft_scheduledendutc
+        label: Scheduled End UTC
+        type: dateTime
+        required: false
+      - logicalName: dft_actualstartutc
+        label: Actual Start UTC
+        type: dateTime
+        required: false
+      - logicalName: dft_actualendutc
+        label: Actual End UTC
+        type: dateTime
+        required: false
+      - logicalName: dft_meetingstatus
+        label: Status
+        type: choice
+        choiceSet: meetingStatus
+        required: true
+      - logicalName: dft_externalcalendarid
+        label: External Calendar Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_outlookeventid
+        label: Outlook Event Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_externalteamsid
+        label: External Teams Meeting Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_teamsjoinurl
+        label: Teams Join Url
+        type: text
+        required: false
+        maxLength: 500
+      - logicalName: dft_location
+        label: Location
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_chairpersonid
+        label: Chair Person
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+      - logicalName: dft_inviterequested
+        label: Invite Requested
+        type: yesNo
+        required: true
+      - logicalName: dft_invitesyncstate
+        label: Invite Sync State
+        type: choice
+        choiceSet: integrationStatus
+        required: true
+      - logicalName: dft_invitesynchash
+        label: Invite Sync Hash
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_invitesyncedon
+        label: Invite Synced On
+        type: dateTime
+        required: false
+      - logicalName: dft_requiredattendees
+        label: Required Attendees
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_optionalattendees
+        label: Optional Attendees
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_teamsmessageid
+        label: Teams Message Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_teamspostkey
+        label: Teams Post Key
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_teamspostedon
+        label: Teams Posted On
+        type: dateTime
+        required: false
+      - logicalName: dft_classification
+        label: Classification
+        type: choice
+        choiceSet: recordClassification
+        required: true
+
+  - logicalName: dft_MeetingFeatureOverride
+    displayName: Meeting Feature Override
+    description: Per-meeting feature state that overrides the resolved feature template or definition default.
+    purpose: Store the final meeting-level decision for switchable capabilities.
+    mvpNotes:
+      - Leave a feature out of this table when the meeting should inherit the series, governance body, or definition default.
+      - Use this table only for explicit meeting-level exceptions so the app can resolve a clean switchboard.
+    futureNotes:
+      - Add audit or approval metadata only if business rules need a trace of who changed the final meeting state.
+    primaryName:
+      logicalName: dft_name
+      label: Override Name
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_meetingfeatureoverride_unique
+        columns: [dft_meetingid, dft_featuredefinitionid]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_featuredefinitionid
+        label: Feature Definition
+        type: lookup
+        relatedTable: dft_FeatureDefinition
+        required: true
+      - logicalName: dft_state
+        label: State
+        type: choice
+        choiceSet: featureSwitchState
+        required: true
+      - logicalName: dft_reason
+        label: Reason
+        type: multilineText
+        required: false
+        maxLength: 4000
+
+  - logicalName: dft_Attendee
+    displayName: Attendee
+    description: Expected or actual meeting attendee record with response and attendance status.
+    purpose: Track invitees, proxies, and actual attendance per meeting.
+    mvpNotes:
+      - Keep attendee state separate from membership because a person can attend without being a member.
+    futureNotes:
+      - Expand with attendance reports or automatic sync from Graph when available.
+    primaryName:
+      logicalName: dft_name
+      label: Attendee
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_attendee_unique
+        columns: [dft_meetingid, dft_orgpersonid]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_orgpersonid
+        label: Person
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+      - logicalName: dft_displayname
+        label: Display Name
+        type: text
+        required: true
+        maxLength: 200
+      - logicalName: dft_emailaddress
+        label: Email Address
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_response
+        label: Response
+        type: choice
+        choiceSet: attendanceResponse
+        required: false
+      - logicalName: dft_attendancestatus
+        label: Attendance Status
+        type: choice
+        choiceSet: attendanceStatus
+        required: true
+      - logicalName: dft_attendeerole
+        label: Attendee Role
+        type: choice
+        choiceSet: attendeeRole
+        required: true
+      - logicalName: dft_isproxy
+        label: Is Proxy
+        type: yesNo
+        required: true
+      - logicalName: dft_votingeligible
+        label: Voting Eligible
+        type: yesNo
+        required: true
+      - logicalName: dft_invitedon
+        label: Invited On
+        type: dateTime
+        required: false
+      - logicalName: dft_responseupdatedon
+        label: Response Updated On
+        type: dateTime
+        required: false
+      - logicalName: dft_outlookattendeeid
+        label: Outlook Attendee Id
+        type: text
+        required: false
+        maxLength: 200
+
+  - logicalName: dft_AgendaItem
+    displayName: Agenda Item
+    description: Ordered meeting agenda item with presenter, purpose, and outcome tracking.
+    purpose: Break a meeting into trackable agenda items and decisions.
+    mvpNotes:
+      - Keep the agenda item record lightweight and store detailed notes in minutes.
+    futureNotes:
+      - Add agenda templates and agenda item reuse if the product needs repeatable patterns.
+    primaryName:
+      logicalName: dft_name
+      label: Agenda Item
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_agendaitem_sequence
+        columns: [dft_meetingid, dft_sequence]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_sequence
+        label: Sequence
+        type: wholeNumber
+        required: true
+      - logicalName: dft_agendatitle
+        label: Title
+        type: text
+        required: true
+        maxLength: 200
+      - logicalName: dft_purpose
+        label: Purpose
+        type: choice
+        choiceSet: agendaPurpose
+        required: true
+      - logicalName: dft_presenterid
+        label: Presenter
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+      - logicalName: dft_timeminutes
+        label: Time Minutes
+        type: wholeNumber
+        required: false
+      - logicalName: dft_minutetext
+        label: Minute Text
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_decisionsought
+        label: Decision Sought
+        type: yesNo
+        required: true
+      - logicalName: dft_status
+        label: Status
+        type: choice
+        choiceSet: agendaItemStatus
+        required: true
+
+  - logicalName: dft_Paper
+    displayName: Paper
+    description: Registered meeting paper, attachment, or linked document.
+    purpose: Capture pre-read and meeting papers with classification and source metadata.
+    mvpNotes:
+      - Use a SharePoint link first; store file content in Dataverse only when needed.
+    futureNotes:
+      - Add richer document governance and retention metadata when enterprise controls are available.
+    primaryName:
+      logicalName: dft_name
+      label: Paper Title
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_paper_source
+        columns: [dft_documentid]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_agendaitemid
+        label: Agenda Item
+        type: lookup
+        relatedTable: dft_AgendaItem
+        required: false
+      - logicalName: dft_documentid
+        label: External Document Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_documentsource
+        label: Document Source
+        type: choice
+        choiceSet: paperSource
+        required: true
+      - logicalName: dft_classification
+        label: Classification
+        type: choice
+        choiceSet: recordClassification
+        required: true
+      - logicalName: dft_paperstatus
+        label: Status
+        type: choice
+        choiceSet: paperStatus
+        required: true
+      - logicalName: dft_ownerid
+        label: Owner
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+      - logicalName: dft_sharepointurl
+        label: SharePoint Url
+        type: text
+        required: false
+        maxLength: 500
+      - logicalName: dft_sharepointsiteid
+        label: SharePoint Site Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_sharepointdriveid
+        label: SharePoint Drive Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_sharepointitemid
+        label: SharePoint Item Id
+        type: text
+        required: false
+        maxLength: 200
+
+  - logicalName: dft_Minutes
+    displayName: Minutes
+    description: Draft, reviewed, approved, or published meeting minutes.
+    purpose: Store the official meeting record and final published text.
+    mvpNotes:
+      - Keep draft text in Dataverse so the app can review and approve it without extra dependencies.
+    futureNotes:
+      - Generate minutes from transcript and AI Builder outputs, but keep human approval mandatory.
+    primaryName:
+      logicalName: dft_name
+      label: Minutes Title
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_minutes_meeting_version
+        columns: [dft_meetingid, dft_versionnumber]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_versionnumber
+        label: Version
+        type: wholeNumber
+        required: true
+      - logicalName: dft_status
+        label: Status
+        type: choice
+        choiceSet: minuteStatus
+        required: true
+      - logicalName: dft_drafttext
+        label: Draft Text
+        type: multilineText
+        required: false
+        maxLength: 32000
+      - logicalName: dft_approvedbyid
+        label: Approved By
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+      - logicalName: dft_approvedon
+        label: Approved On
+        type: dateTime
+        required: false
+      - logicalName: dft_publishedon
+        label: Published On
+        type: dateTime
+        required: false
+      - logicalName: dft_publishedurl
+        label: Published Url
+        type: text
+        required: false
+        maxLength: 500
+      - logicalName: dft_sharepointsiteid
+        label: SharePoint Site Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_sharepointdriveid
+        label: SharePoint Drive Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_sharepointitemid
+        label: SharePoint Item Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_classification
+        label: Classification
+        type: choice
+        choiceSet: recordClassification
+        required: true
+
+  - logicalName: dft_Transcript
+    displayName: Transcript
+    description: Imported or retrieved meeting transcript and processing state.
+    purpose: Preserve transcript text or references for downstream minute drafting and audit.
+    mvpNotes:
+      - Allow a manual paste/import path before Graph transcript automation exists.
+    futureNotes:
+      - Swap in Graph transcript retrieval when the tenant and permissions support it.
+    primaryName:
+      logicalName: dft_name
+      label: Transcript Title
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_transcript_meeting
+        columns: [dft_meetingid]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_source
+        label: Source
+        type: choice
+        choiceSet: transcriptSource
+        required: true
+      - logicalName: dft_transcriptstatus
+        label: Status
+        type: choice
+        choiceSet: transcriptStatus
+        required: true
+      - logicalName: dft_classification
+        label: Classification
+        type: choice
+        choiceSet: recordClassification
+        required: true
+      - logicalName: dft_transcripttext
+        label: Transcript Text
+        type: multilineText
+        required: false
+        maxLength: 32000
+      - logicalName: dft_fileurl
+        label: File Url
+        type: text
+        required: false
+        maxLength: 500
+      - logicalName: dft_sharepointsiteid
+        label: SharePoint Site Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_sharepointdriveid
+        label: SharePoint Drive Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_sharepointitemid
+        label: SharePoint Item Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_sourcehash
+        label: Source Hash
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_processedon
+        label: Processed On
+        type: dateTime
+        required: false
+      - logicalName: dft_retentionstatus
+        label: Retention Status
+        type: choice
+        choiceSet: retentionStatus
+        required: false
+
+  - logicalName: dft_Decision
+    displayName: Decision
+    description: Formal resolution, outcome, or authority-based determination.
+    purpose: Maintain the official decision register for governance meetings.
+    mvpNotes:
+      - Keep each decision linked back to the meeting and agenda item that produced it.
+    futureNotes:
+      - Extend with legal authority references or downstream policy traceability where needed.
+    primaryName:
+      logicalName: dft_name
+      label: Decision Title
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_decision_meeting_sequence
+        columns: [dft_meetingid, dft_decisionnumber]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_agendaitemid
+        label: Agenda Item
+        type: lookup
+        relatedTable: dft_AgendaItem
+        required: false
+      - logicalName: dft_governancebodyid
+        label: Governance Body
+        type: lookup
+        relatedTable: dft_GovernanceBody
+        required: false
+      - logicalName: dft_decisionnumber
+        label: Decision Number
+        type: text
+        required: false
+        maxLength: 50
+      - logicalName: dft_decisiontext
+        label: Decision Text
+        type: multilineText
+        required: true
+        maxLength: 4000
+      - logicalName: dft_authority
+        label: Authority
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_status
+        label: Status
+        type: choice
+        choiceSet: decisionStatus
+        required: true
+      - logicalName: dft_effectiveon
+        label: Effective On
+        type: dateOnly
+        required: false
+      - logicalName: dft_reviewdueon
+        label: Review Due On
+        type: dateOnly
+        required: false
+      - logicalName: dft_ownerid
+        label: Owner
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+
+  - logicalName: dft_ActionItem
+    displayName: Action Item
+    description: Follow-up task, owner, due date, and completion evidence.
+    purpose: Track work arising from a decision or meeting.
+    mvpNotes:
+      - Keep Dataverse as the authority even when Planner task sync exists.
+    futureNotes:
+      - Add richer task synchronization and service-account automation if needed.
+    primaryName:
+      logicalName: dft_name
+      label: Action Title
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_action_meeting_sequence
+        columns: [dft_meetingid, dft_actionnumber]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_decisionid
+        label: Decision
+        type: lookup
+        relatedTable: dft_Decision
+        required: false
+      - logicalName: dft_governancebodyid
+        label: Governance Body
+        type: lookup
+        relatedTable: dft_GovernanceBody
+        required: false
+      - logicalName: dft_agendaitemid
+        label: Agenda Item
+        type: lookup
+        relatedTable: dft_AgendaItem
+        required: false
+      - logicalName: dft_actionnumber
+        label: Action Number
+        type: text
+        required: false
+        maxLength: 50
+      - logicalName: dft_actionsummary
+        label: Summary
+        type: multilineText
+        required: true
+        maxLength: 4000
+      - logicalName: dft_ownerid
+        label: Owner
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: true
+      - logicalName: dft_duedate
+        label: Due Date
+        type: dateOnly
+        required: false
+      - logicalName: dft_status
+        label: Status
+        type: choice
+        choiceSet: actionStatus
+        required: true
+      - logicalName: dft_synctoplanner
+        label: Sync To Planner
+        type: yesNo
+        required: true
+      - logicalName: dft_requiresplannersync
+        label: Requires Planner Sync
+        type: yesNo
+        required: true
+      - logicalName: dft_lastsynchash
+        label: Last Sync Hash
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_plannersyncstatus
+        label: Planner Sync Status
+        type: choice
+        choiceSet: integrationStatus
+        required: true
+      - logicalName: dft_plannersyncedon
+        label: Planner Synced On
+        type: dateTime
+        required: false
+      - logicalName: dft_priority
+        label: Priority
+        type: choice
+        choiceSet: priority
+        required: true
+      - logicalName: dft_plannertaskid
+        label: Planner Task Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_completionevidence
+        label: Completion Evidence
+        type: multilineText
+        required: false
+        maxLength: 4000
+
+  - logicalName: dft_Vote
+    displayName: Vote
+    description: Motion or vote event attached to a meeting or decision.
+    purpose: Support recorded votes, resolutions, and abstentions.
+    mvpNotes:
+      - Keep voting simple in the first release and avoid complex tally logic.
+    futureNotes:
+      - Add weighted voting or anonymous vote modes only when the governance rules need them.
+    primaryName:
+      logicalName: dft_name
+      label: Vote Title
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_vote_unique
+        columns: [dft_meetingid, dft_votenumber]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_decisionid
+        label: Decision
+        type: lookup
+        relatedTable: dft_Decision
+        required: false
+      - logicalName: dft_agendaitemid
+        label: Agenda Item
+        type: lookup
+        relatedTable: dft_AgendaItem
+        required: false
+      - logicalName: dft_votenumber
+        label: Vote Number
+        type: text
+        required: false
+        maxLength: 50
+      - logicalName: dft_votetype
+        label: Vote Type
+        type: choice
+        choiceSet: voteType
+        required: true
+      - logicalName: dft_motiontext
+        label: Motion Text
+        type: multilineText
+        required: true
+        maxLength: 4000
+      - logicalName: dft_status
+        label: Status
+        type: choice
+        choiceSet: voteStatus
+        required: true
+      - logicalName: dft_result
+        label: Result
+        type: text
+        required: false
+        maxLength: 100
+
+  - logicalName: dft_VoteResponse
+    displayName: Vote Response
+    description: Individual person's response to a vote.
+    purpose: Record how each eligible attendee voted.
+    mvpNotes:
+      - Keep this record narrow and auditable; one row per response.
+    futureNotes:
+      - Support live vote capture or external polling only if governance rules allow it.
+    primaryName:
+      logicalName: dft_name
+      label: Vote Response
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_voteresponse_unique
+        columns: [dft_voteid, dft_orgpersonid]
+    columns:
+      - logicalName: dft_voteid
+        label: Vote
+        type: lookup
+        relatedTable: dft_Vote
+        required: true
+      - logicalName: dft_orgpersonid
+        label: Person
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: true
+      - logicalName: dft_response
+        label: Response
+        type: choice
+        choiceSet: voteResponse
+        required: true
+      - logicalName: dft_weight
+        label: Weight
+        type: decimal
+        required: false
+      - logicalName: dft_recordedon
+        label: Recorded On
+        type: dateTime
+        required: false
+
+  - logicalName: dft_ConflictOfInterest
+    displayName: Conflict Of Interest
+    description: Conflict declaration linked to a meeting, agenda item, or person.
+    purpose: Keep an auditable record of conflict declarations and handling.
+    mvpNotes:
+      - Capture declarations even if the handling is just a note in minutes.
+    futureNotes:
+      - Add richer compliance workflows only if policy requires them.
+    primaryName:
+      logicalName: dft_name
+      label: Conflict Record
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_conflict_unique
+        columns: [dft_meetingid, dft_orgpersonid, dft_conflicttype]
+    columns:
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: true
+      - logicalName: dft_agendaitemid
+        label: Agenda Item
+        type: lookup
+        relatedTable: dft_AgendaItem
+        required: false
+      - logicalName: dft_orgpersonid
+        label: Person
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: true
+      - logicalName: dft_conflicttype
+        label: Conflict Type
+        type: choice
+        choiceSet: conflictType
+        required: true
+      - logicalName: dft_disclosuretext
+        label: Disclosure Text
+        type: multilineText
+        required: true
+        maxLength: 4000
+      - logicalName: dft_handlingdecision
+        label: Handling Decision
+        type: choice
+        choiceSet: conflictHandling
+        required: false
+
+  - logicalName: dft_AccessRule
+    displayName: Access Rule
+    description: Intended access scope and classification for a record or forum.
+    purpose: Make access intent visible even before full role mapping exists.
+    mvpNotes:
+      - Use this as a policy record, not a live security engine.
+    futureNotes:
+      - Map these records to Dataverse roles, Entra groups, and SharePoint permissions later.
+    primaryName:
+      logicalName: dft_name
+      label: Access Rule
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_accessrule_unique
+        columns: [dft_scope, dft_classification, dft_ruletype]
+    columns:
+      - logicalName: dft_scope
+        label: Scope
+        type: choice
+        choiceSet: accessScope
+        required: true
+      - logicalName: dft_ruletype
+        label: Rule Type
+        type: choice
+        choiceSet: accessRuleType
+        required: true
+      - logicalName: dft_classification
+        label: Classification
+        type: choice
+        choiceSet: recordClassification
+        required: true
+      - logicalName: dft_governancebodyid
+        label: Governance Body
+        type: lookup
+        relatedTable: dft_GovernanceBody
+        required: false
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: false
+      - logicalName: dft_paperid
+        label: Paper
+        type: lookup
+        relatedTable: dft_Paper
+        required: false
+      - logicalName: dft_rulesummary
+        label: Rule Summary
+        type: multilineText
+        required: true
+        maxLength: 4000
+
+  - logicalName: dft_AIBuilderPrompt
+    displayName: AI Builder Prompt
+    description: Versioned prompt template used to draft minutes or extract decisions and actions.
+    purpose: Govern prompt templates before they are used in production flows.
+    mvpNotes:
+      - Keep prompts as simple records with approval status and usage constraints.
+    futureNotes:
+      - Expand with richer prompt management, testing, and telemetry.
+    primaryName:
+      logicalName: dft_name
+      label: Prompt Name
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_prompt_version_unique
+        columns: [dft_promptcode, dft_versionnumber]
+    columns:
+      - logicalName: dft_promptcode
+        label: Prompt Code
+        type: text
+        required: true
+        maxLength: 50
+        unique: true
+      - logicalName: dft_versionnumber
+        label: Version
+        type: wholeNumber
+        required: true
+      - logicalName: dft_purpose
+        label: Purpose
+        type: choice
+        choiceSet: promptPurpose
+        required: true
+      - logicalName: dft_inputtype
+        label: Input Type
+        type: choice
+        choiceSet: promptInputType
+        required: true
+      - logicalName: dft_outputschema
+        label: Output Schema
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_approvalstatus
+        label: Approval Status
+        type: choice
+        choiceSet: promptApprovalStatus
+        required: true
+      - logicalName: dft_classificationlimit
+        label: Classification Limit
+        type: choice
+        choiceSet: recordClassification
+        required: true
+      - logicalName: dft_prompttext
+        label: Prompt Text
+        type: multilineText
+        required: false
+        maxLength: 32000
+
+  - logicalName: dft_AIBuilderRun
+    displayName: AI Builder Run
+    description: Logged execution of a prompt against meeting, minute, transcript, or paper content.
+    purpose: Record prompt runs, outputs, and review state.
+    mvpNotes:
+      - Store the output and reviewer state even if the actual model call is manual or assisted.
+    futureNotes:
+      - Add richer diagnostics, token accounting, and model routing when available.
+    primaryName:
+      logicalName: dft_name
+      label: Run Name
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_aibuilderrun_correlation
+        columns: [dft_correlationid]
+    columns:
+      - logicalName: dft_aibuilderpromptid
+        label: Prompt
+        type: lookup
+        relatedTable: dft_AIBuilderPrompt
+        required: true
+      - logicalName: dft_meetingid
+        label: Meeting
+        type: lookup
+        relatedTable: dft_Meeting
+        required: false
+      - logicalName: dft_minutesid
+        label: Minutes
+        type: lookup
+        relatedTable: dft_Minutes
+        required: false
+      - logicalName: dft_transcriptid
+        label: Transcript
+        type: lookup
+        relatedTable: dft_Transcript
+        required: false
+      - logicalName: dft_paperid
+        label: Paper
+        type: lookup
+        relatedTable: dft_Paper
+        required: false
+      - logicalName: dft_runstatus
+        label: Run Status
+        type: choice
+        choiceSet: aiRunStatus
+        required: true
+      - logicalName: dft_humanreviewstatus
+        label: Human Review Status
+        type: choice
+        choiceSet: humanReviewStatus
+        required: true
+      - logicalName: dft_outputtext
+        label: Output Text
+        type: multilineText
+        required: false
+        maxLength: 32000
+      - logicalName: dft_inputhash
+        label: Input Hash
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_outputhash
+        label: Output Hash
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_reviewerid
+        label: Reviewer
+        type: lookup
+        relatedTable: dft_OrgPerson
+        required: false
+      - logicalName: dft_reviewedon
+        label: Reviewed On
+        type: dateTime
+        required: false
+      - logicalName: dft_reviewcomments
+        label: Review Comments
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_correlationid
+        label: Correlation Id
+        type: text
+        required: false
+        maxLength: 100
+
+  - logicalName: dft_IntegrationLog
+    displayName: Integration Log
+    description: Audit trail for connector and flow activity.
+    purpose: Record every outbound and inbound automation event.
+    mvpNotes:
+      - Keep this table append-only in practice.
+    futureNotes:
+      - Add richer telemetry and exception grouping only after the core model is stable.
+    primaryName:
+      logicalName: dft_name
+      label: Log Entry
+      type: text
+      required: true
+      maxLength: 200
+    alternateKeys:
+      - name: dft_integrationlog_correlation
+        columns: [dft_correlationid]
+    columns:
+      - logicalName: dft_sourcesystem
+        label: Source System
+        type: text
+        required: true
+        maxLength: 100
+      - logicalName: dft_targetsystem
+        label: Target System
+        type: text
+        required: true
+        maxLength: 100
+      - logicalName: dft_recordtype
+        label: Record Type
+        type: text
+        required: true
+        maxLength: 100
+      - logicalName: dft_operation
+        label: Operation
+        type: text
+        required: true
+        maxLength: 200
+      - logicalName: dft_requestsummary
+        label: Request Summary
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_status
+        label: Status
+        type: choice
+        choiceSet: integrationStatus
+        required: true
+      - logicalName: dft_message
+        label: Message
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_relatedrecordid
+        label: Related Record Id
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_actor
+        label: Actor
+        type: text
+        required: false
+        maxLength: 200
+      - logicalName: dft_correlationid
+        label: Correlation Id
+        type: text
+        required: false
+        maxLength: 100
+      - logicalName: dft_retrycount
+        label: Retry Count
+        type: wholeNumber
+        required: false
+      - logicalName: dft_errormessage
+        label: Error Message
+        type: multilineText
+        required: false
+        maxLength: 4000
+      - logicalName: dft_loggedon
+        label: Logged On
+        type: dateTime
+        required: true

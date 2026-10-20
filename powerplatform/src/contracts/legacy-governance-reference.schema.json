@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/careops-decisions-public/powerplatform/src/contracts/legacy-governance-reference.schema.json",
+  "title": "CareOps reconciled legacy governance reference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "sourceSystemId",
+    "sourceRecordId",
+    "sourceHash",
+    "recordHash",
+    "observedAt",
+    "reconciliationOutcome",
+    "reviewedBy",
+    "reviewedAt",
+    "authoritativeDecision",
+    "productionWrite"
+  ],
+  "properties": {
+    "contractVersion": {
+      "const": "0.1.0"
+    },
+    "sourceSystemId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "sourceRecordId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "sourceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "recordHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "observedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reconciliationOutcome": {
+      "enum": [
+        "ConfirmedHistoricalReference",
+        "CorrectedHistoricalReference",
+        "RejectedHistoricalReference",
+        "SupersededHistoricalReference"
+      ]
+    },
+    "reviewedBy": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "reviewedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "authoritativeDecision": {
+      "const": false
+    },
+    "productionWrite": {
+      "const": false
+    },
+    "currentRegistrationEstablished": {
+      "const": false
+    },
+    "currentScopeEstablished": {
+      "const": false
+    }
+  }
+}

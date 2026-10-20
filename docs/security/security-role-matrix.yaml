@@ -1,0 +1,429 @@
+schema: decisions.workspace.security-role-matrix.v1
+solution: DecisionsWorkspace
+description: >
+  Dataverse security role matrix for Decisions Workspace. Each role maps to
+  table-level create, read, update, delete, append, and append-to privileges.
+  Roles are design references, not yet implemented in Dataverse. Implement
+  when deploying to shared test or production environments.
+
+roles:
+  - name: Administrator
+    description: Full control over all tables, settings, and solution components.
+    privilege: Full
+    appliesTo: environment
+    notes: >
+      Limit to Power Platform admins. Not a day-to-day governance user.
+      Only role that can modify solution components, export customizations,
+      and manage environment-level settings.
+
+  - name: Secretary
+    description: Creates and manages meetings, agendas, papers, minutes, attendees, transcripts, and integration logs.
+    privilege: Write
+    appliesTo: user
+    notes: >
+      Primary operational role. Can create, edit, and delete records for
+      assigned governance bodies. Cannot modify security roles, access rules,
+      or AI prompt templates.
+
+  - name: Chair
+    description: Reviews and approves minutes, decisions, and actions. Views meeting records.
+    privilege: Read + Approve
+    appliesTo: user
+    notes: >
+      Can read all records for assigned bodies. Can approve minutes and
+      decisions. Cannot create or edit meeting records (delegates to secretary).
+
+  - name: Member
+    description: Views meeting records and actions assigned to them. Creates action completion evidence.
+    privilege: Read + OwnRecordWrite
+    appliesTo: user
+    notes: >
+      Can read papers, minutes, decisions for bodies they belong to. Can
+      write completion evidence on own actions. Cannot create meetings,
+      edit minutes, or access restricted records without explicit access rule.
+
+  - name: Author
+    description: Submits papers and agenda items for assigned bodies.
+    privilege: Write
+    appliesTo: user
+    notes: >
+      Can create and edit papers and agenda items linked to bodies where
+      they have author privileges. Cannot access minutes, decisions, or
+      transcripts outside their authored items.
+
+  - name: Restricted Reader
+    description: Read-only access to a defined subset of records via access rules.
+    privilege: Read
+    appliesTo: user
+    notes: >
+      Explicitly scoped via dft_AccessRule. Cannot see any table data by
+      default. Only records where a matching Allow rule exists. Used for
+      external auditors, observers, and guest presenters with limited scope.
+
+  - name: Auditor
+    description: Read-only access to all records for audit and compliance review.
+    privilege: Read
+    appliesTo: user
+    notes: >
+      Can read all records including restricted and legal classifications.
+      Cannot create, edit, delete, or approve any records. Audit-trail
+      queries only.
+
+  - name: Guest Presenter
+    description: Limited-duration access to present at a specific meeting agenda item.
+    privilege: Read
+    appliesTo: user
+    notes: >
+      Time-boxed by meeting scope. Read access to the specific meeting,
+      its agenda items, and their associated papers. No access to other
+      meetings, minutes, decisions, or actions. Removed after meeting end
+      date plus 30 days.
+
+  - name: Service Account
+    description: Automated flow and integration account for background sync operations.
+    privilege: Write
+    appliesTo: user
+    notes: >
+      Used by Power Automate flows for Planner sync, Outlook invite sync,
+      Teams posts, Office 365 Users hierarchy sync, and AI Builder runs.
+      Not a human login. Requires connection reference ownership in flows.
+
+tablePrivileges:
+  - table: dft_GovernanceBody
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Read, Write
+
+  - table: dft_TermsOfReference
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: None
+
+  - table: dft_CommitteeMembership
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Read, Write
+
+  - table: dft_OrgPerson
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read
+      Member: Read
+      Author: Read
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create, Read, Write
+
+  - table: dft_OrgRelationship
+    privileges:
+      Administrator: Full
+      Secretary: Read, Write
+      Chair: Read
+      Member: Read
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create, Read, Write, Delete
+
+  - table: dft_MeetingSeries
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Read, Write
+
+  - table: dft_Meeting
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: Read
+      RestrictedReader: ByRule
+      Auditor: Read
+      GuestPresenter: ByRule
+      ServiceAccount: Create, Read, Write
+
+  - table: dft_MeetingFeatureOverride
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: None
+
+  - table: dft_Attendee
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: Read (own)
+      ServiceAccount: Create, Read, Write
+
+  - table: dft_AgendaItem
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: Create, Read, Write
+      RestrictedReader: ByRule
+      Auditor: Read
+      GuestPresenter: Read (own)
+      ServiceAccount: Read
+
+  - table: dft_Paper
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: Read
+      Author: Create, Read, Write
+      RestrictedReader: ByRule
+      Auditor: Read
+      GuestPresenter: Read (own)
+      ServiceAccount: Create, Read, Write
+
+  - table: dft_Minutes
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read, Approve
+      Member: Read
+      Author: None
+      RestrictedReader: ByRule
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create, Read, Write
+
+  - table: dft_Transcript
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read
+      Member: None
+      Author: None
+      RestrictedReader: ByRule
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create, Read, Write, Delete
+
+  - table: dft_Decision
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read, Approve
+      Member: Read
+      Author: None
+      RestrictedReader: ByRule
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Read
+
+  - table: dft_ActionItem
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read
+      Member: Read, Write (own)
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create, Read, Write
+
+  - table: dft_Vote
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read
+      Member: Read
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create, Read
+
+  - table: dft_VoteResponse
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read
+      Member: Create (own)
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create
+
+  - table: dft_ConflictOfInterest
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read
+      Member: Create (own), Read (own)
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: None
+
+  - table: dft_AccessRule
+    privileges:
+      Administrator: Full
+      Secretary: Read, Write
+      Chair: Read
+      Member: None
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: None
+
+  - table: dft_AIBuilderPrompt
+    privileges:
+      Administrator: Full
+      Secretary: Read
+      Chair: None
+      Member: None
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Read, Write
+
+  - table: dft_AIBuilderRun
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write
+      Chair: Read
+      Member: None
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create, Read, Write
+
+  - table: dft_IntegrationLog
+    privileges:
+      Administrator: Full
+      Secretary: Read
+      Chair: None
+      Member: None
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: Create, Read, Write
+
+  - table: dft_FeatureDefinition
+    privileges:
+      Administrator: Full
+      Secretary: Read
+      Chair: Read
+      Member: None
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: None
+
+  - table: dft_FeatureTemplate
+    privileges:
+      Administrator: Full
+      Secretary: Create, Read, Write, Delete
+      Chair: Read
+      Member: None
+      Author: None
+      RestrictedReader: None
+      Auditor: Read
+      GuestPresenter: None
+      ServiceAccount: None
+
+accessTeamManagement:
+  description: >
+    Use Dataverse access teams (not owner teams) for committee membership-based
+    access. When a person is added as a member of a governance body, an access
+    team membership record grants them the Member role scoped to that body's
+    meetings, decisions, and actions.
+  notes:
+    - Access teams auto-provision when a CommitteeMembership record is created with membershiprole=member and membershipstatus=active.
+    - Owner teams are reserved for Secretary and Chair assignment per governance body.
+    - Access exceptions are recorded in dft_AccessRule and must be manually mirrored in Dataverse role assignment or a custom sharing helper.
+
+classificationModel:
+  defaultField: dft_classification
+  levels:
+    - internal
+    - confidential
+    - restricted
+    - legal
+  sensitiveTables:
+    - dft_AccessRule
+    - dft_AIBuilderPrompt
+    - dft_AIBuilderRun
+    - dft_Attendee
+    - dft_IntegrationLog
+    - dft_Minutes
+    - dft_Paper
+    - dft_Transcript
+  rules:
+    - External participants default to restricted access until an explicit dft_AccessRule allows a narrower scope.
+    - AI Builder prompts and outputs must not process restricted or legal content unless a future tenant-approved pattern explicitly permits it.
+    - Transcript and paper access must follow the most restrictive classification among the meeting, source document, and access rule.
+
+auditStrategy:
+  auditTables:
+    - dft_AccessRule
+    - dft_AIBuilderRun
+    - dft_Decision
+    - dft_IntegrationLog
+    - dft_Minutes
+    - dft_Transcript
+  events:
+    - access rule creation or change
+    - AI prompt run completion, failure, or skip
+    - human review approval or rejection
+    - minutes approval or publication
+    - connector retry, failure, or stale external identifier
+  evidence:
+    - Dataverse audit history when enabled
+    - dft_IntegrationLog rows for automated flows
+    - release and deployment evidence bundles for ALM operations

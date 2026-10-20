@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="dft_humanreviewstatus" localizedName="humanReviewStatus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <displaynames>
+    <displayname description="humanReviewStatus" languagecode="1033" />
+  </displaynames>
+  <options>
+    <option value="602170000" IsHidden="0">
+      <labels>
+        <label description="Pending" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170001" IsHidden="0">
+      <labels>
+        <label description="Approved" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170002" IsHidden="0">
+      <labels>
+        <label description="Edited" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170003" IsHidden="0">
+      <labels>
+        <label description="Rejected" languagecode="1033" />
+      </labels>
+    </option>
+  </options>
+</optionset>

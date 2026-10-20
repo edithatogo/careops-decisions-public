@@ -1,0 +1,848 @@
+app:
+  name: Decisions Workspace
+  host: Microsoft Teams canvas app
+  runtime: Power Apps in Teams
+  storage_target: Dataverse for Teams first, standard Dataverse compatible
+  execution_model: Dataverse-first app core with deferred Teams, SharePoint, and Planner bindings
+  design_system: Fluent UI / Teams
+  primary_outcomes:
+    - Manage governance bodies and committees
+    - Prepare meetings, agendas, papers, attendees, and quorum
+    - Draft, review, and publish minutes, decisions, votes, and actions
+    - Import transcripts, generate AI-assisted drafts, and inspect run history
+    - Enforce access rules, org hierarchy, and integration logging in-app
+
+roles:
+  governance_administrator:
+    scope: tenant or team environment configuration, governance hierarchy, templates, access, logs
+  secretariat:
+    scope: create and run meetings, manage agenda and papers, draft minutes, publish actions
+  chair:
+    scope: approve agenda, confirm quorum, review minutes, resolve decisions, close meetings
+  member:
+    scope: view assigned bodies, papers, meetings, minutes, decisions, and personal actions
+  guest_presenter:
+    scope: limited access to specific meetings or papers
+  auditor:
+    scope: read-only access to approved records and integration logs
+
+navigation:
+  shell:
+    pattern: left rail navigation with top command bar and record workspace
+    home_experience:
+      route: dashboard
+      label: Workspace Home
+      purpose: workflow launcher and role-aware navigation hub for meetings, governance, actions, decisions, papers, and help, with launch cards for the operational path
+      layout:
+        - meetings
+        - governance
+        - actions
+        - decisions
+        - papers
+        - help
+      heading_behavior:
+        mode: collapsible
+        contract: home headings expand and collapse like Recent and Pinned in the model-driven shell
+      help_surface:
+        route: docs/guides/decisions-workspace-quick-start.md
+        purpose: generated guide page that mirrors the same home headings and navigation contract
+      launch_cards:
+        - key: prepare_meeting
+          label: Prepare meeting
+          target_route: meetings
+          target_screen: MeetingListScreen
+          command: new_meeting
+          audience:
+            - secretariat
+            - chair
+            - governance_administrator
+        - key: build_agenda
+          label: Build agenda
+          target_route: agenda
+          target_screen: AgendaEditorScreen
+          command: new_agenda_item
+          audience:
+            - secretariat
+            - chair
+        - key: add_papers
+          label: Add papers
+          target_route: papers
+          target_screen: PaperRegisterScreen
+          command: register_paper
+          audience:
+            - secretariat
+            - governance_administrator
+        - key: confirm_attendance
+          label: Confirm attendance
+          target_route: meetings
+          target_screen: AttendanceScreen
+          command: confirm_quorum
+          audience:
+            - secretariat
+            - chair
+        - key: draft_minutes
+          label: Draft minutes
+          target_route: minutes
+          target_screen: MinutesReviewScreen
+          command: draft_minutes
+          audience:
+            - secretariat
+            - chair
+        - key: review_decisions_actions
+          label: Decisions and actions
+          target_route: decisions_actions
+          target_screen: DecisionsActionsScreen
+          command: publish_minutes
+          audience:
+            - secretariat
+            - chair
+            - member
+        - key: configure_committee
+          label: Configure committee
+          target_route: governance
+          target_screen: GovernanceBrowseScreen
+          command: create_governance_body
+          audience:
+            - governance_administrator
+            - secretariat
+        - key: feature_switchboard
+          label: Feature switchboard
+          target_route: settings
+          target_screen: SettingsScreen
+          command: configure_feature_switchboard
+          audience:
+            - governance_administrator
+            - secretariat
+        - key: review_ai_runs
+          label: Review AI drafts
+          target_route: ai_runs
+          target_screen: AIRunsScreen
+          command: inspect_ai_runs
+          audience:
+            - secretariat
+            - chair
+            - auditor
+        - key: check_integrations
+          label: Check integrations
+          target_route: integration_logs
+          target_screen: IntegrationLogsScreen
+          command: review_integration_logs
+          audience:
+            - governance_administrator
+            - auditor
+    navigation_groups:
+      - key: workspace
+        label: Workspace
+        routes:
+          - dashboard
+          - meetings
+          - agenda
+          - minutes
+          - decisions_actions
+      - key: governance
+        label: Governance
+        routes:
+          - governance
+          - org_hierarchy
+          - access_rules
+      - key: records
+        label: Records
+        routes:
+          - papers
+          - votes
+          - conflicts
+      - key: automation
+        label: Automation
+        routes:
+          - ai_runs
+          - integration_logs
+      - key: admin
+        label: Admin
+        routes:
+          - settings
+    global_actions:
+      - New meeting
+      - New agenda item
+      - Record vote
+      - Import transcript
+      - Draft minutes
+      - Refresh people
+      - Feature switchboard
+      - Teams post
+      - SharePoint documents
+      - Outlook invites
+      - Review access rules
+      - Inspect AI runs
+    primary_routes:
+      - key: dashboard
+        label: Dashboard
+        icon: home
+      - key: governance
+        label: Governance bodies
+        icon: shield-check
+      - key: org_hierarchy
+        label: Org hierarchy
+        icon: git-branch
+      - key: meetings
+        label: Meetings
+        icon: calendar
+      - key: agenda
+        label: Agenda
+        icon: list
+      - key: papers
+        label: Papers
+        icon: file-text
+      - key: minutes
+        label: Minutes
+        icon: clipboard-check
+      - key: decisions_actions
+        label: Decisions and actions
+        icon: check-square
+      - key: votes
+        label: Votes
+        icon: bar-chart-4
+      - key: conflicts
+        label: Conflicts
+        icon: alert-triangle
+      - key: access_rules
+        label: Access rules
+        icon: lock
+      - key: ai_runs
+        label: AI runs
+        icon: sparkles
+      - key: integration_logs
+        label: Integration logs
+        icon: scroll-text
+      - key: settings
+        label: Settings
+        icon: settings
+    deferred_bindings:
+      teams_tab:
+        status: deferred
+        purpose: host the app in a Teams tab after the Dataverse-first core is stable
+      sharepoint_document_store:
+        status: deferred
+        purpose: bind paper and attachment storage to SharePoint later without changing the core app contract
+      planner_task_binding:
+        status: deferred
+        purpose: mirror action items into Planner after the Dataverse action register is working end to end
+
+data_sources:
+  required:
+    - dft_GovernanceBody
+    - dft_TermsOfReference
+    - dft_CommitteeMembership
+    - dft_OrgPerson
+    - dft_OrgRelationship
+    - dft_MeetingSeries
+    - dft_Meeting
+    - dft_Attendee
+    - dft_AgendaItem
+    - dft_Paper
+    - dft_Minutes
+    - dft_Transcript
+    - dft_Decision
+    - dft_ActionItem
+    - dft_Vote
+    - dft_VoteResponse
+    - dft_ConflictOfInterest
+    - dft_AccessRule
+    - dft_AIBuilderRun
+    - dft_IntegrationLog
+  optional_for_mvp:
+    - dft_AIBuilderPrompt
+
+binding_contracts:
+  dataverse_first:
+    runtime_dependencies:
+      - Dataverse tables and relationships
+      - Canvas app navigation and command contracts
+    deferred_dependencies:
+      - Teams tab shell
+      - SharePoint document store
+      - Planner task mirroring
+    deployment_rule: Do not require live Teams, SharePoint, or Planner connectivity to use the core app screens or commands.
+
+  screen_map:
+    HomeScreen:
+      purpose: role-aware navigation hub with today summary, overdue follow-ups, pending reviews, workflow launch cards, deferred-binding status, and a help model that mirrors the home headings
+      main_controls:
+        - role filter chips
+        - workflow launch cards
+        - my meetings gallery
+        - pending approvals gallery
+        - quick actions strip
+        - setup health cards
+    GovernanceBrowseScreen:
+      purpose: browse governance bodies, committees, org hierarchy, terms of reference, and access rules, then activate the selected body workspace
+      main_controls:
+        - governance body gallery
+        - committee gallery
+        - org relationship panel
+        - terms of reference panel
+        - access rules panel
+        - membership summary panel
+    OrgHierarchyScreen:
+      purpose: review parent and child governance links, reporting lines, and org person relationships
+      main_controls:
+        - governance hierarchy tree
+        - org person lineage panel
+        - relationship editor
+    GovernanceEditScreen:
+      purpose: maintain body, committee subtype, terms of reference, membership, access rules, and meeting series setup
+      main_controls:
+        - edit form
+        - related membership subgallery
+        - related meeting series subgallery
+        - related access rules subgallery
+    MeetingListScreen:
+      purpose: list meetings by status, series, body, date, chair, and readiness for agenda and minutes
+      main_controls:
+        - meeting gallery
+        - status filter
+        - search box
+        - date range picker
+    MeetingWorkspaceScreen:
+      purpose: single-meeting activation workspace for agenda, attendees, papers, transcript, minutes, decisions, actions, votes, conflicts, and AI run history
+      main_controls:
+        - meeting header
+        - feature switchboard panel
+        - agenda item gallery
+        - attendee gallery
+        - paper gallery
+        - vote panel
+        - conflict panel
+        - transcript card
+        - decision/action panel
+    AgendaEditorScreen:
+      purpose: edit ordered agenda items, timing, presenters, decision requests, and vote triggers
+      main_controls:
+        - agenda item form
+        - agenda sequence gallery
+        - move up / move down commands
+        - vote request panel
+    PaperRegisterScreen:
+      purpose: register papers, set classification, attach files, and map papers to agenda items without requiring a live SharePoint document store
+      main_controls:
+        - paper gallery
+        - paper form
+        - agenda linkage picker
+        - file/link picker
+        - deferred document store placeholder
+    VoteScreen:
+      purpose: manage votes, responses, outcomes, and vote-to-decision linkage
+      main_controls:
+        - vote gallery
+        - vote response gallery
+        - vote form
+        - result summary
+    TranscriptImportScreen:
+      purpose: paste or import transcript text, classify it, and launch AI draft review with run provenance
+      main_controls:
+        - transcript text input
+        - source selector
+        - parse preview
+        - draft review launch
+    MinutesReviewScreen:
+      purpose: compare AI draft minutes with transcript and agenda, then stage minutes, decisions, votes, and actions for chair review
+      main_controls:
+        - minutes editor
+        - diff review panel
+        - decisions candidates gallery
+        - action candidates gallery
+        - AI run provenance panel
+    DecisionsActionsScreen:
+      purpose: manage formal decisions and follow-up actions, including deferred Planner binding state
+      main_controls:
+        - decision gallery
+        - action gallery
+        - owner reassignment panel
+        - status update form
+        - deferred planner binding panel
+    AccessRulesScreen:
+      purpose: manage access rules for bodies, meetings, papers, and approved records
+      main_controls:
+        - access rule gallery
+        - access rule form
+        - audience scope panel
+    AIRunsScreen:
+      purpose: inspect AI builder runs, prompts, reviewers, outcomes, and transcript or minutes linkage
+      main_controls:
+        - AI run gallery
+        - AI run form
+        - review history panel
+        - linked transcript panel
+    IntegrationLogsScreen:
+      purpose: inspect integration and publication logs for Dataverse, import, and deferred connector activity
+      main_controls:
+        - integration log gallery
+        - log detail panel
+        - retry or replay controls
+    AttendanceScreen:
+      purpose: confirm attendance, apologies, proxies, quorum, and voting eligibility
+      main_controls:
+        - attendee gallery
+        - quorum indicator
+        - response status editor
+        - proxy picker
+    SettingsScreen:
+      purpose: manage defaults, templates, classifications, connector readiness, and deferred binding setup
+      main_controls:
+        - environment health cards
+        - default role mappings
+        - meeting templates
+        - feature switchboard defaults panel
+        - deferred bindings panel
+        - integration log viewer
+
+forms:
+  governance_body_form:
+    source: dft_GovernanceBody
+    mode: edit and display
+    fields:
+      - name
+      - type
+      - parent body
+      - reporting line
+      - active status
+      - classification
+  committee_form:
+    source: dft_GovernanceBody
+    mode: edit and display
+    fields:
+      - name
+      - record type
+      - parent body
+      - committee subtype
+      - active status
+      - classification
+  terms_of_reference_form:
+    source: dft_TermsOfReference
+    mode: edit and display
+    fields:
+      - version
+      - purpose
+      - authority
+      - quorum
+      - membership rules
+      - access classification
+      - review date
+      - parent body
+  meeting_form:
+    source: dft_Meeting
+    mode: edit and display
+    fields:
+      - meeting series
+      - scheduled date
+      - status
+      - chair
+      - location or Teams link
+      - minute status
+      - transcript status
+      - vote status
+  agenda_item_form:
+    source: dft_AgendaItem
+    mode: edit and display
+    fields:
+      - sequence
+      - title
+      - purpose
+      - presenter
+      - time allocation
+      - paper links
+      - decision sought
+      - vote required
+  paper_form:
+    source: dft_Paper
+    mode: edit and display
+    fields:
+      - title
+      - author
+      - classification
+      - status
+      - agenda item
+      - file link
+      - access rule
+  attendee_form:
+    source: dft_Attendee
+    mode: edit and display
+    fields:
+      - person
+      - role
+      - response
+      - attendance status
+      - apology
+      - proxy
+      - voting eligibility
+      - conflict declared
+  minute_form:
+    source: dft_Minutes
+    mode: edit and display
+    fields:
+      - draft text
+      - chair review status
+      - publication status
+      - linked agenda items
+      - AI run provenance
+  decision_form:
+    source: dft_Decision
+    mode: edit and display
+    fields:
+      - decision text
+      - authority
+      - outcome
+      - owner
+      - due date
+      - escalation path
+      - linked vote
+  action_form:
+    source: dft_ActionItem
+    mode: edit and display
+    fields:
+      - title
+      - owner
+      - due date
+      - status
+      - planner sync state
+      - evidence link
+  vote_form:
+    source: dft_Vote
+    mode: edit and display
+    fields:
+      - vote number
+      - vote type
+      - meeting
+      - agenda item
+      - decision
+      - outcome
+  vote_response_form:
+    source: dft_VoteResponse
+    mode: edit and display
+    fields:
+      - voter
+      - vote
+      - response
+      - response date
+      - rationale
+  conflict_form:
+    source: dft_ConflictOfInterest
+    mode: edit and display
+    fields:
+      - meeting
+      - agenda item
+      - person
+      - conflict type
+      - resolution
+  access_rule_form:
+    source: dft_AccessRule
+    mode: edit and display
+    fields:
+      - scope type
+      - body or meeting
+      - audience
+      - classification
+      - active status
+  org_relationship_form:
+    source: dft_OrgRelationship
+    mode: edit and display
+    fields:
+      - source person
+      - target person
+      - relationship type
+      - active status
+  ai_run_form:
+    source: dft_AIBuilderRun
+    mode: edit and display
+    fields:
+      - prompt
+      - meeting
+      - transcript
+      - minutes
+      - reviewer
+      - status
+  integration_log_form:
+    source: dft_IntegrationLog
+    mode: read only
+    fields:
+      - correlation
+      - integration type
+      - source record
+      - target record
+      - status
+      - message
+
+galleries:
+  governance_gallery:
+    source: dft_GovernanceBody
+    sort: name ascending
+    cards: name, type, active status, next meeting date
+  meeting_gallery:
+    source: dft_Meeting
+    sort: scheduled date descending
+    cards: meeting title, status, chair, quorum, action count, vote count
+  agenda_gallery:
+    source: dft_AgendaItem
+    sort: sequence ascending
+    cards: sequence, title, presenter, time, decision sought
+  paper_gallery:
+    source: dft_Paper
+    sort: created descending
+    cards: title, classification, agenda item, status
+  attendee_gallery:
+    source: dft_Attendee
+    sort: role ascending then person ascending
+    cards: person, role, response, attendance, voting eligibility
+  vote_gallery:
+    source: dft_Vote
+    sort: vote number ascending
+    cards: vote number, vote type, meeting, outcome
+  vote_response_gallery:
+    source: dft_VoteResponse
+    sort: response date descending
+    cards: voter, vote, response, rationale
+  conflict_gallery:
+    source: dft_ConflictOfInterest
+    sort: created descending
+    cards: meeting, agenda item, person, conflict type
+  access_rule_gallery:
+    source: dft_AccessRule
+    sort: scope type ascending
+    cards: scope type, audience, classification, active status
+  org_relationship_gallery:
+    source: dft_OrgRelationship
+    sort: source person ascending
+    cards: source person, target person, relationship type, active status
+  decision_gallery:
+    source: dft_Decision
+    sort: status ascending then due date ascending
+    cards: decision text, outcome, owner, status
+  action_gallery:
+    source: dft_ActionItem
+    sort: due date ascending
+    cards: title, owner, due date, status, planner sync state
+  ai_run_gallery:
+    source: dft_AIBuilderRun
+    sort: created descending
+    cards: prompt, meeting, reviewer, status
+  integration_log_gallery:
+    source: dft_IntegrationLog
+    sort: created descending
+    cards: integration type, source record, target record, status
+
+workflow_entry_points:
+  - name: create_governance_body
+    start_screen: GovernanceBrowseScreen
+    outcome: governance body, terms of reference, parent link, quorum rule, and initial membership
+    next_step: open GovernanceEditScreen to seed the active meeting series
+  - name: create_meeting_from_series
+    start_screen: MeetingListScreen
+    outcome: meeting record with body, series, chair, dates, notice shell, and agenda placeholder
+    next_step: open MeetingWorkspaceScreen and confirm quorum and attendance coverage
+  - name: configure_feature_switchboard
+    start_screen: MeetingWorkspaceScreen
+    outcome: resolved per-meeting feature state for voting, AI minutes, transcript import, Planner sync, Teams posts, SharePoint document store, Outlook invites, and org hierarchy refresh
+    next_step: continue with agenda, minutes, or publication work using the effective meeting controls
+  - name: build_agenda
+    start_screen: AgendaEditorScreen
+    outcome: ordered agenda with sequence, presenters, linked papers, and decision flags
+    next_step: open MeetingWorkspaceScreen to progress into transcript and minutes work
+  - name: record_vote
+    start_screen: VoteScreen
+    outcome: vote record, vote responses, and linked decision outcome
+    next_step: return to MeetingWorkspaceScreen for publication review
+  - name: import_transcript_and_draft_minutes
+    start_screen: TranscriptImportScreen
+    outcome: imported transcript, draft minutes, candidate decisions, and candidate actions
+    next_step: review MinutesReviewScreen before anything is published
+  - name: chair_review_and_publish
+    start_screen: MinutesReviewScreen
+    outcome: approved minutes, published decisions, and live actions
+    next_step: open DecisionsActionsScreen to manage follow-up and Planner sync
+  - name: sync_actions_to_planner
+    start_screen: DecisionsActionsScreen
+    outcome: deferred planner task binding records and sync log entries
+    next_step: return to MeetingWorkspaceScreen for operational review
+  - name: review_access_rules
+    start_screen: AccessRulesScreen
+    outcome: body, meeting, and paper access policy review
+    next_step: return to GovernanceBrowseScreen or MeetingWorkspaceScreen
+  - name: inspect_ai_runs
+    start_screen: AIRunsScreen
+    outcome: AI run provenance, reviewer notes, and source linkage review
+    next_step: return to MinutesReviewScreen or SettingsScreen
+  - name: inspect_integration_logs
+    start_screen: IntegrationLogsScreen
+    outcome: integration history, errors, and deferred binding events
+    next_step: return to SettingsScreen
+
+activation_path:
+  - step: governance body
+    screen: GovernanceBrowseScreen
+    required_state:
+      - varSelectedBody set
+      - terms of reference attached
+      - quorum rule recorded
+      - membership seeded
+    produces:
+      - active body context
+      - meeting series scaffold
+      - org hierarchy view
+  - step: meeting
+    screen: MeetingListScreen
+    required_state:
+      - varSelectedMeeting set
+      - chair assigned
+      - start and end time entered
+      - attendance coverage checked
+    produces:
+      - meeting notice shell
+      - active meeting workspace
+  - step: agenda
+    screen: AgendaEditorScreen
+    required_state:
+      - ordered agenda items
+      - linked papers
+      - decision flags captured
+    produces:
+      - agenda ready for meeting use
+      - agenda context for transcript and minutes
+      - vote triggers
+  - step: votes
+    screen: VoteScreen
+    required_state:
+      - vote record created
+      - voters resolved
+      - response rules captured
+    produces:
+      - vote outcome
+      - linked decision update
+  - step: minutes
+    screen: MinutesReviewScreen
+    required_state:
+      - transcript imported
+      - draft minutes generated
+      - chair review pending
+    produces:
+      - reviewed minutes draft
+      - candidate decisions
+      - candidate actions
+  - step: decisions and actions
+    screen: DecisionsActionsScreen
+    required_state:
+      - minutes approved
+      - decisions published
+      - follow-up actions opened
+    produces:
+      - published decision log
+      - action follow-up list
+      - deferred planner sync state
+  - step: governance access
+    screen: AccessRulesScreen
+    required_state:
+      - access scope selected
+      - audience resolved
+      - classification recorded
+    produces:
+      - active access policy
+      - access log entry
+  - step: automation review
+    screen: AIRunsScreen
+    required_state:
+      - AI run selected
+      - reviewer identity captured
+      - linked source record available
+    produces:
+      - AI run review result
+      - provenance trail
+  - step: integration logs
+    screen: IntegrationLogsScreen
+    required_state:
+      - integration event captured
+      - correlation id present
+    produces:
+      - operational log trail
+      - deferred binding evidence
+
+state_and_flags:
+  app_state:
+    selected_role: current user role inferred from membership and access rules
+    selected_body: active governance body or committee
+    selected_committee: active committee record
+    selected_meeting: active meeting record
+    selected_agenda_item: active agenda row
+    selected_minutes: active minute record
+    selected_paper: active paper record
+    selected_decision: active decision record
+    selected_action: active action record
+    selected_vote: active vote record
+    selected_vote_response: active vote response record
+    selected_conflict: active conflict record
+    selected_access_rule: active access rule record
+    selected_org_relationship: active org relationship record
+    selected_ai_run: active AI run record
+    selected_integration_log: active integration log record
+    selected_classification: effective classification filter
+  feature_flags:
+    transcript_import_enabled: true
+    ai_builder_review_enabled: true
+    voting_enabled: true
+    planner_sync_enabled: false
+    teams_post_enabled: false
+    sharepoint_document_store_enabled: false
+    outlook_invites_enabled: false
+    org_hierarchy_refresh_enabled: true
+    meeting_feature_switchboard_enabled: true
+    conflict_tracking_enabled: true
+    full_dataverse_ready: false
+  conflict_of_interest:
+    enabled: true
+    declaration: per meeting and per attendee
+    resolution_required: true
+    resolution_by: chair
+    notes: Conflicts must be declared before voting starts.
+    feature_key: conflict_tracking_enabled
+    feature_keys:
+      conflict_tracking_enabled: true
+  feature_switchboard:
+    inheritance: meeting series -> meeting override -> runtime availability
+    resolver: IsFeatureEnabled(varSelectedMeeting, FeatureKey)
+    feature_keys:
+      voting_enabled: true
+      ai_minutes_enabled: true
+      transcript_import_enabled: true
+      planner_sync_enabled: false
+      teams_post_enabled: false
+      sharepoint_document_store_enabled: false
+      outlook_invites_enabled: false
+      org_hierarchy_refresh_enabled: true
+      conflict_tracking_enabled: true
+
+build_modes:
+  classification:
+    - mode: local-build
+      description: Can be built and verified without live Dylan/Power Platform environment.
+      screens:
+        - HomeScreen
+        - GovernanceBrowseScreen
+        - GovernanceEditScreen
+        - OrgHierarchyScreen
+        - MeetingListScreen
+        - MeetingWorkspaceScreen
+        - AgendaEditorScreen
+        - PaperRegisterScreen
+        - VoteScreen
+        - AttendanceScreen
+        - MinutesReviewScreen
+        - DecisionsActionsScreen
+        - AccessRulesScreen
+        - SettingsScreen
+    - mode: requires-live-Dylan
+      description: Requires live AI Builder, Teams, Planner, or Outlook connector access for full verification.
+      screens:
+        - TranscriptImportScreen
+        - AIRunsScreen
+        - IntegrationLogsScreen
+  rationale:
+    TranscriptImportScreen: Requires AI Builder connector to verify draft generation flow.
+    AIRunsScreen: Requires AI Builder run provenance data from live environment.
+    IntegrationLogsScreen: Requires integration log rows written by live flow executions.

@@ -1,0 +1,194 @@
+schema: decisions.workspace.flow-contract-matrix.v1
+
+description: >
+  Cross-reference mapping app commands and screens to the flow contracts
+  they invoke or depend on. This matrix ensures every flow trigger has an
+  app-side entry point and every app command that needs a flow knows which
+  contract to call.
+
+app_commands:
+  - name: new_meeting
+    invoked_flows: []
+    consumed_flows: []
+    notes: Pure Dataverse Create — no flow trigger needed.
+
+  - name: new_agenda_item
+    invoked_flows: []
+    consumed_flows: []
+    notes: Pure Dataverse Create — no flow trigger needed.
+
+  - name: register_paper
+    invoked_flows: []
+    consumed_flows:
+      - name: sharepoint-file-registration
+        trigger: dft_Paper status = submitted
+        status: scaffold
+        notes: SharePoint connector calls remain environment-gated, but the source-ready registration contract exists.
+        contract_ref: powerplatform/src/flows/sharepoint-file-registration.yaml
+    notes: Paper metadata is written locally; optional SharePoint registration runs only when the document-store binding is configured.
+
+  - name: record_vote
+    invoked_flows: []
+    consumed_flows: []
+    notes: Pure Dataverse write.
+
+  - name: import_transcript
+    invoked_flows:
+      - name: ai-transcript-minutes
+        trigger: dft_Transcript created with dft_ProcessingRequested = true AND dft_AiBuilderRunId = blank
+        status: scaffold
+        contract_ref: powerplatform/src/flows/ai-transcript-minutes.yaml
+        notes: App writes transcript row; flow picks it up via Dataverse trigger.
+    consumed_flows: []
+
+  - name: draft_minutes
+    invoked_flows: []
+    consumed_flows:
+      - name: ai-transcript-minutes
+        trigger: Same as import_transcript — the flow fires when transcript is created.
+        status: scaffold
+        contract_ref: powerplatform/src/flows/ai-transcript-minutes.yaml
+        notes: This command navigates to MinutesReviewScreen; the actual AI work runs in the flow.
+
+  - name: publish_minutes
+    invoked_flows:
+      - name: teams-summary-post
+        trigger: dft_Meeting.dft_MinutesApproved = true
+        status: scaffold
+        contract_ref: powerplatform/src/flows/teams-summary-post.yaml
+        notes: App sets dft_MinutesApproved; scheduled flow posts to Teams.
+    consumed_flows: []
+
+  - name: confirm_quorum
+    invoked_flows: []
+    consumed_flows: []
+    notes: App-internal calculation.
+
+  - name: sync_actions_to_planner
+    invoked_flows:
+      - name: planner-sync
+        trigger: dft_ActionItem.dft_SyncToPlanner = true AND dft_RequiresPlannerSync = true
+        status: scaffold
+        contract_ref: powerplatform/src/flows/planner-sync.yaml
+        notes: App sets sync flags; flow picks up via Dataverse trigger.
+    consumed_flows: []
+
+  - name: sync_outlook_invites
+    invoked_flows:
+      - name: outlook-invite-sync
+        trigger: dft_Meeting.dft_InviteRequested = true AND dft_InviteSyncState <> Succeeded
+        status: scaffold
+        contract_ref: powerplatform/src/flows/outlook-invite-sync.yaml
+        notes: Flow triggered by meeting row changes.
+    consumed_flows: []
+
+  - name: post_meeting_update
+    invoked_flows:
+      - name: teams-summary-post
+        trigger: dft_Meeting.dft_ActionDigestRequested = true
+        status: scaffold
+        contract_ref: powerplatform/src/flows/teams-summary-post.yaml
+        notes: Also triggered by approval; this command sets the digest flag.
+    consumed_flows: []
+
+  - name: sync_sharepoint_documents
+    invoked_flows: []
+    consumed_flows: []
+    status: deferred
+    notes: SharePoint document store binding is deferred.
+
+  - name: refresh_people
+    invoked_flows:
+      - name: org-hierarchy-sync
+        trigger: manual or scheduled (weekly)
+        status: scaffold
+        contract_ref: powerplatform/src/flows/org-hierarchy-sync.yaml
+        notes: App launches manual run; weekly schedule also triggers.
+    consumed_flows: []
+
+  - name: configure_feature_switchboard
+    invoked_flows: []
+    consumed_flows: []
+    notes: App-internal configuration write.
+
+  - name: review_access_rules
+    invoked_flows: []
+    consumed_flows: []
+    notes: Read-only review surface.
+
+  - name: inspect_ai_runs
+    invoked_flows: []
+    consumed_flows: []
+    notes: Read-only review surface for AI run provenance.
+
+  - name: review_integration_logs
+    invoked_flows: []
+    consumed_flows: []
+    notes: Read-only review surface.
+
+screen_to_flow_dependencies:
+  HomeScreen:
+    consumed_flows:
+      - org-hierarchy-sync
+    notes: Trigger refresh_people command; home gallery scoped to resolved org context.
+
+  TranscriptImportScreen:
+    invoked_flows:
+      - ai-transcript-minutes
+    notes: Creates transcript row; flow triggers on create.
+
+  MinutesReviewScreen:
+    consumed_flows:
+      - ai-transcript-minutes
+      - teams-summary-post
+    notes: Reviews AI output; publish triggers Teams post.
+
+  DecisionsActionsScreen:
+    invoked_flows:
+      - planner-sync
+    consumed_flows:
+      - planner-sync
+    notes: Sets sync flags; monitors sync state.
+
+  MeetingWorkspaceScreen:
+    invoked_flows:
+      - outlook-invite-sync
+      - teams-summary-post
+    consumed_flows:
+      - ai-transcript-minutes
+      - planner-sync
+      - sharepoint-file-registration (environment-gated)
+    notes: Central hub for all meeting-related flow activity.
+
+  SettingsScreen:
+    invoked_flows:
+      - org-hierarchy-sync
+    notes: Refresh people command.
+
+  AccessRulesScreen:
+    invoked_flows: []
+    consumed_flows: []
+    notes: No flow dependencies for MVP.
+
+  AIRunsScreen:
+    consumed_flows:
+      - ai-transcript-minutes
+    notes: Reads AI run records created by the flow.
+
+  IntegrationLogsScreen:
+    consumed_flows:
+      - ai-transcript-minutes
+      - planner-sync
+      - outlook-invite-sync
+      - teams-summary-post
+      - org-hierarchy-sync
+      - sharepoint-file-registration
+    notes: Reads all integration log entries written by flows.
+
+deferred_flows:
+  - name: sharepoint-file-registration
+    trigger: dft_Paper status = submitted
+    app_entry_point: PaperRegisterScreen (register_paper command)
+    reason: SharePoint document store binding is environment-gated until the target site and connector reference are configured.
+    contract_ref: powerplatform/src/flows/sharepoint-file-registration.yaml
+    owning_track: track-06-automation-integrations_20260502

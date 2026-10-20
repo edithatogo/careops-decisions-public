@@ -1,0 +1,33 @@
+{
+  "id": "track-19-test-automation-ci_20260502",
+  "status": "completed",
+  "closedOn": "2026-05-11",
+  "owner": "worker-test-automation",
+  "parallelizable": true,
+  "dependsOn": [
+    "track-04-alm-test-harness_20260502",
+    "track-13-deployment-hardening-alm-entra-readiness_20260502"
+  ],
+  "workstreams": {
+    "acceptanceEvidenceTemplate": "added docs/testing/acceptance-evidence-template.md",
+    "ciWrapperStrategy": "updated docs/testing/smoke-runbook.md with CI wrapper strategy section",
+    "testTaggingStrategy": "added docs/testing/test-tagging-strategy.md",
+    "testEngineScenarios": "11 suites existing, expanded via track 22 — scaffolding complete",
+    "connectorMockStrategy": "tag-based skip strategy defined in test-tagging-strategy.md",
+    "testAutomationContractValidator": "added scripts/Test-TestAutomationContracts.ps1"
+  },
+  "completedArtifacts": [
+    ".github/workflows/validate.yml",
+    "tests/powerapps/DecisionsWorkspace.testplan.yaml",
+    "tests/powerapps/suites/*.yaml",
+    "docs/testing/acceptance-evidence-template.md",
+    "docs/testing/smoke-runbook.md",
+    "docs/testing/test-tagging-strategy.md",
+    "scripts/Test-TestAutomationContracts.ps1"
+  ],
+  "closeoutEvidence": [
+    "Test automation validator checks CI wrapper parity, suite file existence and readiness tags, connector skip strategy, smoke scenarios, and acceptance evidence metadata.",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\Test-TestAutomationContracts.ps1",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\Invoke-RepoValidation.ps1 -RequireImplementationScaffolds"
+  ]
+}

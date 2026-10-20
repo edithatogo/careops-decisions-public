@@ -1,0 +1,89 @@
+name: meeting-agenda
+displayName: Meeting and agenda flow
+status: scaffold
+readiness: local
+intent: >
+  Verify the app surface for creating meetings against a governance body and
+  sequencing agenda items before minutes capture exists.
+appReadiness: app-not-yet-created
+selectors:
+  screen: scrMeetingAgenda
+  navigation:
+    openCommand: btnNewMeeting
+    saveCommand: btnSaveMeeting
+    addAgendaItemCommand: btnAddAgendaItem
+  fields:
+    meetingDate: dtpMeetingDate
+    meetingTime: tmeMeetingTime
+    location: txtMeetingLocation
+    teamsLink: txtMeetingTeamsLink
+    chair: cmbMeetingChair
+    secretary: cmbMeetingSecretary
+    quorumTarget: numMeetingQuorumTarget
+    agendaTitle: txtAgendaItemTitle
+    agendaOwner: cmbAgendaItemOwner
+    agendaOrder: numAgendaItemOrder
+    paperTitle: txtPaperTitle
+    paperClassification: cmbPaperClassification
+    paperLink: txtPaperLink
+tests:
+  - id: MA-01
+    title: create meeting draft
+    intent: Create a meeting draft tied to an existing governance body.
+    preconditions:
+      - governance body record exists
+    actions:
+      - open: scrMeetingAgenda
+      - fill:
+          meetingDate: 2026-05-02
+          meetingTime: 09:00
+          location: Board room
+          teamsLink: https://example.invalid/meeting
+      - set:
+          chair: committee chair
+          secretary: committee secretary
+          quorumTarget: 3
+      - save: btnSaveMeeting
+    assertions:
+      - meeting record is created
+      - meeting remains linked to the parent body
+      - default attendee surface is reachable
+    notes:
+      - placeholder for future app control tree
+  - id: MA-02
+    title: add agenda item
+    intent: Add at least one agenda item and preserve ordering metadata.
+    preconditions:
+      - meeting draft exists
+    actions:
+      - open: scrMeetingAgenda
+      - invoke: btnAddAgendaItem
+      - fill:
+          agendaTitle: finance update
+          agendaOwner: finance lead
+          agendaOrder: 1
+      - save: btnSaveMeeting
+    assertions:
+      - agenda item persists
+      - agenda order is retained
+      - item remains associated with the meeting
+    notes:
+      - skeleton only, no connector assumptions
+  - id: MA-03
+    title: attach paper to agenda item
+    intent: Link a paper to the agenda item created for the meeting.
+    preconditions:
+      - agenda item exists
+    actions:
+      - open: scrMeetingAgenda
+      - fill:
+          paperTitle: finance paper
+          paperClassification: Internal
+          paperLink: https://example.invalid/paper
+      - save: btnSaveMeeting
+    assertions:
+      - paper record persists
+      - agenda item link is retained
+      - paper classification is retained
+    notes:
+      - paper capture is part of the local lifecycle even when SharePoint is not enabled

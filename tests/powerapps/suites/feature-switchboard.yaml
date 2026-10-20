@@ -1,0 +1,83 @@
+name: feature-switchboard
+displayName: Per-meeting feature switchboard
+status: scaffold
+readiness: local
+intent: >
+  Verify the app surface for feature definitions, meeting-level overrides, and
+  explicit disabled states for optional meeting capabilities.
+appReadiness: app-not-yet-created
+selectors:
+  screen: scrFeatureSwitchboard
+  navigation:
+    openCommand: btnOpenFeatureSwitchboard
+    refreshCommand: btnRefreshFeatureSwitchboard
+  fields:
+    featureDefinitions: galFeatureDefinitions
+    switchboardState: galFeatureSwitchboardState
+    meetingOverride: cmbMeetingFeatureOverride
+    overrideReason: txtFeatureOverrideReason
+    effectiveState: lblFeatureEffectiveState
+    disabledState: lblFeatureDisabledState
+tests:
+  - id: FS-01
+    title: resolve feature definitions and overrides
+    intent: Show the inherited feature definitions for a meeting and surface the override source for any meeting-level exception.
+    preconditions:
+      - meeting record exists
+      - switchboard data is available
+    actions:
+      - open: scrFeatureSwitchboard
+      - invoke: btnRefreshFeatureSwitchboard
+    assertions:
+      - feature definitions are visible
+      - meeting-level override is visible
+      - effective feature state is visible
+      - override reason is visible when an exception is present
+    notes:
+      - placeholder selectors only until the canvas app exposes the control tree
+  - id: FS-02
+    title: show disabled capability as skipped
+    intent: Confirm a disabled optional capability is surfaced as skipped or suppressed instead of being treated as an error.
+    preconditions:
+      - a feature is disabled for the meeting
+    actions:
+      - open: scrFeatureSwitchboard
+    assertions:
+      - disabled capability state is visible
+      - skip reason is visible
+      - no hidden fallback suggests the capability ran
+    notes:
+      - smoke-facing behavior should match the repo contract for disabled features
+  - id: FS-03
+    title: override inheritance from meeting series to meeting
+    intent: Confirm that a meeting-level feature override takes precedence over the meeting-series default and that the override source is visible.
+    readiness: local
+    preconditions:
+      - meeting series has feature defaults defined
+      - meeting has at least one meeting-level override that differs from the series default
+    actions:
+      - open: scrFeatureSwitchboard
+      - invoke: btnRefreshFeatureSwitchboard
+    assertions:
+      - meeting-level override value differs from the series default
+      - override reason is visible
+      - effective feature state reflects the meeting-level value
+      - inherited default is still accessible for comparison
+    notes:
+      - inheritance chain: environment default → meeting-series default → meeting override
+      - local test validates the Dataverse data model without live connectors
+  - id: FS-04
+    title: environment-gated connector behavior
+    intent: Confirm that features backed by connectors (Planner, Teams, SharePoint, AI Builder) show the correct enabled/disabled state based on environment configuration, not just the switchboard setting.
+    readiness: local
+    preconditions:
+      - connector environment variables are set or placeholder
+      - feature definitions exist for connector-backed capabilities
+    actions:
+      - open: scrFeatureSwitchboard
+    assertions:
+      - connector-backed features reflect both the switchboard setting and the environment variable gate
+      - a feature that is enabled in the switchboard but blocked by an empty environment variable shows the correct blocked state
+      - the reason for any disabled-by-environment state is surfaced
+    notes:
+      - environment-gated behavior keeps the app functional during local-only development

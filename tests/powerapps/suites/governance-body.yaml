@@ -1,0 +1,63 @@
+name: governance-body
+displayName: Governance body lifecycle
+status: scaffold
+readiness: local
+intent: >
+  Verify the app surface for creating a governance body, editing its metadata,
+  and exposing it as the parent record for meetings.
+appReadiness: app-not-yet-created
+selectors:
+  screen: scrGovernanceBody
+  navigation:
+    openCommand: btnNewGovernanceBody
+    saveCommand: btnSaveGovernanceBody
+  fields:
+    bodyName: txtGovernanceBodyName
+    purpose: txtGovernanceBodyPurpose
+    reportingLine: txtGovernanceBodyReportingLine
+    torLink: txtGovernanceBodyTorLink
+    owner: cmbGovernanceBodyOwner
+    secretary: cmbGovernanceBodySecretary
+    active: togGovernanceBodyActive
+tests:
+  - id: GB-01
+    title: create governance body
+    intent: Create a governance body record with the minimum decision-workflow metadata.
+    preconditions:
+      - app exists in target environment
+      - test data source is available
+    actions:
+      - open: scrGovernanceBody
+      - fill:
+          bodyName: sample governance body
+          purpose: governance forum for decisions
+          reportingLine: executive sponsor
+          torLink: https://example.invalid/terms-of-reference
+      - set:
+          owner: committee owner
+          secretary: committee secretary
+          active: true
+      - save: btnSaveGovernanceBody
+    assertions:
+      - record is created
+      - record remains searchable from the governance body list
+      - parent body is available for meeting creation
+    notes:
+      - placeholder selectors only
+      - no live execution until the canvas app is implemented
+  - id: GB-02
+    title: edit governance body metadata
+    intent: Confirm the edit surface keeps owner, secretary, and status fields visible.
+    preconditions:
+      - existing governance body record is available
+    actions:
+      - open: scrGovernanceBody
+      - update:
+          purpose: updated governance purpose
+          active: true
+      - save: btnSaveGovernanceBody
+    assertions:
+      - edits are accepted
+      - updated fields remain visible after save
+    notes:
+      - skeleton coverage for future app wiring

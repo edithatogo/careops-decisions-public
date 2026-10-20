@@ -1,0 +1,141 @@
+schema: decisions.workspace.solutionComponentManifest.v1
+solution:
+  uniqueName: decisionsworkspace
+  displayName: CareOps Decisions
+  publisherPrefix: dft
+  sourceRoot: powerplatform/solutions/DecisionsWorkspace
+  almProfiles: powerplatform/settings/alm-profiles.json
+  connectionReferences: powerplatform/settings/connection-references.json
+  environmentVariables: powerplatform/settings/environment-variable-manifest.json
+
+componentGroups:
+  tables:
+    source: powerplatform/src/schema/dataverse-tables.yaml
+    generatedPlan: powerplatform/src/schema/schema-build-plan.json
+    solutionPath: powerplatform/solutions/DecisionsWorkspace/Entities
+    components:
+      - dft_OrgPerson
+      - dft_GovernanceBody
+      - dft_TermsOfReference
+      - dft_CommitteeMembership
+      - dft_OrgRelationship
+      - dft_FeatureDefinition
+      - dft_MeetingSeries
+      - dft_FeatureTemplate
+      - dft_Meeting
+      - dft_MeetingFeatureOverride
+      - dft_Attendee
+      - dft_AgendaItem
+      - dft_Paper
+      - dft_Minutes
+      - dft_Transcript
+      - dft_Decision
+      - dft_ActionItem
+      - dft_Vote
+      - dft_VoteResponse
+      - dft_ConflictOfInterest
+      - dft_AccessRule
+      - dft_AIBuilderPrompt
+      - dft_AIBuilderRun
+      - dft_IntegrationLog
+  choices:
+    source: powerplatform/src/schema/choices.yaml
+    solutionPath: powerplatform/solutions/DecisionsWorkspace/OptionSets
+    coverageRule: every schema choice set has a matching OptionSet or generated plan entry
+  relationships:
+    source: powerplatform/src/schema/relationships.yaml
+    solutionPath: powerplatform/solutions/DecisionsWorkspace/Other/Relationships
+    coverageRule: every relationship target resolves to a schema table
+  apps:
+    source:
+      - powerplatform/src/app/app-map.yaml
+      - powerplatform/src/app/screens.md
+      - powerplatform/src/app/components.yaml
+      - powerplatform/src/app/commands.yaml
+      - powerplatform/src/app/access-matrix.yaml
+      - powerplatform/src/app/state-transitions.yaml
+      - powerplatform/src/app/flow-contract-matrix.yaml
+    solutionPath: powerplatform/solutions/DecisionsWorkspace/AppModules
+    screens:
+      - HomeScreen
+      - GovernanceBodyScreen
+      - MeetingSeriesScreen
+      - MeetingWorkspaceScreen
+      - AgendaEditorScreen
+      - AttendanceScreen
+      - PaperRegisterScreen
+      - MinutesReviewScreen
+      - DecisionsActionsScreen
+      - TranscriptImportScreen
+      - ConfigurationScreen
+      - AccessRulesScreen
+  flows:
+    source:
+      - powerplatform/src/flows/flow-catalog.yaml
+      - powerplatform/src/flows/outlook-invite-sync.yaml
+      - powerplatform/src/flows/planner-sync.yaml
+      - powerplatform/src/flows/teams-summary-post.yaml
+      - powerplatform/src/flows/org-hierarchy-sync.yaml
+      - powerplatform/src/flows/ai-transcript-minutes.yaml
+      - powerplatform/src/flows/reminders.yaml
+      - powerplatform/src/flows/sharepoint-file-registration.yaml
+    coverageRule: each flow declares trigger, connectors, environment variables, idempotency, retry policy, and test hook
+  environmentVariables:
+    source: powerplatform/settings/environment-variable-manifest.json
+    deploymentSettings: powerplatform/settings/deployment-settings.sample.json
+    coverageRule: every referenced decisions_* variable is declared in the manifest and sample settings
+  connectionReferences:
+    source: powerplatform/settings/connection-references.json
+    readinessScript: scripts/Get-EnvironmentReadiness.ps1
+    coverageRule: connector references are explicit and live bindings stay outside source control
+  security:
+    source:
+      - powerplatform/src/app/access-matrix.yaml
+      - docs/security/security-role-matrix.yaml
+      - docs/security/dlp-policy-assumptions.md
+      - docs/security/retention-privacy-rules.md
+      - docs/security/external-participant-policy.md
+      - docs/security/threat-model.md
+    coverageRule: each sensitive table has a persona/access strategy before shared deployment
+  seedData:
+    source:
+      - powerplatform/src/seed/sample-governance-data.json
+      - powerplatform/src/seed/medication-safety-sample-data.json
+      - powerplatform/src/seed/fixture-small.json
+      - powerplatform/src/seed/fixture-medium.json
+      - powerplatform/src/seed/fixture-edge.json
+    importer: scripts/Import-SeedData.ps1
+    validator: scripts/Test-SeedImportPlan.ps1
+  tests:
+    source:
+      - tests/powerapps/DecisionsWorkspace.testplan.yaml
+      - tests/powerapps/suites/app-activation.yaml
+      - tests/powerapps/suites/flow-activation.yaml
+      - tests/powerapps/suites/import-validation.yaml
+      - tests/powerapps/suites/configuration-wizard.yaml
+      - tests/powerapps/suites/review-gate.yaml
+      - tests/powerapps/suites/reporting.yaml
+      - tests/smoke/smoke-scenarios.md
+      - tests/smoke/seed-data-checklist.md
+    coverageRule: repo validation runs source checks; live smoke evidence is captured under artifacts/deployment
+
+validation:
+  localGate: scripts/Invoke-RepoValidation.ps1 -RequireImplementationScaffolds
+  sourceArtifactsGate: scripts/Test-SourceArtifacts.ps1 -RequireImplementationScaffolds
+  almGate: scripts/Test-AlmActivation.ps1
+  flowGate: scripts/Test-FlowContracts.ps1 -DryRun
+  schemaGate: scripts/Test-SchemaIntegrity.ps1
+
+liveGates:
+  solutionExport:
+    status: gated
+    reason: requires Dylan environment access and live connector readiness
+  firstIntegrationFlow:
+    status: gated
+    reason: requires Office 365 Outlook, Teams, Planner, and Dataverse connection references to be created in the target environment
+  securityRoleActivation:
+    status: gated
+    reason: source access model exists; live Dataverse role/team assignment waits on environment access
+  azureEntraImplementation:
+    status: design_only
+    reason: tenant access, app registration, Graph permissions, and admin approvals are not yet available

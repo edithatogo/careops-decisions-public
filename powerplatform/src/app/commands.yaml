@@ -1,0 +1,430 @@
+binding_contracts:
+  dataverse_first:
+    runtime: Dataverse only for the core app
+    live_dependencies:
+      - none
+    deferred_bindings:
+      teams_tab:
+        status: deferred
+        purpose: host the app in Teams after the core app is stable
+      sharepoint_document_store:
+        status: deferred
+        purpose: store paper files in SharePoint later without changing the core contract
+      planner_task_binding:
+        status: deferred
+        purpose: mirror actions into Planner later without making the command depend on Planner availability
+
+commands:
+  new_meeting:
+    label: New meeting
+    icon: calendar
+    action: create meeting from selected series or body
+    availability:
+      - governance_administrator
+      - secretariat
+    screens:
+      - HomeScreen
+      - MeetingListScreen
+      - GovernanceBrowseScreen
+    binds_to:
+      - dft_Meeting
+      - dft_MeetingSeries
+      - dft_GovernanceBody
+    contract: dataverse_first
+    powerfx:
+      on_select: "Set(varAppMode, \"Meeting\"); Navigate(MeetingListScreen, ScreenTransition.None)"
+
+  new_agenda_item:
+    label: New agenda item
+    icon: list-plus
+    action: append a new agenda row to the selected meeting
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - MeetingWorkspaceScreen
+      - AgendaEditorScreen
+    binds_to:
+      - dft_AgendaItem
+      - dft_Meeting
+      - dft_Paper
+      - dft_Vote
+    contract: dataverse_first
+    powerfx:
+      on_select: "Patch(dft_AgendaItem, Defaults(dft_AgendaItem), { Meeting: varSelectedMeeting })"
+
+  register_paper:
+    label: Add paper
+    icon: file-plus
+    action: open the paper register and create a paper record for the selected meeting or agenda item
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - HomeScreen
+      - MeetingWorkspaceScreen
+      - AgendaEditorScreen
+      - PaperRegisterScreen
+    binds_to:
+      - dft_Paper
+      - dft_Meeting
+      - dft_AgendaItem
+    contract: dataverse_first
+    feature_key: sharepoint_document_store_enabled
+    powerfx:
+      on_select: "Navigate(PaperRegisterScreen, ScreenTransition.None)"
+
+  record_vote:
+    label: Record vote
+    icon: vote
+    action: capture a vote and link responses to the active agenda item or decision
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - HomeScreen
+      - MeetingWorkspaceScreen
+      - VoteScreen
+      - DecisionsActionsScreen
+    binds_to:
+      - dft_Vote
+      - dft_VoteResponse
+      - dft_Decision
+      - dft_AgendaItem
+      - dft_Meeting
+    contract: dataverse_first
+    feature_key: voting_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"voting_enabled\")"
+      on_select: "Navigate(VoteScreen, ScreenTransition.Cover)"
+
+  import_transcript:
+    label: Import transcript
+    icon: file-input
+    action: open transcript ingestion for the selected meeting
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - MeetingWorkspaceScreen
+      - HomeScreen
+    binds_to:
+      - dft_Transcript
+      - dft_AIBuilderRun
+      - dft_Minutes
+    contract: dataverse_first
+    feature_key: transcript_import_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"transcript_import_enabled\")"
+      on_select: "Navigate(TranscriptImportScreen, ScreenTransition.Cover)"
+
+  draft_minutes:
+    label: Draft minutes
+    icon: sparkles
+    action: launch review staging for AI-assisted minutes drafting
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - HomeScreen
+      - TranscriptImportScreen
+      - MeetingWorkspaceScreen
+    binds_to:
+      - dft_Minutes
+      - dft_AIBuilderRun
+      - dft_Transcript
+    contract: dataverse_first
+    feature_key: ai_minutes_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"ai_minutes_enabled\")"
+      on_select: "Navigate(MinutesReviewScreen, ScreenTransition.Cover)"
+
+  refresh_people:
+    label: Refresh people
+    icon: users
+    action: refresh membership, person, and org hierarchy cache
+    availability:
+      - governance_administrator
+      - secretariat
+    screens:
+      - SettingsScreen
+      - HomeScreen
+      - GovernanceBrowseScreen
+    binds_to:
+      - dft_OrgPerson
+      - dft_CommitteeMembership
+      - dft_OrgRelationship
+    contract: dataverse_first
+    feature_key: org_hierarchy_refresh_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"org_hierarchy_refresh_enabled\")"
+      on_select: "Refresh(dft_OrgPerson); Refresh(dft_CommitteeMembership); Refresh(dft_OrgRelationship)"
+
+  configure_feature_switchboard:
+    label: Feature switchboard
+    icon: toggle-right
+    action: open the per-meeting feature switchboard for the selected meeting
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - MeetingWorkspaceScreen
+      - SettingsScreen
+    binds_to:
+      - dft_Meeting
+      - dft_MeetingSeries
+      - dft_IntegrationLog
+    contract: dataverse_first
+    feature_key: meeting_feature_switchboard_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"meeting_feature_switchboard_enabled\")"
+      on_select: "Navigate(MeetingWorkspaceScreen, ScreenTransition.None)"
+
+  confirm_quorum:
+    label: Confirm quorum
+    icon: check-circle
+    action: recalculate quorum and mark the meeting state
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - HomeScreen
+      - MeetingWorkspaceScreen
+      - AttendanceScreen
+    binds_to:
+      - dft_Attendee
+      - dft_CommitteeMembership
+      - dft_Meeting
+    contract: dataverse_first
+    powerfx:
+      on_select: "Set(varQuorumMet, varQuorumPresent >= varQuorumRequired)"
+
+  publish_minutes:
+    label: Publish minutes
+    icon: send
+    action: move approved and human-reviewed minutes into published state
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - HomeScreen
+      - MinutesReviewScreen
+      - MeetingWorkspaceScreen
+    binds_to:
+      - dft_Minutes
+      - dft_Decision
+      - dft_ActionItem
+      - dft_Vote
+    contract: dataverse_first
+    feature_key: ai_minutes_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"ai_minutes_enabled\")"
+      on_select: "If(varSelectedMinutes.Status = \"approved\" && (IsBlank(varSelectedMinutes.AIBuilderRun) || varSelectedMinutes.HumanReviewStatus = \"accepted\" || varSelectedMinutes.HumanReviewStatus = \"edited\"), Patch(dft_Minutes, varSelectedMinutes, { Status: \"published\" }), Notify(\"Minutes require approval and human review before publishing.\", NotificationType.Error))"
+      gate: "Requires approved minutes and, when AI-assisted, accepted or edited human review evidence."
+
+  sync_actions_to_planner:
+    label: Sync actions
+    icon: workflow
+    action: stage open actions for future Planner binding and record the sync result
+    availability:
+      - governance_administrator
+      - secretariat
+    screens:
+      - HomeScreen
+      - DecisionsActionsScreen
+      - SettingsScreen
+    binds_to:
+      - dft_ActionItem
+      - dft_IntegrationLog
+    contract: dataverse_first
+    feature_key: planner_sync_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"planner_sync_enabled\")"
+      on_select: "Patch(dft_ActionItem, ThisItem, { PlannerSyncState: \"deferred\" })"
+
+  post_meeting_update:
+    label: Teams post
+    icon: message-square
+    action: stage or publish a meeting summary to Teams when the meeting switchboard allows it
+    availability:
+      - governance_administrator
+      - secretariat
+      - chair
+    screens:
+      - MeetingWorkspaceScreen
+      - MinutesReviewScreen
+      - SettingsScreen
+    binds_to:
+      - dft_Meeting
+      - dft_Minutes
+      - dft_IntegrationLog
+    contract: dataverse_first
+    feature_key: teams_post_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"teams_post_enabled\")"
+      on_select: "Patch(dft_IntegrationLog, Defaults(dft_IntegrationLog), { IntegrationType: \"Teams post\", Status: \"queued\" })"
+
+  sync_outlook_invites:
+    label: Outlook invites
+    icon: mail
+    action: stage meeting invite changes for Outlook when invite sync is enabled
+    availability:
+      - governance_administrator
+      - secretariat
+    screens:
+      - MeetingWorkspaceScreen
+      - AttendanceScreen
+      - SettingsScreen
+    binds_to:
+      - dft_Meeting
+      - dft_Attendee
+      - dft_IntegrationLog
+    contract: dataverse_first
+    feature_key: outlook_invites_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"outlook_invites_enabled\")"
+      on_select: "Patch(dft_IntegrationLog, Defaults(dft_IntegrationLog), { IntegrationType: \"Outlook invites\", Status: \"queued\" })"
+
+  sync_sharepoint_documents:
+    label: SharePoint documents
+    icon: folder-open
+    action: stage paper and attachment synchronization to the SharePoint document store
+    availability:
+      - governance_administrator
+      - secretariat
+    screens:
+      - PaperRegisterScreen
+      - MeetingWorkspaceScreen
+      - SettingsScreen
+    binds_to:
+      - dft_Paper
+      - dft_Meeting
+      - dft_IntegrationLog
+    contract: dataverse_first
+    feature_key: sharepoint_document_store_enabled
+    powerfx:
+      visible: "IsFeatureEnabled(varSelectedMeeting, \"sharepoint_document_store_enabled\")"
+      on_select: "Patch(dft_IntegrationLog, Defaults(dft_IntegrationLog), { IntegrationType: \"SharePoint document store\", Status: \"queued\" })"
+
+  review_access_rules:
+    label: Review access rules
+    icon: lock
+    action: inspect and update record access scope for bodies, meetings, papers, and approved records
+    availability:
+      - governance_administrator
+      - auditor
+    screens:
+      - HomeScreen
+      - GovernanceBrowseScreen
+      - AccessRulesScreen
+      - SettingsScreen
+    binds_to:
+      - dft_AccessRule
+      - dft_GovernanceBody
+      - dft_Meeting
+      - dft_Paper
+    contract: dataverse_first
+    powerfx:
+      on_select: "Navigate(AccessRulesScreen, ScreenTransition.None)"
+
+  inspect_ai_runs:
+    label: Inspect AI runs
+    icon: sparkles
+    action: review AI run provenance, reviewer notes, and source linkage
+    availability:
+      - governance_administrator
+      - secretariat
+      - auditor
+    screens:
+      - HomeScreen
+      - AIRunsScreen
+      - MinutesReviewScreen
+      - SettingsScreen
+    binds_to:
+      - dft_AIBuilderRun
+      - dft_Minutes
+      - dft_Transcript
+      - dft_Paper
+    contract: dataverse_first
+    powerfx:
+      on_select: "Navigate(AIRunsScreen, ScreenTransition.Cover)"
+
+  review_integration_logs:
+    label: Review integration logs
+    icon: scroll-text
+    action: inspect integration and publication history
+    availability:
+      - governance_administrator
+      - auditor
+    screens:
+      - HomeScreen
+      - SettingsScreen
+      - IntegrationLogsScreen
+      - MeetingWorkspaceScreen
+    binds_to:
+      - dft_IntegrationLog
+    contract: dataverse_first
+    powerfx:
+      on_select: "Navigate(IntegrationLogsScreen, ScreenTransition.None)"
+
+command_bar_policy:
+  default_visibility:
+    - new_meeting
+    - register_paper
+    - import_transcript
+    - refresh_people
+    - inspect_ai_runs
+  record_context_visibility:
+    MeetingWorkspaceScreen:
+      - new_agenda_item
+      - record_vote
+      - confirm_quorum
+      - publish_minutes
+      - sync_actions_to_planner
+      - post_meeting_update
+      - sync_outlook_invites
+      - sync_sharepoint_documents
+      - configure_feature_switchboard
+      - review_access_rules
+      - review_integration_logs
+    AgendaEditorScreen:
+      - new_agenda_item
+      - record_vote
+    VoteScreen:
+      - record_vote
+      - confirm_quorum
+    TranscriptImportScreen:
+      - draft_minutes
+      - inspect_ai_runs
+    MinutesReviewScreen:
+      - draft_minutes
+      - publish_minutes
+      - inspect_ai_runs
+    DecisionsActionsScreen:
+      - sync_actions_to_planner
+      - review_integration_logs
+    AccessRulesScreen:
+      - review_access_rules
+    AIRunsScreen:
+      - inspect_ai_runs
+    IntegrationLogsScreen:
+      - review_integration_logs
+    SettingsScreen:
+      - refresh_people
+      - configure_feature_switchboard
+      - review_access_rules
+      - review_integration_logs
+  disable_when:
+    - no selected meeting for meeting-scoped commands
+    - selected record is published or closed and editing is not allowed
+    - current role is not in command availability
+    - publish_minutes is selected and minutes are not approved
+    - publish_minutes is selected for AI-assisted minutes without accepted or edited human review evidence

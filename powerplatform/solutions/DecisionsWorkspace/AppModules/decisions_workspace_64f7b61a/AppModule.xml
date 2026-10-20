@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppModule>
+  <UniqueName>decisions_workspace_64f7b61a</UniqueName>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <WebResourceId>953b9fac-1e5e-e611-80d6-00155ded156f</WebResourceId>
+  <OptimizedFor></OptimizedFor>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <FormFactor>1</FormFactor>
+  <ClientType>4</ClientType>
+  <NavigationType>0</NavigationType>
+  <AppModuleComponents>
+    <AppModuleComponent type="1" schemaName="dft_accessrule" />
+    <AppModuleComponent type="1" schemaName="dft_actionitem" />
+    <AppModuleComponent type="1" schemaName="dft_agendaitem" />
+    <AppModuleComponent type="1" schemaName="dft_aibuilderprompt" />
+    <AppModuleComponent type="1" schemaName="dft_aibuilderrun" />
+    <AppModuleComponent type="1" schemaName="dft_attendee" />
+    <AppModuleComponent type="1" schemaName="dft_committeemembership" />
+    <AppModuleComponent type="1" schemaName="dft_decision" />
+    <AppModuleComponent type="1" schemaName="dft_featuredefinition" />
+    <AppModuleComponent type="1" schemaName="dft_featuretemplate" />
+    <AppModuleComponent type="1" schemaName="dft_governancebody" />
+    <AppModuleComponent type="1" schemaName="dft_integrationlog" />
+    <AppModuleComponent type="1" schemaName="dft_meeting" />
+    <AppModuleComponent type="1" schemaName="dft_meetingfeatureoverride" />
+    <AppModuleComponent type="1" schemaName="dft_meetingseries" />
+    <AppModuleComponent type="1" schemaName="dft_minutes" />
+    <AppModuleComponent type="1" schemaName="dft_orgperson" />
+    <AppModuleComponent type="1" schemaName="dft_orgrelationship" />
+    <AppModuleComponent type="1" schemaName="dft_paper" />
+    <AppModuleComponent type="1" schemaName="dft_termsofreference" />
+    <AppModuleComponent type="1" schemaName="dft_transcript" />
+    <AppModuleComponent type="62" schemaName="decisions_workspace_64f7b61a" />
+  </AppModuleComponents>
+  <AppModuleRoleMaps>
+    <Role id="{627090ff-40a3-4053-8790-584edc5be201}" />
+    <Role id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+  </AppModuleRoleMaps>
+  <LocalizedNames>
+    <LocalizedName description="Decisions Workspace" languagecode="1033" />
+  </LocalizedNames>
+  <Descriptions>
+    <Description description="CareOps Decisions workspace for governance meetings, agendas, minutes, decisions, actions, and per-meeting feature configuration." languagecode="1033" />
+  </Descriptions>
+  <appsettings>
+    <appsetting settingdefinitionid.uniquename="AppChannel">
+      <iscustomizable>1</iscustomizable>
+      <value>1</value>
+    </appsetting>
+  </appsettings>
+</AppModule>

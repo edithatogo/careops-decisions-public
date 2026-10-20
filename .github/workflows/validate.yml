@@ -1,0 +1,187 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  repo-validation:
+    name: repo-validation
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Validate repository scaffold
+        shell: pwsh
+        run: ./scripts/Invoke-RepoValidation.ps1 -RequireImplementationScaffolds
+
+      - name: Select the qualified SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          global-json-file: global.json
+      - name: Install Power Platform tools
+        uses: microsoft/powerplatform-actions/actions-install@6e91314a9c6e694ea5c894fe8c40e09d73aa892b
+        with:
+          pac-version-override: '2.13.1'
+          add-tools-to-path: true
+
+      - name: Pack unmanaged solution
+        shell: pwsh
+        run: ./scripts/New-ReleaseArtifact.ps1 -Unmanaged
+
+      - name: Validate solution checker configuration
+        if: github.event_name != 'pull_request' && vars.SOLUTION_CHECKER_ENABLED == 'true'
+        shell: pwsh
+        env:
+          POWER_PLATFORM_ENVIRONMENT_URL: ${{ vars.POWER_PLATFORM_ENVIRONMENT_URL }}
+          POWER_PLATFORM_APP_ID: ${{ secrets.POWER_PLATFORM_APP_ID }}
+          POWER_PLATFORM_CLIENT_SECRET: ${{ secrets.POWER_PLATFORM_CLIENT_SECRET }}
+          POWER_PLATFORM_TENANT_ID: ${{ secrets.POWER_PLATFORM_TENANT_ID }}
+        run: |
+          $missing = @()
+          foreach ($name in @('POWER_PLATFORM_ENVIRONMENT_URL','POWER_PLATFORM_APP_ID','POWER_PLATFORM_CLIENT_SECRET','POWER_PLATFORM_TENANT_ID')) {
+            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
+              $missing += $name
+            }
+          }
+          if ($missing.Count -gt 0) {
+            throw "SOLUTION_CHECKER_ENABLED is true but required configuration is missing: $($missing -join ', ')"
+          }
+
+      - name: Select the qualified inventory runtime
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.14.8'
+      - name: Read immutable qualified inventory tooling
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: edithatogo/careops
+          ref: 6319d0c0c76ee672223c156abce9d4181c41aa9a
+          path: .local/ci-release-policy
+          persist-credentials: false
+          submodules: false
+      - name: Verify actual unmanaged package identity
+        shell: bash
+        run: |
+          python - <<'PYCODE'
+          import xml.etree.ElementTree as ET, zipfile
+          from pathlib import Path
+          source = ET.fromstring(Path('powerplatform/solutions/DecisionsWorkspace/Other/Solution.xml').read_bytes())
+          with zipfile.ZipFile('artifacts/solutions/DecisionsWorkspace/unmanaged/DecisionsWorkspace_unmanaged.zip') as archive:
+              assert {'solution.xml', 'customizations.xml', '[Content_Types].xml'} <= set(archive.namelist())
+              packaged = ET.fromstring(archive.read('solution.xml'))
+          identity = source.findtext('.//SolutionManifest/UniqueName')
+          assert identity and packaged.findtext('.//SolutionManifest/UniqueName') == identity
+          assert packaged.findtext('.//SolutionManifest/Managed') == '0'
+          PYCODE
+      - name: Inventory actual solution archive bytes
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: python .local/ci-release-policy/portfolio-scripts/artifact_sbom.py --artifact artifacts/solutions/DecisionsWorkspace/unmanaged/DecisionsWorkspace_unmanaged.zip --name decisions-workspace-unmanaged --source-commit "$SOURCE_COMMIT" --created-epoch "$(git show -s --format=%ct "$SOURCE_COMMIT")" --output artifacts/solutions/DecisionsWorkspace/unmanaged/decisions-workspace.spdx.json
+      - name: Upload packed solution artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: DecisionsWorkspace-unmanaged-solution
+          path: artifacts/solutions/DecisionsWorkspace/unmanaged/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Run solution checker
+        if: github.event_name != 'pull_request' && vars.SOLUTION_CHECKER_ENABLED == 'true'
+        uses: microsoft/powerplatform-actions/check-solution@6e91314a9c6e694ea5c894fe8c40e09d73aa892b
+        with:
+          environment-url: ${{ vars.POWER_PLATFORM_ENVIRONMENT_URL }}
+          app-id: ${{ secrets.POWER_PLATFORM_APP_ID }}
+          client-secret: ${{ secrets.POWER_PLATFORM_CLIENT_SECRET }}
+          tenant-id: ${{ secrets.POWER_PLATFORM_TENANT_ID }}
+          path: artifacts/solutions/DecisionsWorkspace/unmanaged/DecisionsWorkspace_unmanaged.zip
+          geo: ${{ vars.SOLUTION_CHECK_GEO || 'UnitedStates' }}
+          checker-logs-artifact-name: CheckSolutionLogs
+
+  attest-package:
+    name: Attest main source package
+    needs: [repo-validation]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write # Federated signing for the exact previously built package.
+      attestations: write # Store package provenance and SPDX signatures only.
+    steps:
+      - name: Download the package built once by this run
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          name: DecisionsWorkspace-unmanaged-solution
+          path: candidate
+      - name: Select the qualified verification runtime
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.14.8'
+      - name: Independently compare downloaded package with its inventory
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          python - <<'PYCODE'
+          import hashlib, json, os, zipfile
+          from pathlib import Path
+          package = Path('candidate/DecisionsWorkspace_unmanaged.zip')
+          document = json.loads(Path('candidate/decisions-workspace.spdx.json').read_text())
+          assert document['packages'][0]['sourceInfo'] == 'Source commit: ' + os.environ['SOURCE_COMMIT']
+          assert document['packages'][0]['checksums'][0]['checksumValue'] == hashlib.sha256(package.read_bytes()).hexdigest()
+          with zipfile.ZipFile(package) as archive:
+              entries = [entry for entry in archive.infolist() if not entry.is_dir()]
+              assert len({entry.filename for entry in entries}) == len(entries)
+              actual = {entry.filename: hashlib.sha256(archive.read(entry)).hexdigest() for entry in entries}
+          declared = {entry['fileName'].removeprefix('./'): next(c['checksumValue'] for c in entry['checksums'] if c['algorithm'] == 'SHA256') for entry in document['files']}
+          assert actual and len(declared) == len(document['files']) and actual == declared
+          print('Exact downloaded archive and all file digests match the inventory.')
+          PYCODE
+      - name: Attest build provenance
+        id: provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
+        with:
+          subject-path: candidate/DecisionsWorkspace_unmanaged.zip
+          create-storage-record: false
+      - name: Attest exact artifact inventory
+        id: sbom
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
+        with:
+          subject-path: candidate/DecisionsWorkspace_unmanaged.zip
+          sbom-path: candidate/decisions-workspace.spdx.json
+          create-storage-record: false
+      - name: Verify exact source and workflow signatures
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_COMMIT: ${{ github.sha }}
+          PROVENANCE_BUNDLE: ${{ steps.provenance.outputs.bundle-path }}
+          SBOM_BUNDLE: ${{ steps.sbom.outputs.bundle-path }}
+        run: |
+          cp "$PROVENANCE_BUNDLE" candidate/build-attestation.jsonl
+          cp "$SBOM_BUNDLE" candidate/sbom-attestation.jsonl
+          gh attestation verify candidate/DecisionsWorkspace_unmanaged.zip --bundle "$PROVENANCE_BUNDLE" --repo edithatogo/careops-decisions-public --signer-workflow edithatogo/careops-decisions-public/.github/workflows/validate.yml --source-ref refs/heads/main --source-digest "$SOURCE_COMMIT" --signer-digest "$SOURCE_COMMIT" --deny-self-hosted-runners --format json > candidate/provenance-verification.json
+          gh attestation verify candidate/DecisionsWorkspace_unmanaged.zip --bundle "$SBOM_BUNDLE" --repo edithatogo/careops-decisions-public --signer-workflow edithatogo/careops-decisions-public/.github/workflows/validate.yml --source-ref refs/heads/main --source-digest "$SOURCE_COMMIT" --signer-digest "$SOURCE_COMMIT" --deny-self-hosted-runners --predicate-type https://spdx.dev/Document/v2.3 --format json > candidate/sbom-verification.json
+      - name: Preserve exact package and signature evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: careops-decisions-attested-candidate-${{ github.sha }}
+          path: candidate/
+          if-no-files-found: error
+          retention-days: 30

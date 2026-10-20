@@ -1,0 +1,149 @@
+schema: decisions.workspace.flow.v1
+flow:
+  name: reminders
+  displayName: Reminders
+  solution: DecisionsWorkspace
+  track: track-06-automation-integrations_20260502
+  status: scaffold
+  trigger:
+    type: schedule
+    schedule:
+      frequency: daily
+      timeZone: Australia/Sydney
+    manualInputs:
+      - reminderWindowHours
+  inputs:
+    sourceFields:
+      - dft_MeetingId
+      - dft_Subject
+      - dft_StartDateTime
+      - dft_InviteRequested
+      - dft_LastReminderSentOn
+      - dft_MeetingStatus
+    environmentVariables:
+      - decisions_ReminderWindowHours
+      - decisions_IntegrationLogRetentionDays
+    readinessChecks:
+      - decisions_ReminderWindowHours is configured before reminder queries run
+      - only meetings with status Scheduled and InviteRequested are eligible for reminders
+      - a meeting is skipped if a reminder was already sent within the current reminder window
+      - a meeting switchboard check is resolved before reminders are sent for that meeting
+  outputs:
+    dataverseWrites:
+      - dft_Meeting.dft_LastReminderSentOn
+      - dft_IntegrationLog
+  idempotency:
+    strategy: skip-if-reminder-sent-this-window
+    keyFields:
+      - dft_MeetingId
+      - dft_LastReminderSentOn
+    replayGuard: meeting id + last reminder timestamp + reminder window
+  environmentVariableMapping:
+    - variable: decisions_ReminderWindowHours
+      type: Number
+      purpose: Hours before meeting start to consider a reminder due
+      usedInStep: check-reminder-due
+      sampleValue: "24"
+    - variable: decisions_IntegrationLogRetentionDays
+      type: Number
+      purpose: Retention period for integration log entries
+      usedInStep: all
+      sampleValue: "90"
+  retryPolicy:
+    type: exponential
+    count: 3
+    interval: PT30S
+  connectorCalls:
+    - connector: Dataverse
+      action: List rows
+      table: dft_Meeting
+      retry:
+        count: 2
+        interval: PT10S
+        type: fixed
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_IntegrationLog
+    - connector: Dataverse
+      action: Update a row
+      table: dft_Meeting
+  steps:
+    - name: resolve-reminder-window
+      kind: compose
+      expression: "@{coalesce(decisions_ReminderWindowHours, '24')}"
+    - name: load-eligible-meetings
+      kind: dataverse.listRows
+      table: dft_Meeting
+      filter: "dft_meetingstatus eq 'Scheduled' and dft_inviterequested eq true and dft_startdatetime le @{addHours(utcNow(), outputs('resolve-reminder-window'))}"
+    - name: check-reminder-due
+      kind: foreach
+      items: load-eligible-meetings
+      do:
+        - name: skip-if-already-reminded
+          kind: condition
+          when:
+            any:
+              - field: dft_LastReminderSentOn
+                operator: not-empty
+                value: "@{addHours(utcNow(), -1)}"
+          then:
+            - name: log-skip
+              kind: dataverse.createRow
+              table: dft_IntegrationLog
+              values:
+                sourceSystem: Dataverse
+                targetSystem: Reminder
+                recordType: Meeting
+                relatedRecordId: dft_MeetingId
+                correlationId: "@{workflow().run.name}"
+                status: Skipped
+                message: Reminder already sent in the current window for this meeting.
+        - name: send-reminder-notification
+          kind: scope
+          onError:
+            - kind: dataverse.createRow
+              table: dft_IntegrationLog
+              values:
+                sourceSystem: Dataverse
+                targetSystem: Reminder
+                recordType: Meeting
+                relatedRecordId: dft_MeetingId
+                correlationId: "@{workflow().run.name}"
+                status: Failed
+                message: "@{workflow().error.message}"
+                retryCount: 0
+          do:
+            - kind: dataverse.updateRow
+              table: dft_Meeting
+              values:
+                dft_LastReminderSentOn: "@{utcNow()}"
+            - kind: dataverse.createRow
+              table: dft_IntegrationLog
+              values:
+                sourceSystem: Dataverse
+                targetSystem: Reminder
+                recordType: Meeting
+                relatedRecordId: dft_MeetingId
+                correlationId: "@{workflow().run.name}"
+                status: Succeeded
+                message: Reminder notification sent for meeting.
+    - name: handle-failure
+      kind: scope
+      onError:
+        - kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Reminder
+            recordType: Meeting
+            correlationId: "@{workflow().run.name}"
+            status: Failed
+            message: "@{workflow().error.message}"
+            retryCount: "@{workflow().run.retryCount}"
+testHooks:
+  - name: reminders-daily-run
+    description: Run the scheduled reminder flow and confirm eligible meetings receive a reminder log and skipped meetings do not.
+    expected:
+      - eligible meetings get a reminder log entry each
+      - recently reminded meetings are skipped
+      - integration log success and skip rows written per meeting

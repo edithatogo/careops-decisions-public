@@ -1,0 +1,33 @@
+{
+  "id": "track-20-decisions-readiness-gates_20260502",
+  "status": "completed",
+  "closedOn": "2026-05-11",
+  "owner": "worker-readiness-governance",
+  "parallelizable": true,
+  "dependsOn": [
+    "track-00-conductor-tooling-inventory_20260502",
+    "track-13-deployment-hardening-alm-entra-readiness_20260502"
+  ],
+  "workstreams": [
+    "adr-expansion",
+    "licensing-matrix-confirmed-vs-assumed",
+    "readiness-gates-pass-fail-decider",
+    "readiness-contract-validator"
+  ],
+  "completedArtifacts": [
+    "docs/adr/0007-feature-switchboard-pattern.md",
+    "docs/adr/0008-service-account-connection-ownership.md",
+    "docs/adr/0009-dataverse-first-model-security.md",
+    "docs/adr/0010-document-storage-strategy.md",
+    "docs/readiness/licensing-capacity-matrix.md",
+    "docs/readiness/tenant-permissions-matrix.md",
+    "docs/readiness/service-account-strategy.md",
+    "docs/readiness/implementation-readiness-gates.md",
+    "scripts/Test-ReadinessContracts.ps1"
+  ],
+  "closeoutEvidence": [
+    "Readiness validator checks ADR status and rationale structure, licensing assumptions, tenant permission gates, service account ownership assumptions, and environment readiness gates.",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\Test-ReadinessContracts.ps1",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\Invoke-RepoValidation.ps1 -RequireImplementationScaffolds"
+  ]
+}

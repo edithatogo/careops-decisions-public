@@ -1,0 +1,214 @@
+schema: decisions.workspace.flow.v1
+flow:
+  name: teams-summary-post
+  displayName: Teams Summary Post
+  solution: DecisionsWorkspace
+  track: track-06-automation-integrations_20260502
+  status: scaffold
+  trigger:
+    type: schedule-or-dataverse-event
+    schedule:
+      frequency: daily
+      timeZone: Australia/Sydney
+    dataverseEvent:
+      table: dft_Meeting
+      fields:
+        - dft_MinutesApproved
+        - dft_ActionDigestRequested
+  inputs:
+    dataverseTable: dft_Meeting
+    sourceFields:
+      - dft_MeetingId
+      - dft_Subject
+      - dft_GovernanceBodyLookup
+      - dft_CommitteeLookup
+      - dft_ChannelPostId
+      - dft_LastSummaryPostKey
+      - dft_MinutesApproved
+      - dft_ActionDigestRequested
+      - dft_ActionDigestText
+      - dft_MinutesSummaryText
+      - dft_HumanReviewStatus
+    environmentVariables:
+      - decisions_TeamsTeamId
+      - decisions_TeamsChannelId
+      - decisions_IntegrationLogRetentionDays
+    bindingCandidates:
+      teamsTeamId:
+        - source: DMS Executive Team group
+          value: 11111111-1111-4111-8111-111111111111
+          scope: optional local dev-space binding
+      sharePointSiteUrl:
+        - source: DMS Executive Team SharePoint site
+          value: https://example.invalid/sites/decisions
+          scope: optional local dev-space binding for future document links
+    readinessChecks:
+      - decisions_TeamsTeamId and decisions_TeamsChannelId are configured before Teams connector calls run
+      - summary posting enablement is checked before Teams connector calls run so disabled meetings can still record a skipped integration log
+      - only approved or explicitly preview-marked summaries reach the post step
+      - AI-assisted minutes must carry a completed human-review state before they can be posted
+      - the resolved meeting switchboard is checked before Teams connector calls run and SharePoint remains deferred unless a future file-link path is explicitly enabled
+  outputs:
+    dataverseWrites:
+      - dft_Meeting.dft_ChannelPostId
+      - dft_Meeting.dft_LastSummaryPostKey
+      - dft_Meeting.dft_SummaryPostedOn
+      - dft_IntegrationLog
+  idempotency:
+    strategy: skip-if-post-id-exists
+    keyFields:
+      - dft_ChannelPostId
+      - dft_LastSummaryPostKey
+    replayGuard: summary text + approved minutes flag + digest request flag + human-review state
+  environmentVariableMapping:
+    - variable: decisions_TeamsTeamId
+      type: Text
+      purpose: Target Teams team for summary channel posts
+      usedInStep: post-message
+      sampleValue: "00000000-0000-0000-0000-000000000000"
+      localBindingCandidates:
+        - source: DMS Executive Team group
+          value: 11111111-1111-4111-8111-111111111111
+          scope: optional local dev-space binding
+    - variable: decisions_TeamsChannelId
+      type: Text
+      purpose: Target Teams channel for summary posts
+      usedInStep: post-message
+      sampleValue: "00000000-0000-0000-0000-000000000000"
+    - variable: decisions_IntegrationLogRetentionDays
+      type: Number
+      purpose: Retention period for integration log entries
+      usedInStep: all
+      sampleValue: "90"
+  retryPolicy:
+    type: exponential
+    count: 3
+    interval: PT30S
+  connectorCalls:
+    - connector: Dataverse
+      action: List rows
+      table: dft_Meeting
+      filter: "dft_MinutesApproved eq true or dft_ActionDigestRequested eq true"
+    - connector: Dataverse
+      action: List rows
+      table: dft_IntegrationLog
+      filter: "relatedRecordId eq triggerOutputs()?['body/dft_meetingid'] and targetSystem eq 'Teams' and status eq 'Succeeded'"
+    - connector: Microsoft Teams
+      action: Post message in a channel
+    - connector: Dataverse
+      action: Update a row
+      table: dft_Meeting
+    - connector: Dataverse
+      action: Add a new row
+      table: dft_IntegrationLog
+  steps:
+    - name: load-summary-source
+      kind: dataverse.getRow
+      table: dft_Meeting
+      key: trigger row id
+    - name: check-summary-enabled
+      kind: condition
+      when:
+        all:
+          - dft_MinutesApproved equals false
+          - dft_ActionDigestRequested equals false
+      then:
+        - name: log-not-enabled
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Teams
+            recordType: Meeting
+            relatedRecordId: dft_MeetingId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: Teams summary posting is disabled for this meeting until the meeting switchboard allows posting and minutes are approved or an action digest is requested.
+    - name: check-post-readiness
+      kind: condition
+      when:
+        any:
+          - decisions_TeamsTeamId is empty
+          - decisions_TeamsChannelId is empty
+        all:
+          - dft_MinutesSummaryText is empty
+          - dft_ActionDigestText is empty
+      then:
+        - name: log-not-ready
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Teams
+            status: Skipped
+            message: Teams summary posting is not ready until the team and channel bindings are configured, the meeting switchboard allows posting, and the source row is approved or explicitly requested.
+    - name: build-summary-key
+      kind: compose
+      expression: "minutesApproved|digestRequested|summaryText|actionText"
+    - name: prevent-duplicate-post
+      kind: condition
+      when:
+        any:
+          - field: dft_ChannelPostId
+            operator: not-empty
+          - field: dft_LastSummaryPostKey
+            operator: equals
+            value: "@{outputs('build-summary-key')}"
+      then:
+        - name: log-skip
+          kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Teams
+            recordType: Meeting
+            relatedRecordId: dft_MeetingId
+            correlationId: "@{workflow().run.name}"
+            status: Skipped
+            message: Summary already posted for this meeting state.
+    - name: post-message
+      kind: teams.postMessageInChannel
+      map:
+        teamId: decisions_TeamsTeamId
+        channelId: decisions_TeamsChannelId
+        subject: dft_Subject
+        body: "@{coalesce(dft_MinutesSummaryText, dft_ActionDigestText)}"
+    - name: update-meeting
+      kind: dataverse.updateRow
+      table: dft_Meeting
+      values:
+        dft_ChannelPostId: "@{outputs('teams.postMessageInChannel').id}"
+        dft_LastSummaryPostKey: "@{outputs('build-summary-key')}"
+        dft_SummaryPostedOn: "@{utcNow()}"
+    - name: write-success-log
+      kind: dataverse.createRow
+      table: dft_IntegrationLog
+      values:
+        sourceSystem: Dataverse
+        targetSystem: Teams
+        recordType: Meeting
+        relatedRecordId: dft_MeetingId
+        correlationId: "@{workflow().run.name}"
+        status: Succeeded
+        message: Teams summary posted.
+    - name: handle-failure
+      kind: scope
+      onError:
+        - kind: dataverse.createRow
+          table: dft_IntegrationLog
+          values:
+            sourceSystem: Dataverse
+            targetSystem: Teams
+            recordType: Meeting
+            relatedRecordId: dft_MeetingId
+            correlationId: "@{workflow().run.name}"
+            status: Failed
+            message: "@{workflow().error.message}"
+            retryCount: 0
+testHooks:
+  - name: teams-summary-post-preview
+    description: Run the flow against a meeting with approved minutes and confirm only one channel post is written per summary key.
+    expected:
+      - one Teams channel post created
+      - meeting row stores the post id and summary key
+      - replay logs skip instead of reposting

@@ -1,0 +1,62 @@
+name: Native Dataverse identity safety
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  identity:
+    name: Dataverse identity binding tests
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          global-json-file: global.json
+      - name: Locked restore and dependency drift check
+        shell: pwsh
+        run: |
+          dotnet restore tests/native_identity/Identity.Tests.csproj --locked-mode
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git diff --exit-code -- powerplatform/native/DataverseIdentity/packages.lock.json tests/native_identity/packages.lock.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Native compile and SDK-response tests
+        shell: pwsh
+        run: |
+          dotnet test tests/native_identity/Identity.Tests.csproj -c Release --no-restore -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura "-p:CoverletOutput=$($PWD.Path)/artifacts/native-identity/" "-p:Include=[CareOps.Decisions.DataverseIdentity]*" --logger "trx;LogFileName=native-identity.trx" --results-directory artifacts/native-identity
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Require all tests and whole-library branch coverage
+        shell: pwsh
+        run: |
+          [xml]$tests = Get-Content -Raw artifacts/native-identity/native-identity.trx
+          $n = $tests.TestRun.ResultSummary.Counters
+          if ([int]$n.total -lt 57 -or [int]$n.executed -ne [int]$n.total -or [int]$n.passed -ne [int]$n.total) { throw 'No empty, skipped or failing identity tests permitted.' }
+          $files = @(Get-ChildItem artifacts/native-identity -Recurse -Filter coverage.cobertura.xml)
+          if ($files.Count -ne 1) { throw 'Exactly one coverage report required.' }
+          [xml]$report = Get-Content -Raw $files[0].FullName
+          $c = $report.coverage
+          Write-Output "Coverage $($c.'lines-covered')/$($c.'lines-valid') lines, $($c.'branches-covered')/$($c.'branches-valid') branches."
+          if ([int]$c.'lines-valid' -le 0 -or [int]$c.'branches-valid' -le 0 -or [int]$c.'lines-covered' -ne [int]$c.'lines-valid' -or [int]$c.'branches-covered' -ne [int]$c.'branches-valid') { throw 'Whole identity library requires nonempty 100% line and branch coverage.' }
+      - name: Retain assembly and test/lock evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-identity-qualification
+          path: |
+            artifacts/native-identity/
+            powerplatform/native/DataverseIdentity/bin/Release/net48/
+            powerplatform/native/DataverseIdentity/packages.lock.json
+            tests/native_identity/packages.lock.json
+          if-no-files-found: error
+          retention-days: 14

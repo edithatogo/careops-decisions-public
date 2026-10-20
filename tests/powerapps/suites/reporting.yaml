@@ -1,0 +1,101 @@
+name: reporting
+displayName: Reporting and metrics validation
+status: scaffold
+intent: >
+  Validate that governance reporting surfaces and data-quality views are
+  populated from Dataverse views and respect role or membership access. All
+  tests in this suite validate Dataverse-first local metrics and do not
+  require Power BI, Fabric, or live connector execution.
+appReadiness: app-not-yet-created
+readiness: local
+selectors:
+  screen: scrReportingDashboard
+  navigation:
+    openCommand: btnOpenReportingDashboard
+    refreshCommand: btnRefreshReportingData
+  fields:
+    meetingPipeline: galMeetingPipeline
+    decisionRegister: galDecisionRegister
+    overdueActions: galOverdueActions
+    accessExceptions: galAccessExceptions
+    integrationErrors: galIntegrationErrors
+    aiReviewQueue: galAiReviewQueue
+    dataQualityExceptions: galDataQualityExceptions
+    switchboardMetrics: galSwitchboardMetrics
+tests:
+  - id: RPT-01
+    title: governance dashboard views are populated
+    intent: Confirm the meeting pipeline, decision register, overdue actions, and access exceptions views return records from Dataverse views.
+    readiness: local
+    preconditions:
+      - seed records are imported
+    actions:
+      - open: scrReportingDashboard
+      - invoke: btnRefreshReportingData
+    assertions:
+      - meeting pipeline view shows at least the seeded meeting
+      - decision register view shows at least the seeded decision
+      - overdue actions view is populated from seed data
+      - access exceptions view is reachable
+    notes:
+      - views are Dataverse-based, not dependent on Power BI
+
+  - id: RPT-02
+    title: integration error log view is populated
+    intent: Confirm the integration error view surfaces any seeded error records.
+    readiness: local
+    preconditions:
+      - seed data includes at least one integration log record
+    actions:
+      - open: scrReportingDashboard
+    assertions:
+      - integration error view is visible
+      - correlation IDs are displayed where available
+      - integration name and result are visible
+    notes:
+      - seeded errors validate the error-surfacing logic locally
+
+  - id: RPT-03
+    title: AI review queue is populated
+    intent: Confirm the AI review queue surface is available and shows records needing human review.
+    readiness: local
+    preconditions:
+      - seed data includes AI-generated minutes in draft state
+    actions:
+      - open: scrReportingDashboard
+    assertions:
+      - AI review queue view is visible
+      - records awaiting review are displayed
+    notes:
+      - queue filters for minutes with ai-generated source flag and no review decision
+
+  - id: RPT-04
+    title: data-quality exceptions surface
+    intent: Confirm data-quality views surface missing owners, overdue reviews, stale integration status, and unapproved minutes with publish URL.
+    readiness: local
+    preconditions:
+      - seed data includes records with data-quality gaps
+    actions:
+      - open: scrReportingDashboard
+    assertions:
+      - missing-owner exceptions are visible
+      - overdue-review exceptions are visible
+      - stale-integration-status exceptions are visible
+      - unapproved-minutes-published exceptions are visible
+    notes:
+      - matches SMK-16 data-quality coverage in smoke scenarios
+
+  - id: RPT-05
+    title: switchboard metrics distinguish inheritance levels
+    intent: Confirm reporting can distinguish inherited defaults, meeting overrides, and actual connector execution states.
+    readiness: local
+    preconditions:
+      - seed data includes switchboard defaults and overrides
+    actions:
+      - open: scrReportingDashboard
+    assertions:
+      - inherited defaults are labeled as meeting-series default
+      - meeting-level overrides are labeled with the override source
+      - disabled features show skip reason rather than error
+    notes:
+      - switchboard traceability is required by Track 22 reporting scope

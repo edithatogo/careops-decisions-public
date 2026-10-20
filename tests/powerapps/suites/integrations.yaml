@@ -1,0 +1,61 @@
+name: integrations
+displayName: Integration placeholders
+status: scaffold
+readiness: requires-live-connector
+intent: >
+  Hold connector-heavy test intent for Planner, Teams, SharePoint, Outlook,
+  and AI Builder flows without pretending the integrations are wired yet.
+appReadiness: app-not-yet-created
+selectors:
+  screen: scrIntegrations
+  navigation:
+    openCommand: btnOpenIntegrations
+    refreshCommand: btnRefreshIntegrationStatus
+  fields:
+    plannerState: lblPlannerStatus
+    teamsState: lblTeamsStatus
+    sharePointState: lblSharePointStatus
+    aiBuilderState: lblAiBuilderStatus
+    integrationLog: galIntegrationLog
+    plannerSyncCommand: btnSyncActionsToPlanner
+tests:
+  - id: INT-01
+    title: connector status surface
+    intent: Verify the app exposes a clear integration status panel for each connector family.
+    preconditions:
+      - app exists in target environment
+    actions:
+      - open: scrIntegrations
+      - invoke: btnRefreshIntegrationStatus
+    assertions:
+      - planner status is visible
+      - teams status is visible
+      - sharepoint status is visible
+      - ai builder status is visible
+    notes:
+      - this is a scaffold for future connector verification
+  - id: INT-02
+    title: integration log visibility
+    intent: Confirm the app has a place to surface success and handled-failure log entries.
+    preconditions:
+      - integration logging is implemented later
+    actions:
+      - open: scrIntegrations
+    assertions:
+      - integration log control exists
+      - correlation metadata can be displayed
+    notes:
+      - no live connector calls are expected from this placeholder
+  - id: INT-03
+    title: optional planner sync
+    intent: Provide a clear optional sync path that can be skipped when Planner is not configured.
+    preconditions:
+      - planner sync is enabled only in the target environment
+    actions:
+      - open: scrIntegrations
+      - invoke: btnSyncActionsToPlanner
+    assertions:
+      - planner sync command exists
+      - skip reason can be surfaced when Planner is absent
+    notes:
+      - planner is a deployment dependency, not a local build dependency

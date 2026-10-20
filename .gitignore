@@ -1,0 +1,38 @@
+# Power Platform build outputs
+artifacts/
+*.zip
+
+# Local/editor state
+.vs/
+.vscode/
+*.user
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Secrets
+*.secret.json
+local.settings.json
+powerplatform/settings/deployment-settings.local.json
+
+# Local register stores and SQLite sidecars (never case data in Git)
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+
+# Python qualification outputs
+__pycache__/
+.coverage*
+coverage.xml
+
+/.local/
+__pycache__/
+
+# Synthetic browser test outputs
+/browser-smoke-receipt.json
+/synthetic-register-preview.png

@@ -1,0 +1,731 @@
+﻿{
+    "schema":  "decisions.workspace.app-implementation-checklist.v1",
+    "generatedOn":  "2026-05-04T14:44:39.0170243+10:00",
+    "app":  {
+                "name":  "Decisions Workspace",
+                "runtime":  "Power Apps in Teams",
+                "storageTarget":  "Dataverse for Teams first, standard Dataverse compatible"
+            },
+    "checklist":  {
+                      "screens":  [
+                                      {
+                                          "type":  "screen",
+                                          "name":  "HomeScreen",
+                                          "tasks":  [
+                                                        "Create or verify the HomeScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "GovernanceBrowseScreen",
+                                          "tasks":  [
+                                                        "Create or verify the GovernanceBrowseScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "OrgHierarchyScreen",
+                                          "tasks":  [
+                                                        "Create or verify the OrgHierarchyScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "GovernanceEditScreen",
+                                          "tasks":  [
+                                                        "Create or verify the GovernanceEditScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "MeetingListScreen",
+                                          "tasks":  [
+                                                        "Create or verify the MeetingListScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "MeetingWorkspaceScreen",
+                                          "tasks":  [
+                                                        "Create or verify the MeetingWorkspaceScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "AgendaEditorScreen",
+                                          "tasks":  [
+                                                        "Create or verify the AgendaEditorScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "PaperRegisterScreen",
+                                          "tasks":  [
+                                                        "Create or verify the PaperRegisterScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "VoteScreen",
+                                          "tasks":  [
+                                                        "Create or verify the VoteScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "TranscriptImportScreen",
+                                          "tasks":  [
+                                                        "Create or verify the TranscriptImportScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "MinutesReviewScreen",
+                                          "tasks":  [
+                                                        "Create or verify the MinutesReviewScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "DecisionsActionsScreen",
+                                          "tasks":  [
+                                                        "Create or verify the DecisionsActionsScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "AccessRulesScreen",
+                                          "tasks":  [
+                                                        "Create or verify the AccessRulesScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "AIRunsScreen",
+                                          "tasks":  [
+                                                        "Create or verify the AIRunsScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "IntegrationLogsScreen",
+                                          "tasks":  [
+                                                        "Create or verify the IntegrationLogsScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "AttendanceScreen",
+                                          "tasks":  [
+                                                        "Create or verify the AttendanceScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      },
+                                      {
+                                          "type":  "screen",
+                                          "name":  "SettingsScreen",
+                                          "tasks":  [
+                                                        "Create or verify the SettingsScreen canvas screen.",
+                                                        "Bind the screen to the declared Dataverse data sources.",
+                                                        "Apply role-aware visibility and command gating.",
+                                                        "Capture final control names for Power Apps Test Engine selectors."
+                                                    ],
+                                          "sourceRefs":  [
+                                                             "powerplatform/src/app/app-map.yaml",
+                                                             "powerplatform/src/app/screens.md",
+                                                             "powerplatform/src/app/access-matrix.yaml"
+                                                         ]
+                                      }
+                                  ],
+                      "components":  [
+                                         {
+                                             "type":  "component",
+                                             "name":  "shell_header",
+                                             "tasks":  [
+                                                           "Create or verify reusable component shell_header.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "navigation_group_strip",
+                                             "tasks":  [
+                                                           "Create or verify reusable component navigation_group_strip.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "deferred_binding_banner",
+                                             "tasks":  [
+                                                           "Create or verify reusable component deferred_binding_banner.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "role_chip_strip",
+                                             "tasks":  [
+                                                           "Create or verify reusable component role_chip_strip.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "summary_kpi_row",
+                                             "tasks":  [
+                                                           "Create or verify reusable component summary_kpi_row.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "record_list_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component record_list_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "record_form_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component record_form_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "status_badge",
+                                             "tasks":  [
+                                                           "Create or verify reusable component status_badge.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "quorum_indicator",
+                                             "tasks":  [
+                                                           "Create or verify reusable component quorum_indicator.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "transcript_import_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component transcript_import_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "review_compare_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component review_compare_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "sync_state_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component sync_state_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "meeting_feature_switchboard_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component meeting_feature_switchboard_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "governance_hierarchy_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component governance_hierarchy_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "vote_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component vote_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "access_policy_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component access_policy_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         },
+                                         {
+                                             "type":  "component",
+                                             "name":  "ai_run_panel",
+                                             "tasks":  [
+                                                           "Create or verify reusable component ai_run_panel.",
+                                                           "Keep inputs and outputs stable against the source contract.",
+                                                           "Use the component only on declared screens.",
+                                                           "Check read-only, busy, and empty states where applicable."
+                                                       ],
+                                             "sourceRefs":  [
+                                                                "powerplatform/src/app/components.yaml"
+                                                            ]
+                                         }
+                                     ],
+                      "commands":  [
+                                       {
+                                           "type":  "command",
+                                           "name":  "new_meeting",
+                                           "tasks":  [
+                                                         "Create or verify command new_meeting.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "new_agenda_item",
+                                           "tasks":  [
+                                                         "Create or verify command new_agenda_item.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "register_paper",
+                                           "tasks":  [
+                                                         "Create or verify command register_paper.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "record_vote",
+                                           "tasks":  [
+                                                         "Create or verify command record_vote.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "import_transcript",
+                                           "tasks":  [
+                                                         "Create or verify command import_transcript.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "draft_minutes",
+                                           "tasks":  [
+                                                         "Create or verify command draft_minutes.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "refresh_people",
+                                           "tasks":  [
+                                                         "Create or verify command refresh_people.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "configure_feature_switchboard",
+                                           "tasks":  [
+                                                         "Create or verify command configure_feature_switchboard.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "confirm_quorum",
+                                           "tasks":  [
+                                                         "Create or verify command confirm_quorum.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "publish_minutes",
+                                           "tasks":  [
+                                                         "Create or verify command publish_minutes.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "sync_actions_to_planner",
+                                           "tasks":  [
+                                                         "Create or verify command sync_actions_to_planner.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "post_meeting_update",
+                                           "tasks":  [
+                                                         "Create or verify command post_meeting_update.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "sync_outlook_invites",
+                                           "tasks":  [
+                                                         "Create or verify command sync_outlook_invites.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "sync_sharepoint_documents",
+                                           "tasks":  [
+                                                         "Create or verify command sync_sharepoint_documents.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "review_access_rules",
+                                           "tasks":  [
+                                                         "Create or verify command review_access_rules.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "inspect_ai_runs",
+                                           "tasks":  [
+                                                         "Create or verify command inspect_ai_runs.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       },
+                                       {
+                                           "type":  "command",
+                                           "name":  "review_integration_logs",
+                                           "tasks":  [
+                                                         "Create or verify command review_integration_logs.",
+                                                         "Wire OnSelect behavior to the documented Power Fx intent.",
+                                                         "Gate command visibility by persona and selected record state.",
+                                                         "Log connector-triggering actions where a flow is invoked."
+                                                     ],
+                                           "sourceRefs":  [
+                                                              "powerplatform/src/app/commands.yaml",
+                                                              "powerplatform/src/app/access-matrix.yaml"
+                                                          ]
+                                       }
+                                   ]
+                  }
+}

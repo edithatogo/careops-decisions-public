@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="dft_airunstatus" localizedName="aiRunStatus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <displaynames>
+    <displayname description="aiRunStatus" languagecode="1033" />
+  </displaynames>
+  <options>
+    <option value="602170000" IsHidden="0">
+      <labels>
+        <label description="Queued" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170001" IsHidden="0">
+      <labels>
+        <label description="Running" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170002" IsHidden="0">
+      <labels>
+        <label description="Completed" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170003" IsHidden="0">
+      <labels>
+        <label description="Human Reviewed" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170004" IsHidden="0">
+      <labels>
+        <label description="Rejected" languagecode="1033" />
+      </labels>
+    </option>
+    <option value="602170005" IsHidden="0">
+      <labels>
+        <label description="Error" languagecode="1033" />
+      </labels>
+    </option>
+  </options>
+</optionset>

@@ -1,0 +1,48 @@
+name: DecisionsWorkspace
+displayName: Decisions Workspace test plan
+status: scaffold
+app:
+  name: DecisionsWorkspace
+  environment: placeholder
+  readiness: app-not-yet-created
+description: >
+  Power Apps Test Engine plan for the Decisions Workspace canvas app.
+  Suites are categorized by readiness: local (Dataverse-first, pass without
+  live connectors) or requires-live-dylan (need the Dylan environment with
+  Teams, Planner, SharePoint, or Graph access). This file remains
+  non-executable until the app, control tree, and connector configuration
+  exist in the target environment.
+suites:
+  - name: governance-body
+    path: suites/governance-body.yaml
+    purpose: create and maintain governance bodies
+  - name: meeting-agenda
+    path: suites/meeting-agenda.yaml
+    purpose: create meetings and build agendas
+  - name: minutes-decisions-actions
+    path: suites/minutes-decisions-actions.yaml
+    purpose: capture minutes, decisions, and actions
+  - name: integrations
+    path: suites/integrations.yaml
+    purpose: verify connector-heavy integration placeholders
+  - name: feature-switchboard
+    path: suites/feature-switchboard.yaml
+    purpose: verify per-meeting feature switchboard definitions, overrides, and disabled-state skips
+  - name: app-activation
+    path: suites/app-activation.yaml
+    purpose: verify app load, screen navigation, and refresh smoke for Dataverse-first build
+  - name: flow-activation
+    path: suites/flow-activation.yaml
+    purpose: validate flow trigger contracts, environment variable binding, and connector references
+  - name: import-validation
+    path: suites/import-validation.yaml
+    purpose: validate seed data import record counts, relationship integrity, and re-import idempotency
+  - name: configuration-wizard
+    path: suites/configuration-wizard.yaml
+    purpose: validate environment configuration wizard fields and value persistence
+  - name: review-gate
+    path: suites/review-gate.yaml
+    purpose: validate draft-to-review-to-approve gate and publish block without review
+  - name: reporting
+    path: suites/reporting.yaml
+    purpose: validate governance dashboard views, data-quality exceptions, and switchboard metrics

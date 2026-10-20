@@ -1,0 +1,22 @@
+{
+  "id": "track-09-governance-model_20260502",
+  "status": "completed",
+  "owner": "worker-architecture",
+  "parallelizable": true,
+  "dependsOn": ["track-03-power-platform-architecture_20260502", "track-08-microsoft-platform-integration_20260502"],
+  "workstreams": [
+    {"name": "Governance hierarchy seed", "status": "completed", "description": "Seed includes parent governance bodies, two child committees, one nested working group, and a standalone executive forum."},
+    {"name": "ToR versioning lifecycle", "status": "completed", "description": "Seed includes current, superseded, and archived ToR rows across committee records."},
+    {"name": "Quorum and membership roles", "status": "completed", "description": "Seed includes chair, deputy chair, secretary, member, alternate, and observer memberships with varied voting rights."},
+    {"name": "Governance model documentation", "status": "completed", "description": "Governance model and quorum calculation docs define hierarchy, ToR lifecycle, quorum, conflicts, and access-rule intent."},
+    {"name": "track-closeout-review", "status": "completed", "description": "Seed import dry run and payload validation prove relationship integrity for hierarchy, ToR, and membership records."}
+  ],
+  "closedOn": "2026-05-11",
+  "completionEvidence": [
+    "docs/architecture/governance-model.md",
+    "docs/architecture/quorum-calculation.md",
+    "powerplatform/src/seed/sample-governance-data.json",
+    "scripts/Import-SeedData.ps1",
+    "scripts/Test-SeedImportPlan.ps1"
+  ]
+}

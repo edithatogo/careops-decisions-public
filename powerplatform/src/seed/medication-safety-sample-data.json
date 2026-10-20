@@ -1,0 +1,856 @@
+{
+  "sourceNotice": "Synthetic demonstration records only. Do not treat these agenda, minutes, papers, attendees, actions, decisions, or integration logs as real NSW Health committee records. Real committee ingestion stays gated to NSW Outlook, SharePoint, Teams, or user-provided exports.",
+  "governanceBodies": [
+    {
+      "key": "gb-medication-safety-governance",
+      "name": "Medication Safety Governance",
+      "type": "Clinical Governance",
+      "classification": "internal",
+      "status": "active",
+      "purpose": "Provide governance oversight for medication safety risks, incidents, actions, escalation, and committee decisions.",
+      "defaultClassification": "internal",
+      "ownerPersonKey": "msc-chair"
+    }
+  ],
+  "committees": [
+    {
+      "key": "committee-medication-safety",
+      "governanceBodyKey": "gb-medication-safety-governance",
+      "name": "Medication Safety Committee",
+      "type": "Clinical Committee",
+      "classification": "internal",
+      "quorumNumber": 5,
+      "meetingCadence": "monthly",
+      "status": "active",
+      "ownerPersonKey": "msc-chair"
+    }
+  ],
+  "termsOfReference": [
+    {
+      "key": "tor-medication-safety-v1",
+      "committeeKey": "committee-medication-safety",
+      "title": "Medication Safety Committee Terms of Reference",
+      "version": "1.0",
+      "status": "current",
+      "effectiveFrom": "2026-05-01",
+      "reviewDate": "2026-11-01",
+      "authority": "Oversee medication safety governance, review medication-related incidents and risk trends, endorse improvement actions, monitor high-risk medicine controls, and escalate unresolved risks through the clinical governance structure.",
+      "quorumNumber": 5,
+      "quorumDenominator": "members",
+      "approvalStatus": "approved",
+      "approvedOn": "2026-05-01T09:00:00+10:00"
+    }
+  ],
+  "members": [
+    {
+      "key": "msc-chair",
+      "committeeKey": "committee-medication-safety",
+      "role": "chair",
+      "votingRights": true,
+      "displayName": "Medication Safety Chair",
+      "mail": "medication.safety.chair@example.invalid",
+      "jobTitle": "Committee Chair",
+      "department": "Clinical Governance",
+      "managerMail": null,
+      "membershipStatus": "active",
+      "startDate": "2026-05-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msc-secretariat",
+      "committeeKey": "committee-medication-safety",
+      "role": "secretary",
+      "votingRights": false,
+      "displayName": "Medication Safety Secretariat",
+      "mail": "medication.safety.secretariat@example.invalid",
+      "jobTitle": "Executive Assistant / Secretariat",
+      "department": "Clinical Governance",
+      "managerMail": "medication.safety.chair@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-05-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msc-pharmacy-lead",
+      "committeeKey": "committee-medication-safety",
+      "role": "member",
+      "votingRights": true,
+      "displayName": "Medication Safety Pharmacy Lead",
+      "mail": "medication.safety.pharmacy@example.invalid",
+      "jobTitle": "Medication Safety Pharmacist",
+      "department": "Pharmacy",
+      "managerMail": "medication.safety.chair@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-05-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msc-nursing-lead",
+      "committeeKey": "committee-medication-safety",
+      "role": "member",
+      "votingRights": true,
+      "displayName": "Medication Safety Nursing Lead",
+      "mail": "medication.safety.nursing@example.invalid",
+      "jobTitle": "Nursing Medication Safety Lead",
+      "department": "Nursing",
+      "managerMail": "medication.safety.chair@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-05-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msc-quality-lead",
+      "committeeKey": "committee-medication-safety",
+      "role": "member",
+      "votingRights": true,
+      "displayName": "Medication Safety Quality Lead",
+      "mail": "medication.safety.quality@example.invalid",
+      "jobTitle": "Quality and Patient Safety Lead",
+      "department": "Clinical Governance",
+      "managerMail": "medication.safety.chair@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-05-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msc-medical-lead",
+      "committeeKey": "committee-medication-safety",
+      "role": "member",
+      "votingRights": true,
+      "displayName": "Medication Safety Medical Lead",
+      "mail": "medication.safety.medical@example.invalid",
+      "jobTitle": "Medical Representative",
+      "department": "Medical Services",
+      "managerMail": "medication.safety.chair@example.invalid",
+      "membershipStatus": "active",
+      "startDate": "2026-05-01",
+      "isAlternate": false,
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    }
+  ],
+  "orgRelationships": [
+    {
+      "key": "rel-msc-secretariat-reports-chair",
+      "sourcePersonKey": "msc-secretariat",
+      "targetPersonKey": "msc-chair",
+      "relationshipType": "manager",
+      "effectiveFrom": "2026-05-01",
+      "source": "manual_seed"
+    },
+    {
+      "key": "rel-msc-pharmacy-escalates-chair",
+      "sourcePersonKey": "msc-pharmacy-lead",
+      "targetPersonKey": "msc-chair",
+      "relationshipType": "escalation",
+      "effectiveFrom": "2026-05-01",
+      "source": "manual_seed"
+    }
+  ],
+  "featureDefinitions": [
+    {
+      "key": "feature-voting",
+      "featureCode": "voting_enabled",
+      "name": "Voting",
+      "description": "Capture motions, ballots, abstentions, and voting outcomes for the meeting record.",
+      "category": "governance",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 10
+    },
+    {
+      "key": "feature-ai-minutes",
+      "featureCode": "ai_minutes_enabled",
+      "name": "AI Minutes",
+      "description": "Use AI Builder to draft minutes from transcript content with a human review gate.",
+      "category": "ai",
+      "scope": "switchboard",
+      "defaultEnabled": false,
+      "status": "active",
+      "sortOrder": 20
+    },
+    {
+      "key": "feature-transcript-import",
+      "featureCode": "transcript_import_enabled",
+      "name": "Transcript Import",
+      "description": "Import transcript evidence into the meeting record for drafting and review.",
+      "category": "capture",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 30
+    },
+    {
+      "key": "feature-planner-sync",
+      "featureCode": "planner_sync_enabled",
+      "name": "Planner Sync",
+      "description": "Send approved action items to Planner after the meeting is resolved.",
+      "category": "integration",
+      "scope": "switchboard",
+      "defaultEnabled": false,
+      "status": "active",
+      "sortOrder": 40
+    },
+    {
+      "key": "feature-teams-posts",
+      "featureCode": "teams_posts_enabled",
+      "name": "Teams Posts",
+      "description": "Publish meeting summaries or notifications into the Teams workspace.",
+      "category": "integration",
+      "scope": "switchboard",
+      "defaultEnabled": false,
+      "status": "active",
+      "sortOrder": 50
+    },
+    {
+      "key": "feature-sharepoint-papers-minutes",
+      "featureCode": "sharepoint_papers_minutes_enabled",
+      "name": "SharePoint Papers and Minutes",
+      "description": "Store papers and approved minutes in SharePoint document libraries.",
+      "category": "documents",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 60
+    },
+    {
+      "key": "feature-outlook-invites",
+      "featureCode": "outlook_invites_enabled",
+      "name": "Outlook Invites",
+      "description": "Send and sync meeting invitations through Outlook.",
+      "category": "calendar",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 70
+    },
+    {
+      "key": "feature-org-hierarchy",
+      "featureCode": "org_hierarchy_enabled",
+      "name": "Org Hierarchy",
+      "description": "Resolve membership, manager, and approval paths from the organizational hierarchy.",
+      "category": "identity",
+      "scope": "switchboard",
+      "defaultEnabled": true,
+      "status": "active",
+      "sortOrder": 80
+    }
+  ],
+  "meetingSeriesFeatureDefaults": [
+    {
+      "key": "msfd-msc-voting",
+      "seriesKey": "series-medication-safety-monthly",
+      "featureDefinitionKey": "feature-voting",
+      "name": "Medication Safety Committee - Voting",
+      "enabled": true,
+      "reason": "Formal endorsements and escalations should be captured as decisions.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msfd-msc-ai-minutes",
+      "seriesKey": "series-medication-safety-monthly",
+      "featureDefinitionKey": "feature-ai-minutes",
+      "name": "Medication Safety Committee - AI Minutes",
+      "enabled": false,
+      "reason": "AI minutes remain off until NSW-approved transcript source, prompts, and review gates are confirmed.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msfd-msc-transcript-import",
+      "seriesKey": "series-medication-safety-monthly",
+      "featureDefinitionKey": "feature-transcript-import",
+      "name": "Medication Safety Committee - Transcript Import",
+      "enabled": true,
+      "reason": "Transcript or notes import supports draft minutes after secretariat review.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msfd-msc-planner-sync",
+      "seriesKey": "series-medication-safety-monthly",
+      "featureDefinitionKey": "feature-planner-sync",
+      "name": "Medication Safety Committee - Planner Sync",
+      "enabled": false,
+      "reason": "Planner sync stays off until the target DMS plan is confirmed.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msfd-msc-teams-posts",
+      "seriesKey": "series-medication-safety-monthly",
+      "featureDefinitionKey": "feature-teams-posts",
+      "name": "Medication Safety Committee - Teams Posts",
+      "enabled": false,
+      "reason": "Teams posts stay off until channel notification rules are accepted.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msfd-msc-sharepoint-papers-minutes",
+      "seriesKey": "series-medication-safety-monthly",
+      "featureDefinitionKey": "feature-sharepoint-papers-minutes",
+      "name": "Medication Safety Committee - SharePoint Papers and Minutes",
+      "enabled": true,
+      "reason": "Agenda, papers, minutes, and packs should be stored in SharePoint.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msfd-msc-outlook-invites",
+      "seriesKey": "series-medication-safety-monthly",
+      "featureDefinitionKey": "feature-outlook-invites",
+      "name": "Medication Safety Committee - Outlook Invites",
+      "enabled": true,
+      "reason": "The recurring series should use Outlook invitations and attendee evidence.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "msfd-msc-org-hierarchy",
+      "seriesKey": "series-medication-safety-monthly",
+      "featureDefinitionKey": "feature-org-hierarchy",
+      "name": "Medication Safety Committee - Org Hierarchy",
+      "enabled": true,
+      "reason": "Escalation and approval paths need reporting-line context when Entra access is available.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    }
+  ],
+  "meetingSeries": [
+    {
+      "key": "series-medication-safety-monthly",
+      "committeeKey": "committee-medication-safety",
+      "name": "Medication Safety Committee Monthly Meeting",
+      "cadence": "monthly",
+      "recurrenceRule": "FREQ=MONTHLY;BYDAY=WE;BYSETPOS=3",
+      "defaultDurationMinutes": 90,
+      "defaultLocation": "Teams / Clinical Governance meeting room",
+      "defaultChannelId": "teams-channel-medication-safety-placeholder",
+      "seriesStatus": "active",
+      "seriesOwnerPersonKey": "msc-chair"
+    }
+  ],
+  "meetings": [
+    {
+      "key": "meeting-medication-safety-2026-05-20",
+      "seriesKey": "series-medication-safety-monthly",
+      "meetingNumber": 5,
+      "title": "Medication Safety Committee - 20 May 2026",
+      "status": "planned",
+      "classification": "internal",
+      "scheduledStartUtc": "2026-05-20T02:00:00Z",
+      "scheduledEndUtc": "2026-05-20T03:30:00Z",
+      "location": "Teams / Clinical Governance meeting room",
+      "externalCalendarId": "calendar-medication-safety-2026-05-20-placeholder",
+      "externalTeamsId": "teams-meeting-medication-safety-2026-05-20-placeholder",
+      "chairPersonKey": "msc-chair"
+    }
+  ],
+  "meetingFeatureOverrides": [
+    {
+      "key": "mfo-msc-2026-05-20-ai-minutes",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "featureDefinitionKey": "feature-ai-minutes",
+      "name": "Medication Safety Committee - 20 May 2026 - AI Minutes",
+      "enabled": false,
+      "reason": "Synthetic meeting only; real AI minutes require an approved transcript source and human review gate.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "mfo-msc-2026-05-20-planner-sync",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "featureDefinitionKey": "feature-planner-sync",
+      "name": "Medication Safety Committee - 20 May 2026 - Planner Sync",
+      "enabled": false,
+      "reason": "Waiting for the target DMS Planner plan.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    },
+    {
+      "key": "mfo-msc-2026-05-20-teams-posts",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "featureDefinitionKey": "feature-teams-posts",
+      "name": "Medication Safety Committee - 20 May 2026 - Teams Posts",
+      "enabled": false,
+      "reason": "Do not post synthetic committee content to Teams.",
+      "status": "active",
+      "lastSyncedOn": "2026-05-04T09:00:00+10:00"
+    }
+  ],
+  "agendaItems": [
+    {
+      "key": "msc-agenda-01",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "sequence": 1,
+      "title": "Welcome, attendance, apologies, quorum, and conflicts",
+      "purpose": "information",
+      "presenterPersonKey": "msc-secretariat",
+      "durationMinutes": 10,
+      "decisionSought": false,
+      "status": "planned"
+    },
+    {
+      "key": "msc-agenda-02",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "sequence": 2,
+      "title": "Previous minutes and action register",
+      "purpose": "decision",
+      "presenterPersonKey": "msc-secretariat",
+      "durationMinutes": 10,
+      "decisionSought": true,
+      "status": "planned"
+    },
+    {
+      "key": "msc-agenda-03",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "sequence": 3,
+      "title": "Medication incident and risk trend review",
+      "purpose": "discussion",
+      "presenterPersonKey": "msc-quality-lead",
+      "durationMinutes": 25,
+      "decisionSought": true,
+      "status": "planned"
+    },
+    {
+      "key": "msc-agenda-04",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "sequence": 4,
+      "title": "High-risk medicines and anticoagulant safety update",
+      "purpose": "decision",
+      "presenterPersonKey": "msc-pharmacy-lead",
+      "durationMinutes": 20,
+      "decisionSought": true,
+      "status": "planned"
+    },
+    {
+      "key": "msc-agenda-05",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "sequence": 5,
+      "title": "Medication reconciliation and discharge documentation",
+      "purpose": "discussion",
+      "presenterPersonKey": "msc-medical-lead",
+      "durationMinutes": 15,
+      "decisionSought": false,
+      "status": "planned"
+    },
+    {
+      "key": "msc-agenda-06",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "sequence": 6,
+      "title": "Policy review, formulary alerts, and new safety communications",
+      "purpose": "information",
+      "presenterPersonKey": "msc-pharmacy-lead",
+      "durationMinutes": 10,
+      "decisionSought": false,
+      "status": "planned"
+    }
+  ],
+  "papers": [
+    {
+      "key": "msc-paper-agenda-pack-2026-05",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-01",
+      "title": "Medication Safety Committee Agenda Pack - May 2026",
+      "documentId": "paper-msc-agenda-pack-2026-05-placeholder",
+      "documentSource": "sharepoint_placeholder",
+      "classification": "internal",
+      "paperStatus": "draft",
+      "ownerPersonKey": "msc-secretariat",
+      "sharepointUrl": "https://example.invalid/nsw/medication-safety/2026-05/agenda-pack-placeholder.docx"
+    },
+    {
+      "key": "msc-paper-incident-trend-2026-05",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-03",
+      "title": "Medication Incident Trend Summary - May 2026",
+      "documentId": "paper-msc-incident-trend-2026-05-placeholder",
+      "documentSource": "sharepoint_placeholder",
+      "classification": "internal",
+      "paperStatus": "draft",
+      "ownerPersonKey": "msc-quality-lead",
+      "sharepointUrl": "https://example.invalid/nsw/medication-safety/2026-05/incident-trend-summary-placeholder.pdf"
+    },
+    {
+      "key": "msc-paper-high-risk-meds-2026-05",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-04",
+      "title": "High-risk Medicines Action Plan - May 2026",
+      "documentId": "paper-msc-high-risk-meds-2026-05-placeholder",
+      "documentSource": "sharepoint_placeholder",
+      "classification": "internal",
+      "paperStatus": "draft",
+      "ownerPersonKey": "msc-pharmacy-lead",
+      "sharepointUrl": "https://example.invalid/nsw/medication-safety/2026-05/high-risk-medicines-action-plan-placeholder.docx"
+    }
+  ],
+  "minutes": [
+    {
+      "key": "minutes-medication-safety-2026-05-20-v1",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "version": 1,
+      "title": "Medication Safety Committee Minutes - Draft - 20 May 2026",
+      "status": "draft",
+      "draftText": "Synthetic draft minutes placeholder. Attendance, apologies, conflicts, previous actions, medication incident trends, high-risk medicines updates, medication reconciliation issues, policy review items, endorsed decisions, and new action owners should be completed from the real NSW meeting record before use.",
+      "classification": "internal"
+    },
+    {
+      "key": "minutes-medication-safety-2026-05-20-v2",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "version": 2,
+      "title": "Medication Safety Committee Minutes - Approved - 20 May 2026",
+      "status": "approved",
+      "draftText": "Synthetic approved minutes placeholder. This version exists so the app can show the full review-to-publication path with a chair-approved record, linked decisions, and action follow-up.",
+      "approvedByPersonKey": "msc-chair",
+      "approvedOn": "2026-05-20T09:00:00+10:00",
+      "publishedOn": "2026-05-20T10:00:00+10:00",
+      "publishedUrl": "https://example.invalid/nsw/medication-safety/2026-05/minutes-approved.docx",
+      "classification": "internal"
+    }
+  ],
+  "decisions": [
+    {
+      "key": "decision-msc-2026-05-001",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-04",
+      "decisionNumber": "MSC-DEC-2026-05-001",
+      "title": "Endorse high-risk medicines action plan for tracking",
+      "decisionText": "Synthetic placeholder decision: the committee endorsed tracking the high-risk medicines action plan through the Medication Safety Committee action register.",
+      "authority": "Medication Safety Committee Terms of Reference",
+      "status": "draft",
+      "effectiveOn": "2026-05-20",
+      "reviewDueOn": "2026-08-20",
+      "ownerPersonKey": "msc-pharmacy-lead",
+      "classification": "internal"
+    },
+    {
+      "key": "decision-msc-2026-05-002",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-03",
+      "decisionNumber": "MSC-DEC-2026-05-002",
+      "title": "Escalate overdue medication safety actions through clinical governance",
+      "decisionText": "Synthetic placeholder decision: overdue medication safety actions will be reviewed monthly and escalated where owners do not provide evidence of progress.",
+      "authority": "Medication Safety Committee Terms of Reference",
+      "status": "draft",
+      "effectiveOn": "2026-05-20",
+      "reviewDueOn": "2026-07-20",
+      "ownerPersonKey": "msc-chair",
+      "classification": "internal"
+    }
+  ],
+  "actions": [
+    {
+      "key": "action-msc-2026-05-001",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-01",
+      "actionNumber": "MSC-ACT-2026-05-001",
+      "title": "Renee to circulate the agenda pack and draft minutes placeholder to the chair for review",
+      "ownerPersonKey": "msc-secretariat",
+      "dueDate": "2026-05-13",
+      "status": "open",
+      "priority": "normal",
+      "plannerTaskId": null,
+      "completionEvidence": "sharepoint://placeholder/medication-safety/2026-05/agenda-pack"
+    },
+    {
+      "key": "action-msc-2026-05-002",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-03",
+      "decisionKey": "decision-msc-2026-05-002",
+      "actionNumber": "MSC-ACT-2026-05-002",
+      "title": "Quality lead to update medication incident trend summary and identify overdue actions",
+      "ownerPersonKey": "msc-quality-lead",
+      "dueDate": "2026-05-15",
+      "status": "open",
+      "priority": "high",
+      "plannerTaskId": null,
+      "completionEvidence": "sharepoint://placeholder/medication-safety/2026-05/incident-trend-summary"
+    },
+    {
+      "key": "action-msc-2026-05-003",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-04",
+      "decisionKey": "decision-msc-2026-05-001",
+      "actionNumber": "MSC-ACT-2026-05-003",
+      "title": "Pharmacy lead to refresh high-risk medicines action plan for committee endorsement",
+      "ownerPersonKey": "msc-pharmacy-lead",
+      "dueDate": "2026-05-15",
+      "status": "open",
+      "priority": "high",
+      "plannerTaskId": null,
+      "completionEvidence": "sharepoint://placeholder/medication-safety/2026-05/high-risk-medicines-action-plan"
+    },
+    {
+      "key": "action-msc-2026-05-004",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "agendaItemKey": "msc-agenda-05",
+      "actionNumber": "MSC-ACT-2026-05-004",
+      "title": "Medical lead to provide medication reconciliation and discharge documentation update",
+      "ownerPersonKey": "msc-medical-lead",
+      "dueDate": "2026-05-18",
+      "status": "open",
+      "priority": "normal",
+      "plannerTaskId": null,
+      "completionEvidence": "sharepoint://placeholder/medication-safety/2026-05/reconciliation-update"
+    }
+  ],
+  "attendees": [
+    {
+      "key": "attendee-msc-chair",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "personKey": "msc-chair",
+      "displayName": "Medication Safety Chair",
+      "role": "chair",
+      "attendanceStatus": "accepted",
+      "response": "accepted",
+      "attendeeRole": "chair",
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-06T09:15:00+10:00",
+      "votingEligible": true
+    },
+    {
+      "key": "attendee-msc-secretariat",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "personKey": "msc-secretariat",
+      "displayName": "Medication Safety Secretariat",
+      "role": "secretary",
+      "attendanceStatus": "accepted",
+      "response": "accepted",
+      "attendeeRole": "secretary",
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-06T09:20:00+10:00",
+      "votingEligible": false
+    },
+    {
+      "key": "attendee-msc-pharmacy",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "personKey": "msc-pharmacy-lead",
+      "displayName": "Medication Safety Pharmacy Lead",
+      "role": "member",
+      "attendanceStatus": "accepted",
+      "response": "accepted",
+      "attendeeRole": "member",
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-06T09:25:00+10:00",
+      "votingEligible": true
+    },
+    {
+      "key": "attendee-msc-nursing",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "personKey": "msc-nursing-lead",
+      "displayName": "Medication Safety Nursing Lead",
+      "role": "member",
+      "attendanceStatus": "tentative",
+      "response": "tentative",
+      "attendeeRole": "member",
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-06T14:10:00+10:00",
+      "votingEligible": true
+    },
+    {
+      "key": "attendee-msc-quality",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "personKey": "msc-quality-lead",
+      "displayName": "Medication Safety Quality Lead",
+      "role": "member",
+      "attendanceStatus": "accepted",
+      "response": "accepted",
+      "attendeeRole": "member",
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": "2026-05-06T09:30:00+10:00",
+      "votingEligible": true
+    },
+    {
+      "key": "attendee-msc-medical",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "personKey": "msc-medical-lead",
+      "displayName": "Medication Safety Medical Lead",
+      "role": "member",
+      "attendanceStatus": "not_responded",
+      "response": "none",
+      "attendeeRole": "member",
+      "invitedOn": "2026-05-06T09:00:00+10:00",
+      "responseUpdatedOn": null,
+      "votingEligible": true
+    }
+  ],
+  "transcripts": [
+    {
+      "key": "transcript-msc-2026-05-20-placeholder",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "title": "Medication Safety Committee Transcript Placeholder - 20 May 2026",
+      "source": "manual_placeholder",
+      "status": "not_provided",
+      "retentionStatus": "not_retained",
+      "classification": "internal",
+      "transcriptText": "No real transcript has been imported. This placeholder exists to show where an NSW-approved Teams transcript or meeting notes source would be linked before AI Builder drafting."
+    }
+  ],
+  "aiBuilderPrompts": [
+    {
+      "key": "prompt-transcript-to-minutes-v1",
+      "promptName": "Decisions - Transcript to Minutes",
+      "version": "1.0",
+      "purpose": "Draft agenda-structured minutes and extract candidate decisions, actions, risks, deferrals, and missing evidence from meeting transcript content.",
+      "classificationAllowance": "internal",
+      "ownerPersonKey": "msc-chair",
+      "approvalStatus": "approved",
+      "effectiveFrom": "2026-05-01",
+      "effectiveUntil": null,
+      "approvedOn": "2026-05-01T09:00:00+10:00",
+      "approvedByPersonKey": "msc-chair",
+      "description": "AI Builder prompt for Medication Safety Committee minute drafting. Produces structured JSON output mapped to Dataverse minute, decision, and action tables."
+    }
+  ],
+  "aiBuilderRuns": [
+    {
+      "key": "aibuilder-run-msc-2026-05-20-skipped",
+      "name": "AI Builder Run - Skipped - 20 May 2026",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "transcriptKey": "transcript-msc-2026-05-20-placeholder",
+      "promptKey": "prompt-transcript-to-minutes-v1",
+      "inputHash": "sha256-synthetic-placeholder-input-hash",
+      "outputHash": null,
+      "requesterPersonKey": "msc-secretariat",
+      "runStatus": "skipped",
+      "humanReviewStatus": "not_required",
+      "reviewerPersonKey": null,
+      "reviewedOn": null,
+      "modelProvider": "AI Builder (disabled)",
+      "startTime": "2026-05-06T09:00:00+10:00",
+      "completionTime": "2026-05-06T09:00:01+10:00",
+      "retryCount": 0,
+      "errorMessage": null,
+      "exceptionNotes": "AI Builder minutes feature is disabled for the Medication Safety Committee series. Feature flag decisions_EnableAiBuilderMinutes is false. Run skipped without prompt execution."
+    },
+    {
+      "key": "aibuilder-run-msc-2026-05-20-draft",
+      "name": "AI Builder Run - Draft Produced - 20 May 2026",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "transcriptKey": "transcript-msc-2026-05-20-placeholder",
+      "promptKey": "prompt-transcript-to-minutes-v1",
+      "inputHash": "sha256-9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+      "outputHash": "sha256-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "requesterPersonKey": "msc-secretariat",
+      "runStatus": "completed",
+      "humanReviewStatus": "pending_review",
+      "reviewerPersonKey": "msc-chair",
+      "reviewedOn": null,
+      "modelProvider": "AI Builder (GPT-4o)",
+      "startTime": "2026-05-20T14:30:00+10:00",
+      "completionTime": "2026-05-20T14:32:15+10:00",
+      "retryCount": 0,
+      "errorMessage": null,
+      "exceptionNotes": "Synthetic draft produced from placeholder transcript. Full review by secretariat and chair required before any publication."
+    }
+  ],
+  "accessRules": [
+    {
+      "key": "access-msc-internal",
+      "scope": "body_wide",
+      "ruleType": "allow",
+      "classification": "internal",
+      "governanceBodyKey": "gb-medication-safety-governance",
+      "ruleSummary": "Medication Safety Committee members and secretariat can read internal committee records."
+    },
+    {
+      "key": "access-msc-confidential-papers",
+      "scope": "document_only",
+      "ruleType": "review",
+      "classification": "confidential",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "ruleSummary": "Confidential papers require secretariat review before circulation."
+    },
+    {
+      "key": "access-msc-ai-review",
+      "scope": "meeting_only",
+      "ruleType": "review",
+      "classification": "internal",
+      "meetingKey": "meeting-medication-safety-2026-05-20",
+      "ruleSummary": "Any AI-generated minutes must be reviewed by the secretariat and chair before approval."
+    }
+  ],
+  "integrationBindings": [
+    {
+      "key": "binding-msc-teams-team",
+      "targetSystem": "Teams",
+      "settingName": "decisions_TeamsTeamId",
+      "exampleValue": "11111111-1111-4111-8111-111111111111",
+      "purpose": "Executive Team workspace binding for the Decisions tab.",
+      "targetRecordKey": "committee-medication-safety"
+    },
+    {
+      "key": "binding-msc-teams-channel",
+      "targetSystem": "Teams",
+      "settingName": "decisions_TeamsChannelId",
+      "exampleValue": "19:fictional-channel@thread.tacv2",
+      "purpose": "Teams channel binding for governance notifications once posting is enabled.",
+      "targetRecordKey": "meeting-medication-safety-2026-05-20"
+    },
+    {
+      "key": "binding-msc-planner-plan",
+      "targetSystem": "Planner",
+      "settingName": "decisions_PlannerPlanId",
+      "exampleValue": "pending-dms-planner-plan",
+      "purpose": "Planner plan binding for medication safety action follow-up once a DMS plan is confirmed.",
+      "targetRecordKey": "action-msc-2026-05-002"
+    },
+    {
+      "key": "binding-msc-sharepoint-site",
+      "targetSystem": "SharePoint",
+      "settingName": "decisions_SharePointSiteUrl",
+      "exampleValue": "https://example.invalid/nsw/medication-safety",
+      "purpose": "Placeholder SharePoint site binding for agendas, papers, minutes, and packs.",
+      "targetRecordKey": "msc-paper-agenda-pack-2026-05"
+    },
+    {
+      "key": "binding-msc-ai-builder-prompt",
+      "targetSystem": "AI Builder",
+      "settingName": "decisions_AiBuilderPromptName",
+      "exampleValue": "Decisions Workspace - Transcript to Minutes",
+      "purpose": "Optional prompt binding for transcript-to-minutes processing after governance approval.",
+      "targetRecordKey": "minutes-medication-safety-2026-05-20-v1"
+    }
+  ],
+  "integrationLogs": [
+    {
+      "key": "log-medication-safety-seed-validation-20260505",
+      "sourceSystem": "Repo seed",
+      "targetSystem": "Dataverse",
+      "recordType": "Medication Safety Committee sample",
+      "operation": "Sample import validation",
+      "requestSummary": "Synthetic medication safety sample validated for in-app use. Agenda, minutes, papers, attendees, chair, secretariat, actions, decisions, terms of reference, feature switches, and source gates are present.",
+      "status": "succeeded",
+      "message": "Medication Safety sample is synthetic and ready for local smoke testing.",
+      "relatedRecordId": "seed:medication-safety-sample-data.json",
+      "actor": "Codex",
+      "correlationId": "medication-safety-seed-validation-20260505",
+      "retryCount": 0,
+      "errorMessage": null,
+      "loggedOn": "2026-05-05T09:00:00+10:00"
+    },
+    {
+      "key": "log-medication-safety-source-gate-20260505",
+      "sourceSystem": "NSW Outlook/SharePoint/Teams/user exports",
+      "targetSystem": "Dataverse",
+      "recordType": "Medication Safety Committee sample",
+      "operation": "Real-data source gate",
+      "requestSummary": "Live NSW committee imports remain gated to approved Outlook, SharePoint, Teams, or user-export sources.",
+      "status": "skipped",
+      "message": "No live NSW data was imported. The checked-in sample remains synthetic.",
+      "relatedRecordId": "source-gate:medication-safety",
+      "actor": "Codex",
+      "correlationId": "medication-safety-source-gate-20260505",
+      "retryCount": 0,
+      "errorMessage": null,
+      "loggedOn": "2026-05-05T09:05:00+10:00"
+    }
+  ]
+}
