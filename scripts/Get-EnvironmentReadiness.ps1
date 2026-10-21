@@ -40,25 +40,28 @@ function Get-PacAuthState {
         Error = $null
     }
 
+    if ($DryRun) {
+        $state.Error = 'Authentication state is not inspected during an offline dry run.'
+        return $state
+    }
     if (-not (Get-Command pac -ErrorAction SilentlyContinue)) {
         $state.Error = "pac is not available"
         return $state
     }
 
-    $output = & pac auth list 2>&1
-    $state.ExitCode = $LASTEXITCODE
-    $state.RawOutput = ($output | Out-String).Trim()
-
-    if ($state.ExitCode -ne 0) {
-        $state.Error = $state.RawOutput
-        return $state
-    }
-
-    $entries = Get-PacAuthEntries
-    $activeEntry = $entries.Entries | Where-Object { $_.Active } | Select-Object -First 1
-    if ($activeEntry) {
-        $state.ActiveIndex = $activeEntry.Index
-        $state.ActiveEnvironment = $activeEntry.EnvironmentUrl
+    try {
+        $catalog = Get-PacAuthEntries
+        $state.ExitCode = 0
+        $state.RawOutput = $catalog.RawOutput
+        $activeEntry = $catalog.Entries | Where-Object { $_.Active } | Select-Object -First 1
+        if ($activeEntry) {
+            $state.ActiveIndex = $activeEntry.Index
+            $state.ActiveEnvironment = $activeEntry.EnvironmentUrl
+        }
+    } catch {
+        $state.ExitCode = 1
+        $state.Error = $_.Exception.Message
+        $state.RawOutput = $state.Error
     }
 
     return $state
@@ -80,15 +83,6 @@ $toolChecks = @(
     Test-CommandAvailable -Name 'npm'
     Test-CommandAvailable -Name 'dotnet'
 )
-
-$pacAuth = $null
-if (($toolChecks | Where-Object { $_.name -eq 'pac' -and $_.available })) {
-    try {
-        $pacAuth = pac auth list 2>&1 | Out-String
-    } catch {
-        $pacAuth = $_.Exception.Message
-    }
-}
 
 $deploymentSettings = $null
 if (Test-Path -LiteralPath $deploymentSettingsPath) {
@@ -204,8 +198,8 @@ $checks = @(
         Recommendation = 'Use pac for solution pack, check, and import commands.'
     },
     [pscustomobject]@{
-        Name = 'pac auth list shows an active environment'
-        Status = if ($pacState.ActiveEnvironment) { 'Pass' } elseif ($pacState.ExitCode -eq 0) { 'Warn' } else { 'Fail' }
+        Name = 'Stored PAC profile has a selected environment (not access proof)'
+        Status = if ($DryRun) { 'Skip' } elseif ($pacState.ActiveEnvironment) { 'Pass' } elseif ($pacState.ExitCode -eq 0) { 'Warn' } else { 'Fail' }
         Details = if ($pacState.ActiveEnvironment) { "Active environment: $($pacState.ActiveEnvironment)" } elseif ($pacState.Error) { $pacState.Error } else { 'No active environment was parsed from pac auth list.' }
         Recommendation = 'Run pac auth select before targeting a tenant.'
     },
@@ -269,6 +263,8 @@ $result = [pscustomobject]@{
     GeneratedOn = (Get-Date).ToString('o')
     RepoRoot = $repoRoot
     Tools = $toolChecks
+    NativeAccessVerified = $false
+    QualificationScope = 'Local configuration/preflight only; stored profiles do not establish native access or import authority.'
     PacAvailable = [bool]$pacCommand
     PacxAvailable = [bool]$pacxCommand
     PacActiveEnvironment = $pacState.ActiveEnvironment
@@ -290,10 +286,10 @@ $result = [pscustomobject]@{
     Checks = $checks
     NextCommands = @(
         'pac auth list',
-        'pac auth select --index <target-index>',
+        'Verify the existing qualified account/tenant/session without changing another owner''s profile.',
         'pac solution pack --folder powerplatform/solutions/DecisionsWorkspace --zipfile artifacts/solutions/DecisionsWorkspace_unmanaged.zip --packagetype Unmanaged',
         'pac solution check --path artifacts/solutions/DecisionsWorkspace_unmanaged.zip',
-        'pac solution import --path artifacts/solutions/DecisionsWorkspace_unmanaged.zip --settings-file powerplatform/settings/deployment-settings.sample.json --publish-changes'
+        './scripts/Import-Solution.ps1 -DryRun -EnvironmentUrl <reviewed-exact-HTTPS-root> -SettingsFile <reviewed-ignored-local-settings>'
     )
     Readiness = if ($checks | Where-Object { $_.Status -eq 'Fail' }) { 'Not ready' } elseif ($checks | Where-Object { $_.Status -eq 'Warn' }) { 'Ready with warnings' } else { 'Ready' }
     DryRun = [bool]$DryRun
@@ -304,7 +300,7 @@ if ($Json) {
     return
 }
 
-Write-Host "Environment readiness"
+Write-Host "Local environment preflight; native access is not verified"
 Write-Host "Repository: $repoRoot"
 Write-Host ""
 Write-Host "Tools"

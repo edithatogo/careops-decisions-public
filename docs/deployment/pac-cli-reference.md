@@ -4,12 +4,19 @@ This document catalogs the `pac` and `pacx` commands used in this repository for
 
 ## Authentication
 
+Reuse the existing qualified VS Code route and intended account/tenant. Profile
+selection is shared state: coordinate it with the current owner. Stored profiles
+are not access proof, and creating an authentication profile is not a token bridge
+or authority to grant consent. The examples below describe commands, not automatic
+recovery instructions. Prefer the guarded import wrapper with an exact target;
+`pac solution import` itself performs a native import, even without publishing.
+
 ```powershell
 # List active auth profiles
 pac auth list
 
 # Select an existing profile by index
-pac auth select --index 0
+pac auth select --index <existing-index>
 
 # Create a new auth profile (interactive or device)
 pac auth create --environment https://environment.example.invalid/
@@ -72,19 +79,23 @@ pac solution pack `
 ### Import
 
 ```powershell
-# Dry-run import (no publish, validates only with settings)
-pac solution import `
-  --path artifacts/solutions/DecisionsWorkspace_unmanaged.zip `
-  --settings-file powerplatform/settings/deployment-settings.sample.json
+# Offline preview: the wrapper does not call PAC, select a profile or import.
+./scripts/Import-Solution.ps1 -DryRun `
+  -SolutionZip artifacts/solutions/DecisionsWorkspace_unmanaged.zip `
+  -EnvironmentUrl https://environment.example.invalid/ `
+  -SettingsFile powerplatform/settings/deployment-settings.local.json
 
-# Live import with publish
+# Actual import with explicit publishing; this changes the selected target.
+# Use only after account/tenant/target/settings and import authority are verified.
 pac solution import `
+  --environment https://environment.example.invalid/ `
   --path artifacts/solutions/DecisionsWorkspace_unmanaged.zip `
   --settings-file powerplatform/settings/deployment-settings.local.json `
   --publish-changes
 
 # Import without settings
 pac solution import `
+  --environment https://environment.example.invalid/ `
   --path artifacts/solutions/DecisionsWorkspace_unmanaged.zip `
   --publish-changes
 ```
