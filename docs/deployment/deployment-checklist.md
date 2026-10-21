@@ -12,8 +12,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\New-DeploymentCheckl
 
 - [ ] `pac` CLI is available
   - Install Power Platform CLI or fix `PATH` resolution if missing.
-- [ ] `pac auth list` shows an active environment
-  - Select the target environment before packing or importing.
+- [ ] Exact-target identity and access are verified
+  - A stored or selected profile is not access proof. Offline checklist generation does not call PAC or change selection.
 - [ ] `pacx` is available
   - Continue with `pac` if `pacx` is not installed.
 - [ ] Solution folder exists
@@ -71,8 +71,16 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Get-EnvironmentReadi
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Import-SeedData.ps1 -DryRun
 pac solution pack --folder powerplatform/solutions/DecisionsWorkspace --zipfile artifacts/solutions/DecisionsWorkspace_unmanaged.zip --packagetype Unmanaged
 pac solution check --path artifacts/solutions/DecisionsWorkspace_unmanaged.zip
-pac solution import --path artifacts/solutions/DecisionsWorkspace_unmanaged.zip --settings-file powerplatform/settings/deployment-settings.local.json --publish-changes
+./scripts/Import-Solution.ps1 -SolutionZip artifacts/solutions/DecisionsWorkspace_unmanaged.zip -EnvironmentUrl $env:POWER_PLATFORM_ENVIRONMENT_URL -SettingsFile $env:POWER_PLATFORM_DEPLOYMENT_SETTINGS -DryRun
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\New-DylanDeploymentEvidence.ps1 -PacTimeoutSeconds 30
 ```
 
 Use the committed sample settings only for source validation and examples. Use the ignored local settings file for Dylan live activation.
+
+Checklist dry runs now propagate offline mode into readiness. The shown import
+helper is an offline preview with an explicit target and actual ignored settings
+path; it does not import, log in, switch profiles or publish changes. For an
+authorised live operation, retain the exact reviewed parameters and use the
+helper after identity, bindings and recovery qualify. Publishing is opt-in.
+Full offline repository validation and an actual PAC-forbidden entry-point
+regression pass; source checks do not establish native deployment.
