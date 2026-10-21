@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "module": "careops-decisions",
+  "sourceKind": "reusable-source",
+  "standards": "https://github.com/edithatogo/careops/blob/main/docs/development-and-delivery.md",
+  "integrationContract": "https://github.com/edithatogo/careops/blob/main/docs/standalone-module-contract.md",
+  "releasePolicy": "development-first-verified-promotion",
+  "localGuide": "README.md",
+  "nativeQualification": "not-established-by-this-profile",
+  "nextTasks": [
+    {
+      "id": "source-qualification",
+      "status": "queued",
+      "lane": "portable source maintainer; existing native owners retain their objects",
+      "operation": "Qualify selected existing solution/contracts with fictional fixtures and current-head checks; keep domain extensions and their authority separate from generic suite standards.",
+      "tools": [
+        "PowerShell offline checks",
+        "PAC offline packaging",
+        "existing source CI"
+      ],
+      "success": "Affected source/package/runtime checks pass on the exact revision; unchanged private/native work is preserved and no deployment is inferred."
+    },
+    {
+      "id": "native-alm-inventory",
+      "status": "queued",
+      "lane": "existing private implementation and native object owner",
+      "operation": "Reuse retained qualification; reconcile eligible current solution members, versions, layers, connection references, deployment settings and external artifact manifests through the existing exact-target authentication route. Establish pipeline/Git prerequisites without provisioning or consent changes.",
+      "tools": [
+        "qualified VS Code route",
+        "existing target-specific evidence",
+        "supported native readback"
+      ],
+      "success": "Current versus historical source/export/runtime evidence and recovery are explicit; unavailable permissions, external dependencies and unqualified targets are recorded without inventing a solution wrapper."
+    }
+  ]
+}
