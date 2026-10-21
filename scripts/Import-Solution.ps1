@@ -36,10 +36,6 @@ function Assert-NoDeploymentSettingsPlaceholders {
     }
 }
 
-if (-not (Get-Command pac -ErrorAction SilentlyContinue)) {
-    throw "Power Platform CLI 'pac' was not found on PATH."
-}
-
 if (-not (Test-Path -LiteralPath $SolutionZip)) {
     throw "Solution zip not found: $SolutionZip"
 }
@@ -60,12 +56,15 @@ $resolvedEnvironmentUrl = if ($targetProfile) {
     $null
 }
 
-if ($resolvedEnvironmentUrl) {
-    Write-Host "Activating PAC auth for environment: $resolvedEnvironmentUrl"
-    Select-PacAuthEnvironment -EnvironmentUrl $resolvedEnvironmentUrl | Out-Null
+$target = $null
+if (-not [Uri]::TryCreate($resolvedEnvironmentUrl, [UriKind]::Absolute, [ref]$target) -or
+    $target.Scheme -ne 'https' -or $target.UserInfo -or $target.Query -or
+    $target.Fragment -or $target.AbsolutePath -ne '/') {
+    throw 'An exact HTTPS Dataverse environment root is required, including for dry runs. Ambient-target import is disabled.'
 }
+$resolvedEnvironmentUrl = $target.AbsoluteUri
 
-$arguments = @('solution', 'import', '--path', $SolutionZip)
+$arguments = @('solution', 'import', '--path', $SolutionZip, '--environment', $resolvedEnvironmentUrl)
 if (-not [string]::IsNullOrWhiteSpace($SettingsFile)) {
     if (-not (Test-Path -LiteralPath $SettingsFile)) {
         throw "Settings file not found: $SettingsFile"
@@ -82,6 +81,15 @@ if ($DryRun) {
     return
 }
 
+if (-not (Get-Command pac -ErrorAction SilentlyContinue)) {
+    throw "Power Platform CLI 'pac' was not found on PATH."
+}
+# Preserve the caller's already-qualified session and selected profile. A stored
+# profile alone is not target access; a failed read must prevent the import.
+$identity = & pac org who --environment $resolvedEnvironmentUrl 2>&1
+if ($LASTEXITCODE -ne 0 -or -not ($identity | Out-String).Trim()) {
+    throw 'Exact-target identity/access read failed. Preserve the profile and reconcile its qualified route before import.'
+}
 & pac @arguments
 if ($LASTEXITCODE -ne 0) {
     throw "PAC solution import failed for $SolutionZip."

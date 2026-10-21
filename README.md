@@ -136,3 +136,15 @@ prerequisites separately from source CI; this profile configures no tenant.
 SharePoint structured document generation remains the preferred route for any
 selected structured report or document, subject to exact entitlement, complete
 output, human-edit preservation and recovery qualification.
+
+
+### Isolated preflight and exact-target import
+
+Use `Get-EnvironmentReadiness.ps1 -DryRun -Json` for offline source/configuration
+checks. Dry runs do not call PAC authentication commands; stored profile metadata
+is not native access proof. Repository validation uses this offline path.
+`Import-Solution.ps1` requires an exact HTTPS Dataverse root even for its preview,
+passes that target to both identity read and import, and leaves the existing
+qualified profile selected. A failed or empty identity read prevents import.
+Keep target settings private and reviewed; sample settings and successful local
+validation are not deployment authority. Publishing remains an explicit option.

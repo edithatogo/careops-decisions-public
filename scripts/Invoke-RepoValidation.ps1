@@ -157,10 +157,14 @@ try {
         }
     }
 
+    Invoke-ValidationStep -Name 'PAC offline and explicit-target isolation' -ScriptBlock {
+        & (Join-Path $repoRoot 'scripts/Test-PacReadIsolation.ps1')
+    }
+
     $readiness = Join-Path $repoRoot 'scripts/Get-EnvironmentReadiness.ps1'
     if (Test-Path -LiteralPath $readiness) {
         Invoke-ValidationStep -Name 'Environment readiness dry read' -ScriptBlock {
-            & $readiness -Json | ConvertFrom-Json | Out-Null
+            & $readiness -DryRun -Json | ConvertFrom-Json | Out-Null
         }
     }
 
