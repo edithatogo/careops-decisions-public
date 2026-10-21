@@ -28,3 +28,28 @@ try {
     [System.Globalization.CultureInfo]::CurrentCulture = $priorCulture
 }
 Write-Host 'Six actual renderer date/culture/offset cases passed.'
+
+# Exercise the complete dry-run entry point with PAC present but forbidden.
+# This detects transitive auth reads that renderer-only tests cannot observe.
+$global:ChecklistPacCalls = 0
+function global:pac {
+    $global:ChecklistPacCalls++
+    throw 'Checklist dry run attempted PAC transport/authentication.'
+}
+$tempOutput = Join-Path ([IO.Path]::GetTempPath()) ([guid]::NewGuid().ToString() + '.md')
+try {
+    $result = & (Join-Path $PSScriptRoot 'New-DeploymentChecklist.ps1') -DryRun -OutputPath $tempOutput
+    if ($global:ChecklistPacCalls -ne 0) { throw 'Checklist dry run called PAC.' }
+    if (Test-Path -LiteralPath $tempOutput) { throw 'Checklist dry run wrote its output.' }
+    if ($result.Markdown -match 'pac solution import' -or $result.Markdown -match '--publish-changes') {
+        throw 'Checklist bypasses guarded target handling or opts into publishing.'
+    }
+    if ($result.Markdown -notmatch 'Import-Solution.ps1.*-EnvironmentUrl.*-DryRun') {
+        throw 'Checklist must show an explicit-target offline import preview.'
+    }
+} finally {
+    Remove-Item Function:\pac -ErrorAction SilentlyContinue
+    Remove-Variable ChecklistPacCalls -Scope Global -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath $tempOutput -ErrorAction SilentlyContinue
+}
+Write-Host 'Complete checklist dry-run refuses auth transport and preserves the filesystem.'
