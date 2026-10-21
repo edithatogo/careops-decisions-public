@@ -119,3 +119,20 @@ they are not bundled or represented as complete binary dependency closure.
 Dataverse registration, solution integration and operator acceptance remain
 separate from this library release. The existing unmanaged scaffold evidence
 is retained and is not used as proof that the native libraries shipped.
+
+
+## Modular source delivery and ALM
+
+Follow the shared delivery policy and ordered source/native queue in
+[the module profile](.careops/module.json). Prefer exact useful development pins,
+isolated qualification and retained recovery over replacing a working runtime.
+Preserve existing publisher/logical names, stable IDs, connections, schedules and
+current owners. Deduplicate only with component identity and dependency evidence.
+
+Keep native exports, target bindings and operational records private. Version
+external artifacts that do not belong in a Dataverse solution through their
+existing deployment manifests. Record actual solution-layer and pipeline/Git
+prerequisites separately from source CI; this profile configures no tenant.
+SharePoint structured document generation remains the preferred route for any
+selected structured report or document, subject to exact entitlement, complete
+output, human-edit preservation and recovery qualification.
