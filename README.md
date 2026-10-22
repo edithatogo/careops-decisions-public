@@ -153,7 +153,7 @@ validation are not deployment authority. Publishing remains an explicit option.
 
 For selected governance analytics, qualify read-only model/measure comparison and role-filtered report journeys before staged release. Keep committee/register business authority, Dataverse access and solution pipelines separate; PPU does not resolve the outstanding federated sign-in or permit circulation of meeting records.
 
-Follow the [shared PPU capability and permissions boundary](https://github.com/edithatogo/careops/blob/main/docs/development-and-delivery.md#power-bi-premium-per-user-current-qualification-boundary). The deployment operator's current PPU assignment is verified, but workspace mode, role/Build rights,
+Follow the [shared PPU capability and permissions boundary](https://github.com/edithatogo/careops/blob/main/docs/development-and-delivery.md#power-bi-premium-per-user-current-qualification-boundary). The verified PPU assignment applies only to the checked account/tenant; this module's separate operational profile needs its own licence readback. Workspace mode, role/Build rights,
 tenant settings, reader licensing and actual feature operation still require
 exact-target evidence. XMLA and Power BI pipelines are qualification candidates;
 Fabric Git/Copilot capacity and Power Automate/Word entitlement remain separate.
