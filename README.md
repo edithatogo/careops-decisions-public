@@ -148,3 +148,15 @@ passes that target to both identity read and import, and leaves the existing
 qualified profile selected. A failed or empty identity read prevents import.
 Keep target settings private and reviewed; sample settings and successful local
 validation are not deployment authority. Publishing remains an explicit option.
+
+## Power BI PPU qualification — 22 October 2026
+
+For selected governance analytics, qualify read-only model/measure comparison and role-filtered report journeys before staged release. Keep committee/register business authority, Dataverse access and solution pipelines separate; PPU does not resolve the outstanding federated sign-in or permit circulation of meeting records.
+
+Follow the [shared PPU capability and permissions boundary](https://github.com/edithatogo/careops/blob/main/docs/development-and-delivery.md#power-bi-premium-per-user-current-qualification-boundary). The verified PPU assignment applies only to the checked account/tenant; this module's separate operational profile needs its own licence readback. Workspace mode, role/Build rights,
+tenant settings, reader licensing and actual feature operation still require
+exact-target evidence. XMLA and Power BI pipelines are qualification candidates;
+Fabric Git/Copilot capacity and Power Automate/Word entitlement remain separate.
+Do not infer support for report Export-to-file REST on PPU alone. Preserve current
+source, native identities and recovery; no automatic workspace conversion,
+settings change, new reporting dependency or cutover follows.
