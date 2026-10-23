@@ -15,3 +15,5 @@
 
 - [Status](./status.md)
 - [Tracks](./tracks/README.md)
+
+- [Tracks](./tracks.md)
