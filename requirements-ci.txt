@@ -1,6 +1,6 @@
-coverage==7.16.2
+coverage==7.17.0
 mypy==2.4.0
-ruff==0.17.1
+ruff==0.17.2
 pip-audit==2.10.1
 
 # Security-qualified CA bundle; PYSEC-2026-4320 repair.
