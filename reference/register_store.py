@@ -33,7 +33,7 @@ class SQLiteRegisterStore:
         self._uri = path.resolve().as_uri() + "?mode=rw"
 
     @classmethod
-    def initialize(cls, path: Path) -> "SQLiteRegisterStore":
+    def initialize(cls, path: Path) -> SQLiteRegisterStore:
         # Exclusive creation preserves any existing database, including symlinks.
         descriptor = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
         os.close(descriptor)
