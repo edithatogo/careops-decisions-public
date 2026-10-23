@@ -47,7 +47,7 @@ class Revision:
 class Register:
     history: tuple[Revision, ...] = ()
 
-    def append(self, revision: Revision, *, expected_version: int) -> "Register":
+    def append(self, revision: Revision, *, expected_version: int) -> Register:
         """Append a verified human decision; exact replays are harmless.
 
         Durable optimistic locking and authenticated receipts are adapter gates.
