@@ -70,3 +70,9 @@ Higher levels must not be inferred from lower ones.
 ```
 
 Use `feat`, `fix`, `docs`, `test`, `refactor`, or `chore` as appropriate.
+
+## Targeted test cadence
+
+Follow AGENTS.md targeted-test guidance during edits. Preserve full integration,
+coverage and release gates at coherent milestones. Cached or zero-test results
+are not complete acceptance evidence.
