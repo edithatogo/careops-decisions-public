@@ -53,3 +53,15 @@ remains ignored locally; no global rule or seed-path exemption.
 - [~] Qualify actual updater extraction, exact local regeneration, source coverage,
   browser fixtures and current-head hosted gates before merge/main verification.
   Private histories, source identities, native bindings and delivery stay unchanged.
+
+## Cross-platform helper isolation
+
+All seven Python CI job definitions now create and verify repo-local Python
+3.15.1 after source checkout or artifact download, before executing helpers.
+Refuse existing files/directories/dangling links and wrong versions; write PATH
+only after verification using the platform-native scripts directory. Retain
+existing job identities, hash locks, complete reference coverage, browser/form
+qualification, offline native-library/solution packages and exact attestations.
+Local actual-bootstrap/refusal tests and workflow checks precede hosted Windows
+and Linux qualification. No active environment, native object or email delivery
+is replaced or enabled.

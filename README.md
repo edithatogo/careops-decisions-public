@@ -160,3 +160,15 @@ Fabric Git/Copilot capacity and Power Automate/Word entitlement remain separate.
 Do not infer support for report Export-to-file REST on PPU alone. Preserve current
 source, native identities and recovery; no automatic workspace conversion,
 settings change, new reporting dependency or cutover follows.
+
+## CI Python environments
+
+Python CI jobs create `.local/decisions-ci` from the explicitly selected
+Python 3.15.1 interpreter. They refuse existing files, directories and symlinks,
+verify the actual patch and prefix, and export the environment's native scripts
+path (`Scripts` on Windows, `bin` on Linux). Helper setup therefore survives
+checkout and does not install dependencies into the runner-global interpreter.
+
+Existing hash locks, complete reference coverage, fictional browser/form checks,
+PowerShell/SDK package tests and source/package attestation gates remain required.
+This isolation changes no solution component, native binding or delivery state.
