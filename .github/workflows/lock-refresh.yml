@@ -12,6 +12,8 @@ on:
       - 'requirements-ci.*'
       - 'tests/scope_card/browser-requirements.*'
       - '.github/workflows/lock-refresh.yml'
+      - 'renovate.json'
+      - 'tests/reference/test_lock_pairing.py'
 permissions:
   contents: read
 concurrency:
@@ -52,7 +54,7 @@ jobs:
                       raise ValueError('Preview discovery requires exact input package declarations.')
                   source = root / (key + '.in'); source.write_text('\n'.join(line.split('==')[0] for line in lines) + '\n')
                   lock = str(root / (key + '.lock'))
-              args = ['uv', 'pip', 'compile', str(source), '--generate-hashes', '--universal', '--python-version', '3.15.1', '-o', lock]
+              args = ['uv', 'pip', 'compile', str(source), '--generate-hashes', '--universal', '--python-version=3.15.1', f'--output-file={lock}']
               if preview: args += ['--upgrade', '--prerelease', 'allow']
               subprocess.run(args, check=True, stdout=subprocess.DEVNULL)
               outputs[key] = lock

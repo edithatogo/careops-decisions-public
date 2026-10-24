@@ -12,7 +12,7 @@
   "packageRules": [
     {
       "matchManagers": [
-        "pip_requirements"
+        "pip-compile"
       ],
       "ignoreUnstable": false,
       "respectLatest": false,
@@ -24,5 +24,14 @@
       ],
       "automerge": false
     }
-  ]
+  ],
+  "pip-compile": {
+    "managerFilePatterns": [
+      "/^requirements-ci\\.lock$/",
+      "/^tests/scope_card/browser-requirements\\.lock$/"
+    ]
+  },
+  "pip_requirements": {
+    "enabled": false
+  }
 }
