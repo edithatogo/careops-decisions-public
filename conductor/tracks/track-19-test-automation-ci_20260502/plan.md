@@ -42,3 +42,14 @@ integration reference context and structured-label shape. No current CI commit
 match. Exact fingerprint exceptions preserve future/new finding checks; an inert
 generated credential-shaped negative is still refused. Detailed review evidence
 remains ignored locally; no global rule or seed-path exemption.
+
+## Paired test dependency maintenance
+
+- [x] Reproduce missing input/lock pairing and incompatible header flags with
+  focused regressions before changing the updater or generator.
+- [x] Couple both CI/browser input-lock pairs, preserve universal hashed graphs
+  and independent full-source/browser/audit qualification. Regenerate baseline
+  headers without changing browser packages; include the qualified Certifi repair.
+- [~] Qualify actual updater extraction, exact local regeneration, source coverage,
+  browser fixtures and current-head hosted gates before merge/main verification.
+  Private histories, source identities, native bindings and delivery stay unchanged.

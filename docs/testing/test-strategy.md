@@ -76,3 +76,19 @@ Manual smoke testing remains the release gate until app test files are stable. C
 ## Evidence
 
 For each test run, keep a short run note with environment, solution version, tester, timestamp, command output location, scenario results, known defects, and screenshots or record links where useful. Do not commit tenant secrets, user tokens, transcripts containing real sensitive data, or exported production data.
+
+## Paired dependency updates
+
+Renovate's lock-aware `pip-compile` manager owns both maintained test graphs:
+`requirements-ci.txt` with `requirements-ci.lock`, and
+`tests/scope_card/browser-requirements.txt` with its adjacent lock. The separate
+`pip_requirements` manager is disabled to avoid declaration-only proposals.
+Prerelease eligibility and lock maintenance remain enabled without automatic merge.
+
+The workflow compiler uses explicit `--python-version=3.15.1` and
+`--output-file=...` arguments so its generated headers identify the real inputs
+and remain discoverable by the updater. Preserve `--universal`, artifact hashes,
+independent regeneration parity, both dependency audits, full branch coverage and
+both fictional browser checks. Preview discovery remains a separate unpromoted
+candidate. Generated receipts stay ignored; browser fixtures establish no native
+Dataverse access or operational acceptance.
