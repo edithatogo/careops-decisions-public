@@ -66,3 +66,10 @@ Runtime tests must additionally cover forged session/approval evidence, draft
 activation, concurrent revision, rollback, title mapping, onward-delegation
 limits and the approved emergency pathway. Retain prior decision-time authority
 snapshots rather than retrospectively evaluating history under today's rules.
+
+## Governance packet identity reference
+
+[`governance-packet.md`](governance-packet.md) documents a fictional, pure
+source contract for agenda, minutes, decision and action identities, human-edit
+preservation, optional snapshot status and idempotent retry classification. It
+performs no persistence, provider calls, document generation or approvals.
