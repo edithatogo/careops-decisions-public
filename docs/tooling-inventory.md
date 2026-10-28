@@ -4,15 +4,15 @@
 
 | Tool | Status | Primary Use |
 | --- | --- | --- |
-| `pac` | Available at `C:\Users\60217257\.dotnet\tools\pac.exe`; version `2.6.4.0` | Power Platform auth, environments, solution pack/unpack/import/export/check, canvas, test |
-| `pacx` | Available at `C:\Users\60217257\.dotnet\tools\pacx.exe`; version `1.2026.3.195` | Dataverse table, column, relationship, workflow, solution, and script support |
-| `XrmToolBox.cmd` | Available at `C:\Users\60217257\.local\bin\XrmToolBox.cmd` | Metadata browser, FetchXML Builder, SQL 4 CDS, Plugin Trace Viewer, admin tooling |
-| `git` | Available at `C:\Users\60217257\scoop\apps\git\current\cmd\git.exe`; version `2.53.0.2` | Source control |
-| `gh` | Available at `C:\Users\60217257\scoop\shims\gh.exe` | Remote repo, issues, pull requests, workflow checks |
-| `node` | Available at `C:\Users\60217257\scoop\apps\nodejs-lts\current\node.exe`; version `24.15.0.0` | Helper scripts, validators, future Playwright/Test Engine support |
-| `npm` | Available at `C:\Users\60217257\scoop\apps\nodejs-lts\current\npm.ps1` | Package scripts and future test dependencies |
-| `.NET` | Available at `C:\Users\60217257\AppData\Local\Microsoft\dotnet\dotnet.exe`; version `11.0.26.20806` | Power Platform CLI runtime and future test utilities |
-| `pwsh` | Available at `C:\Users\60217257\scoop\apps\pwsh-beta\current\pwsh.exe`; version `7.6.0.0` | Preferred PowerShell automation host |
+| `pac` | Available at `${PRIVATE_HOME}\.dotnet\tools\pac.exe`; version `2.6.4.0` | Power Platform auth, environments, solution pack/unpack/import/export/check, canvas, test |
+| `pacx` | Available at `${PRIVATE_HOME}\.dotnet\tools\pacx.exe`; version `1.2026.3.195` | Dataverse table, column, relationship, workflow, solution, and script support |
+| `XrmToolBox.cmd` | Available at `${PRIVATE_HOME}\.local\bin\XrmToolBox.cmd` | Metadata browser, FetchXML Builder, SQL 4 CDS, Plugin Trace Viewer, admin tooling |
+| `git` | Available at `${PRIVATE_HOME}\scoop\apps\git\current\cmd\git.exe`; version `2.53.0.2` | Source control |
+| `gh` | Available at `${PRIVATE_HOME}\scoop\shims\gh.exe` | Remote repo, issues, pull requests, workflow checks |
+| `node` | Available at `${PRIVATE_HOME}\scoop\apps\nodejs-lts\current\node.exe`; version `24.15.0.0` | Helper scripts, validators, future Playwright/Test Engine support |
+| `npm` | Available at `${PRIVATE_HOME}\scoop\apps\nodejs-lts\current\npm.ps1` | Package scripts and future test dependencies |
+| `.NET` | Available at `${PRIVATE_HOME}\AppData\Local\Microsoft\dotnet\dotnet.exe`; version `11.0.26.20806` | Power Platform CLI runtime and future test utilities |
+| `pwsh` | Available at `${PRIVATE_HOME}\scoop\apps\pwsh-beta\current\pwsh.exe`; version `7.6.0.0` | Preferred PowerShell automation host |
 | Windows PowerShell | Available at `C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe` | Compatibility fallback |
 
 ## PowerShell Modules

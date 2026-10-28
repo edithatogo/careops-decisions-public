@@ -262,7 +262,7 @@ Always prefer the wrapper scripts for repo-consistent behaviour. Use raw `pac`/`
 
 ## Version Notes
 
-- `pac` detected at `C:\Users\60217257\.dotnet\tools\pac.exe` version `2.6.4.0`
-- `pacx` detected at `C:\Users\60217257\.dotnet\tools\pacx.exe` version `1.2026.3.195`
+- `pac` detected at `${PRIVATE_HOME}\.dotnet\tools\pac.exe` version `2.6.4.0`
+- `pacx` detected at `${PRIVATE_HOME}\.dotnet\tools\pacx.exe` version `1.2026.3.195`
 - Run `pac install --version latest` to update PAC CLI
 - Run `pacx update` to update PACX
