@@ -11,8 +11,8 @@
 
 ## Local Tools Found
 
-- `pac.exe` 2.6.4 at `C:\Users\60217257\.dotnet\tools\pac.exe`
-- `pacx.exe` 1.2026.3.195 at `C:\Users\60217257\.dotnet\tools\pacx.exe`
+- `pac.exe` 2.6.4 at `${PRIVATE_HOME}\.dotnet\tools\pac.exe`
+- `pacx.exe` 1.2026.3.195 at `${PRIVATE_HOME}\.dotnet\tools\pacx.exe`
 - `XrmToolBox.cmd`
 - Git
 - GitHub CLI
